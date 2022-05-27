@@ -19,44 +19,20 @@ private:
     int speed;
     string eleType;
 
-    struct moveSet
+    struct Move
     {
-        struct move1
-        {
-            string type;
-            string element;
-            int accuracy;
-            int power;
-        };
-        struct move2
-        {
-            string type;
-            string element;
-            int accuracy;
-            int power;
-        };
-        struct move3
-        {
-            string type;
-            string element;
-            int accuracy;
-            int power;
-        };
-        struct move4
-        {
-            string type;
-            string element;
-            int accuracy;
-            int power;
-        };
+        string type;
+        string element;
+        int accuracy;
+        int power;
     };
 
 public:
     beast( string& type );
     ~beast( );
-    bool combat( string move );
+    bool fight( Move move, beast& opponent );
     bool run( );
-    void heal( );
+    void heal( string healer );
     void levelup( );
     void fireLevelUp( moveSet& moves, int level );
     void waterLevelUp( moveSet& moves, int level );
@@ -79,3 +55,25 @@ beast::beast( string& type )
     speed = 1;
     eleType = type;
 }
+
+
+beast::~beast( )
+{
+
+}
+
+
+bool beast::fight( string move )
+
+
+void beast::heal( string healer )
+{
+    if (healer == "small")
+        health += 15;
+    else if (healer == "medium")
+        health += 25;
+    else if(healer == "large")
+        health += 40;
+}
+
+
