@@ -8,6 +8,14 @@ using namespace std;
 class beast
 {
 private:
+    struct Move
+    {
+        string type;
+        string element;
+        int accuracy;
+        int power;
+    };
+
     int level;
     int exp;
     int maxHealth;
@@ -18,14 +26,7 @@ private:
     int spattack;
     int speed;
     string eleType;
-
-    struct Move
-    {
-        string type;
-        string element;
-        int accuracy;
-        int power;
-    };
+    Move move1, move2, move3, move4;
 
 public:
     beast( string& type );
@@ -34,9 +35,9 @@ public:
     bool run( );
     void heal( string healer );
     void levelup( );
-    void fireLevelUp( moveSet& moves, int level );
-    void waterLevelUp( moveSet& moves, int level );
-    void grassLevelUp( moveSet& moves, int level );
+    void fireLevelUp( int level );
+    void waterLevelUp( int level );
+    void grassLevelUp( int level );
 };
 
 #endif
@@ -63,7 +64,10 @@ beast::~beast( )
 }
 
 
-bool beast::fight( string move )
+bool beast::fight(Move move, beast& opponent)
+{
+
+}
 
 
 void beast::heal( string healer )
