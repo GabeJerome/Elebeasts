@@ -66,7 +66,13 @@ beast::~beast( )
 
 bool beast::fight(Move move, beast& opponent)
 {
+    std::random_device hit;
 
+    cout << "minimum: " << hit.min() << endl;
+    cout << "maximum: " << hit.max() << endl;
+    cout << "Value: " << hit() << endl;
+
+    return true;
 }
 
 
