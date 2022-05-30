@@ -21,6 +21,9 @@
     <ClInclude Include="elebeastClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="moves.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mainGame.cpp">

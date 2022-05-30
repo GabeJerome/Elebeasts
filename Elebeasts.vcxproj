@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClInclude Include="elebeastClass.h" />
     <ClInclude Include="header.h" />
+    <ClInclude Include="moves.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mainGame.cpp" />

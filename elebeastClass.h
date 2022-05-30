@@ -10,7 +10,7 @@ class beast
 private:
     struct Move
     {
-        string type;
+        int type;
         string element;
         int accuracy;
         int power;
@@ -26,7 +26,7 @@ private:
     int spattack;
     int speed;
     string eleType;
-    Move move1, move2, move3, move4;
+    Move move1, move2, move3, move4;    //TODO: fill moves
 
 public:
     beast( string& type );
@@ -34,6 +34,7 @@ public:
     bool fight( Move move, beast& opponent );
     bool run( );
     void heal( string healer );
+    void selectMove(int move);
     void levelup( );
     void fireLevelUp( int level );
     void waterLevelUp( int level );
@@ -66,11 +67,38 @@ beast::~beast( )
 
 bool beast::fight(Move move, beast& opponent)
 {
-    std::random_device hit;
+    std::random_device rand;
+    std::random_device roll;
+    int hit = rand() % 101;
+    float randRoll = (roll() % 101) / 100;
+    int damage;
+    int Def, Att;
+    int critical = 1;
+    int effectiveness = 1;
 
-    cout << "minimum: " << hit.min() << endl;
-    cout << "maximum: " << hit.max() << endl;
-    cout << "Value: " << hit() << endl;
+    //TODO: calculate effectiveness
+
+    if (hit < 5)
+        critical = 1.5;
+
+    if (move.type == 0)
+    {
+        Def = opponent.spdefense;
+        Att = spattack;
+    }
+    else
+    {
+        Def = opponent.defense;
+        Att = attack;
+    }
+
+    if (hit > move.accuracy)
+        return false;
+
+    damage = ((((((2 * level) / 5) + 2) * move.power * Att / Def) / 50) + 2)
+        * randRoll * critical * effectiveness;
+
+    opponent.health -= damage;
 
     return true;
 }
@@ -87,3 +115,7 @@ void beast::heal( string healer )
 }
 
 
+void beast::selectMove(int move)
+{
+
+}
