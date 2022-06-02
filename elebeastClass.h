@@ -53,8 +53,6 @@ inline beast::beast( int type )
     spattack = 1;
     speed = 1;
     eleType = type;
-    for (i = 0; i < 4; i++)
-        move[i] = none;
 }
 
 
@@ -69,13 +67,16 @@ inline bool beast::fight(Move move, beast& opponent)
     std::random_device rand;
     std::random_device roll;
     int hit = rand() % 101;
-    double randRoll = double((roll() % 16) / 100) + .85;
+    double randRoll = (double(roll() % 16) / 100) + .85;
     int damage;
     int Def, Att;
     double critical = 1;
     int effectiveness = 1;
 
     //TODO: calculate effectiveness
+    //TODO: add comments
+    if (hit > move.accuracy)
+            return false;
 
     if (hit < 5)
         critical = 1.5;
@@ -90,9 +91,6 @@ inline bool beast::fight(Move move, beast& opponent)
         Def = opponent.defense;
         Att = attack;
     }
-
-    if (hit > move.accuracy)
-        return false;
 
     damage = int(((((((static_cast<double>(2) * level) / 5) + 2) * move.power
         * Att / Def) / 50) + 2) * randRoll * critical * effectiveness);

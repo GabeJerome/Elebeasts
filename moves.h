@@ -7,6 +7,7 @@ enum moveElement { normal, fire, water, grass };
 class Move
 {
 public:
+    Move();
     Move(int moveType, int moveElement, int moveAccuracy, int movePower);
     ~Move();
 
@@ -15,6 +16,16 @@ public:
     int accuracy;
     int power;
 };
+
+
+
+inline Move::Move()
+{
+    type = 0;
+    element = 0;
+    accuracy = 0;
+    power = 0;
+}
 
 
 inline Move::Move(int moveType, int moveElement, int moveAccuracy,
