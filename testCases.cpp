@@ -1,7 +1,7 @@
-#include "header.h"
 #include "catch.hpp"
-#include "moves.h"
-#include "elebeastClass.h"
+#include "header.h"
+
+
 
 TEST_CASE("random_device test")
 {
@@ -28,9 +28,11 @@ TEST_CASE("random_device test")
 
 TEST_CASE("fight")
 {
-    string fire = "fire";
-    string water = "water";
-    beast beastF(fire), beastW(water);
+    beast fireBeast(fire), waterBeast(water);
 
-    beastF.move1 = ;
+    fireBeast.changeMove(0, swipe);
+
+    fireBeast.fight(swipe, waterBeast);
+
+    REQUIRE(true);
 }

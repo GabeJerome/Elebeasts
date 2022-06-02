@@ -1,12 +1,36 @@
 #pragma once
-#include <string>
 
 using namespace std;
 
-struct swipe
+enum moveElement { normal, fire, water, grass };
+
+class Move
 {
-    int type = 1;
-    string element = "normal";
-    int accuracy = 100;
-    int power = 20;
+public:
+    Move(int moveType, int moveElement, int moveAccuracy, int movePower);
+    ~Move();
+
+    int type;
+    int element;
+    int accuracy;
+    int power;
 };
+
+
+inline Move::Move(int moveType, int moveElement, int moveAccuracy,
+    int movePower)
+{
+    type = moveType;
+    element = moveElement;
+    accuracy = moveAccuracy;
+    power = movePower;
+}
+
+inline Move::~Move()
+{
+
+}
+
+const Move none(0, 0, 0, 0);
+
+const Move swipe(1, normal, 100, 20);

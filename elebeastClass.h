@@ -1,21 +1,16 @@
 #include <string>
+#include <iostream>
+#include <random>
+#include "moves.h"
 
 using namespace std;
 
-#ifndef __ELEBEAST_H
-#define __ELEBEAST_H
+#ifndef __ELEBEAST_H__
+#define __ELEBEAST_H__
 
 class beast
 {
 private:
-    struct Move
-    {
-        int type;
-        string element;
-        int accuracy;
-        int power;
-    };
-
     int level;
     int exp;
     int maxHealth;
@@ -25,11 +20,11 @@ private:
     int attack;
     int spattack;
     int speed;
-    string eleType;
-    Move move1, move2, move3, move4;    //TODO: fill moves
+    int eleType;
+    Move move[4];    //TODO: fill moves
 
 public:
-    beast( string& type );
+    beast( int type );
     ~beast( );
     bool fight( Move move, beast& opponent );
     bool run( );
@@ -39,41 +34,45 @@ public:
     void fireLevelUp( int level );
     void waterLevelUp( int level );
     void grassLevelUp( int level );
+    void changeMove(int move, Move replaceWith);
 };
 
-#endif
 
 
-beast::beast( string& type )
+inline beast::beast( int type )
 {
+    int i;
+
     level = 1;
     exp = 0;
     maxHealth = 10;
-    health = 10;
+    health = maxHealth;
     defense = 1;
     spdefense = 1;
     attack = 1;
     spattack = 1;
     speed = 1;
     eleType = type;
+    for (i = 0; i < 4; i++)
+        move[i] = none;
 }
 
 
-beast::~beast( )
+inline beast::~beast( )
 {
 
 }
 
 
-bool beast::fight(Move move, beast& opponent)
+inline bool beast::fight(Move move, beast& opponent)
 {
     std::random_device rand;
     std::random_device roll;
     int hit = rand() % 101;
-    float randRoll = (roll() % 101) / 100;
+    double randRoll = double((roll() % 16) / 100) + .85;
     int damage;
     int Def, Att;
-    int critical = 1;
+    double critical = 1;
     int effectiveness = 1;
 
     //TODO: calculate effectiveness
@@ -95,8 +94,8 @@ bool beast::fight(Move move, beast& opponent)
     if (hit > move.accuracy)
         return false;
 
-    damage = ((((((2 * level) / 5) + 2) * move.power * Att / Def) / 50) + 2)
-        * randRoll * critical * effectiveness;
+    damage = int(((((((static_cast<double>(2) * level) / 5) + 2) * move.power
+        * Att / Def) / 50) + 2) * randRoll * critical * effectiveness);
 
     opponent.health -= damage;
 
@@ -104,18 +103,32 @@ bool beast::fight(Move move, beast& opponent)
 }
 
 
-void beast::heal( string healer )
+
+inline void beast::heal( string healer )
 {
+    if (health == 0)
+    {
+        cout << "This beast needs to be revived first!" << endl;
+        return;
+    }
+
     if (healer == "small")
         health += 15;
     else if (healer == "medium")
         health += 25;
     else if(healer == "large")
         health += 40;
+
+    if (health > maxHealth)
+        health = maxHealth;
 }
 
 
-void beast::selectMove(int move)
+
+inline void beast::changeMove(int moveNum, Move replaceWith)
 {
-
+    move[moveNum] = replaceWith;
 }
+
+
+#endif

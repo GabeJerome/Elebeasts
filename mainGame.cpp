@@ -1,7 +1,6 @@
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 #include "header.h"
-#include "elebeastClass.h"
 
 const bool RUNCATCH = true;
 
