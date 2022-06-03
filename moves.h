@@ -5,6 +5,9 @@ using namespace std;
 enum moveElement { normal, fire, water, grass, electric, ice, fighting, poison,
     ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy };
 
+#ifndef __MOVES_H__
+#define __MOVES_H__
+
 class Move
 {
 public:
@@ -17,6 +20,8 @@ public:
     int accuracy;
     int power;
 };
+
+#endif
 
 
 
@@ -43,6 +48,5 @@ inline Move::~Move()
 
 }
 
-const Move none(0, 0, 0, 0);
-
-const Move swipe(1, normal, 100, 20);
+/*normal moves*/
+const Move swipe(1, normal, 100, 20)
