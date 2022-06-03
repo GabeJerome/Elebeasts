@@ -2,7 +2,8 @@
 
 using namespace std;
 
-enum moveElement { normal, fire, water, grass };
+enum moveElement { normal, fire, water, grass, electric, ice, fighting, poison,
+    ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy };
 
 class Move
 {

@@ -32,7 +32,7 @@ TEST_CASE("fight")
 
     fireBeast.changeMove(0, swipe);
 
-    fireBeast.fight(swipe, waterBeast);
+    fireBeast.fight(fireBeast.move[0], waterBeast);
 
     REQUIRE(true);
 }
