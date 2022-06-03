@@ -65,6 +65,10 @@ inline bool beast::fight(Move move, beast& opponent)
     std::random_device rand;
     std::random_device roll;
     int hit = rand() % 101;
+
+    if (hit > move.accuracy)
+        return false;
+
     double randRoll = (double(roll() % 16) / 100) + .85;
     int damage;
     int Def, Att;
@@ -97,8 +101,7 @@ inline bool beast::fight(Move move, beast& opponent)
 
 
     //TODO: add comments
-    if (hit > move.accuracy)
-            return false;
+    
 
     if (hit < 5)
         critical = 1.5;
@@ -118,6 +121,9 @@ inline bool beast::fight(Move move, beast& opponent)
         * Att / Def) / 50) + 2) * randRoll * critical * effectiveness);
 
     opponent.health -= damage;
+
+    if (opponent.health < 0)
+        opponent.health = 0;
 
     return true;
 }
