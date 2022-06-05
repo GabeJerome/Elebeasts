@@ -12,44 +12,60 @@ class beast
 {
 private:
     int level;
-    int exp;
-    int maxHealth;
-    int health;
-    int defense;
-    int spdefense;
-    int attack;
-    int spattack;
-    int speed;
+    int experience;
+    int baseHealth;
+    int currentHealth;
+    int baseDefense, currDef;
+    int baseSpdefense, currSpDef;
+    int baseAttack, currAtt;
+    int baseSpattack, currSpAtt;
+    int baseSpeed, currSpeed;
     int eleType;
 
 public:
-    beast( int type );
+    beast( );
+    beast(int lvl, int exp, int maxHlth, int currHlth, int def,
+        int spdef, int att, int spatt, int spd, int type);
     ~beast( );
     bool fight( Move move, beast& opponent );
-    bool run( );
+    bool runAway( beast& opponent);
     void heal( string healer );
-    void selectMove(int move);
     void levelup( );
-    void fireLevelUp( int level );
-    void waterLevelUp( int level );
-    void grassLevelUp( int level );
+    void levelUp();
     void changeMove(int move, Move replaceWith);
     Move move[4];
 };
 
+#endif
 
 
-inline beast::beast( int type )
+
+inline beast::beast( )
 {
-    level = 1;
-    exp = 0;
-    maxHealth = 10;
-    health = maxHealth;
-    defense = 1;
-    spdefense = 1;
-    attack = 1;
-    spattack = 1;
-    speed = 1;
+    level = 0;
+    experience = 0;
+    baseHealth = 0;
+    currentHealth = baseHealth;
+    baseDefense = 0;
+    baseSpdefense = 0;
+    baseAttack = 0;
+    baseSpattack = 0;
+    baseSpeed = 0;
+    eleType = 0;
+}
+
+inline beast::beast(int lvl, int exp, int maxHlth, int currHlth, int def,
+    int spdef, int att, int spatt, int spd, int type)
+{
+    level = lvl;
+    experience = exp;
+    baseHealth = maxHlth;
+    currentHealth = baseHealth;
+    baseDefense = def;
+    baseSpdefense = spdef;
+    baseAttack = att;
+    baseSpattack = spatt;
+    baseSpeed = spd;
     eleType = type;
 }
 
@@ -62,8 +78,8 @@ inline beast::~beast( )
 
 inline bool beast::fight(Move move, beast& opponent)
 {
-    std::random_device rand;
-    std::random_device roll;
+    random_device rand;
+    random_device roll;
     int hit = rand() % 101;
 
     if (hit > move.accuracy)
@@ -108,45 +124,62 @@ inline bool beast::fight(Move move, beast& opponent)
 
     if (move.type == 0)
     {
-        Def = opponent.spdefense;
-        Att = spattack;
+        Def = opponent.baseSpdefense;
+        Att = baseSpattack;
     }
     else
     {
-        Def = opponent.defense;
-        Att = attack;
+        Def = opponent.baseDefense;
+        Att = baseAttack;
     }
 
     damage = int(((((((static_cast<double>(2) * level) / 5) + 2) * move.power
         * Att / Def) / 50) + 2) * randRoll * critical * effectiveness);
 
-    opponent.health -= damage;
+    opponent.currentHealth -= damage;
 
-    if (opponent.health < 0)
-        opponent.health = 0;
+    if (opponent.currentHealth < 0)
+        opponent.currentHealth = 0;
 
     return true;
 }
 
 
 
+inline bool beast::runAway(beast& opponent)
+{
+    int odds, run;
+    random_device rand;
+
+    odds = (((baseSpeed * 32) / ((opponent.baseSpeed / 4) % 256)) + 30 /*multiply by number of run attempts*/);
+    
+    run = rand() % 256;
+
+    if (odds > 255 || run < odds)
+        return true;
+
+    return false;
+}
+
+
+
 inline void beast::heal( string healer )
 {
-    if (health == 0)
+    if (currentHealth == 0)
     {
         cout << "This beast needs to be revived first!" << endl;
         return;
     }
 
     if (healer == "small")
-        health += 15;
+        currentHealth += 15;
     else if (healer == "medium")
-        health += 25;
+        currentHealth += 25;
     else if(healer == "large")
-        health += 40;
+        currentHealth += 40;
 
-    if (health > maxHealth)
-        health = maxHealth;
+    if (currentHealth > baseHealth)
+        currentHealth = baseHealth;
 }
 
 
@@ -157,4 +190,5 @@ inline void beast::changeMove(int moveNum, Move replaceWith)
 }
 
 
-#endif
+
+//TODO: test runAway function, create more beasts and moves.
