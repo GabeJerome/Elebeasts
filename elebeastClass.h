@@ -24,15 +24,15 @@ private:
 
 public:
     beast( );
-    beast(int lvl, int exp, int maxHlth, int currHlth, int def,
+    beast(string name, int lvl, int exp, int maxHP, int currHP, int def,
         int spdef, int att, int spatt, int spd, int type);
     ~beast( );
     bool fight( Move move, beast& opponent );
-    bool runAway( beast& opponent);
+    bool runAway( beast& opponent, int attemptNum );
     void heal( string healer );
     void levelup( );
-    void levelUp();
     void changeMove(int move, Move replaceWith);
+    string beastName;
     Move move[4];
 };
 
@@ -42,32 +42,35 @@ public:
 
 inline beast::beast( )
 {
+    beastName = "";
     level = 0;
     experience = 0;
-    baseHealth = 0;
+    baseHealth = currentHealth = 0;
     currentHealth = baseHealth;
-    baseDefense = 0;
-    baseSpdefense = 0;
-    baseAttack = 0;
-    baseSpattack = 0;
-    baseSpeed = 0;
+    baseDefense = currDef = 0;
+    baseSpdefense = currSpDef= 0;
+    baseAttack = currAtt = 0;
+    baseSpattack = currSpAtt = 0;
+    baseSpeed = currSpeed = 0;
     eleType = 0;
 }
 
-inline beast::beast(int lvl, int exp, int maxHlth, int currHlth, int def,
+inline beast::beast(string name, int lvl, int exp, int maxHP, int currHP, int def,
     int spdef, int att, int spatt, int spd, int type)
 {
+    beastName = name;
     level = lvl;
     experience = exp;
-    baseHealth = maxHlth;
+    baseHealth = currentHealth = maxHP;
     currentHealth = baseHealth;
-    baseDefense = def;
-    baseSpdefense = spdef;
-    baseAttack = att;
-    baseSpattack = spatt;
-    baseSpeed = spd;
+    baseDefense = currDef = def;
+    baseSpdefense = currSpDef = spdef;
+    baseAttack = currAtt = att;
+    baseSpattack = currSpAtt = spatt;
+    baseSpeed = currSpeed = spd;
     eleType = type;
 }
+
 
 
 inline beast::~beast( )
@@ -146,7 +149,7 @@ inline bool beast::fight(Move move, beast& opponent)
 
 
 
-inline bool beast::runAway(beast& opponent)
+inline bool beast::runAway(beast& opponent, int attemptNum)
 {
     int odds, run;
     random_device rand;
@@ -192,3 +195,9 @@ inline void beast::changeMove(int moveNum, Move replaceWith)
 
 
 //TODO: test runAway function, create more beasts and moves.
+
+const beast Flacora("Flacora", 1, 0, 10, 10, 10, 10, 10, 10, 10, fire);
+
+const beast Stropie("Stropie", 1, 0, 9, 10, 11, 10, 10, 10, 10, water);
+
+const beast Fotosin("Fotosin", 1, 0, 9, 10, 11, 10, 10, 10, 10, grass);

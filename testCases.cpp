@@ -28,7 +28,7 @@ TEST_CASE("random_device test")
 
 TEST_CASE("fight")
 {
-    beast fireBeast(fire), waterBeast(water);
+    beast fireBeast(Flacora), waterBeast(Stropie);
 
     fireBeast.changeMove(0, swipe);
 
