@@ -9,10 +9,10 @@ int main( )
     Catch::Session session;
     int result;
 
-    if (RUNCATCH)
+    if ( RUNCATCH )
     {
-        result = session.run();
-        if (result != 0)
+        result = session.run( );
+        if ( result != 0 )
         {
             cout << "Test cases didn't pass." << endl;
             return result;
