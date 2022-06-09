@@ -17,11 +17,11 @@ private:
     int experience;
     int baseHealth;
     int currentHealth;
-    int baseDefense, currDef;
-    int baseSpdefense, currSpDef;
-    int baseAttack, currAtt;
-    int baseSpattack, currSpAtt;
-    int baseSpeed, currSpeed;
+    int baseDefense;
+    int baseSpdefense;
+    int baseAttack;
+    int baseSpattack;
+    int baseSpeed;
     int eleType;
     vector<Move> learnMoves;    //USE
     int lvlProgression[100] =
@@ -40,7 +40,7 @@ private:
 
 public:
     beast( );
-    beast( string name, int lvl, int exp, int maxHP, int currHP, int def,
+    beast( string name, int exp, int maxHP, int currHP, int def,
         int spdef, int att, int spatt, int spd, int type );
     ~beast( );
     bool fight( Move move, beast &opponent );
@@ -77,28 +77,28 @@ inline beast::beast( )
     experience = 0;
     baseHealth = currentHealth = 0;
     currentHealth = baseHealth;
-    baseDefense = currDef = 0;
-    baseSpdefense = currSpDef = 0;
-    baseAttack = currAtt = 0;
-    baseSpattack = currSpAtt = 0;
-    baseSpeed = currSpeed = 0;
+    baseDefense = 0;
+    baseSpdefense = 0;
+    baseAttack = 0;
+    baseSpattack = 0;
+    baseSpeed = 0;
     eleType = 0;
 }
 
-inline beast::beast( string name, int lvl, int exp, int maxHP, int currHP, int def,
+inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     int spdef, int att, int spatt, int spd, int type )
 {
     beastName = name;
-    level = lvl;
     experience = exp;
-    baseHealth = currentHealth = maxHP;
-    currentHealth = baseHealth;
-    baseDefense = currDef = def;
-    baseSpdefense = currSpDef = spdef;
-    baseAttack = currAtt = att;
-    baseSpattack = currSpAtt = spatt;
-    baseSpeed = currSpeed = spd;
+    baseHealth = maxHP;
+    baseDefense = def;
+    baseSpdefense = spdef;
+    baseAttack = att;
+    baseSpattack = spatt;
+    baseSpeed = spd;
     eleType = type;
+    level = getLevel( );
+    currentHealth = getMaxHP( );
 }
 
 
@@ -113,7 +113,7 @@ inline bool beast::fight( Move move, beast &opponent )
 {
     random_device rand;
     random_device roll;
-    int hit = rand( ) % 101;
+    int hit = ( rand( ) % 100 ) + 1;
 
     if ( hit > move.accuracy )
         return false;
@@ -157,16 +157,16 @@ inline bool beast::fight( Move move, beast &opponent )
 
     if ( move.type == 0 )
     {
-        Def = opponent.baseSpdefense;
-        Att = baseSpattack;
+        Def = opponent.getSpDef( );
+        Att = getSpAtt( );
     }
     else
     {
-        Def = opponent.baseDefense;
-        Att = baseAttack;
+        Def = opponent.getDef( );
+        Att = getAtt( );
     }
 
-    damage = int( ( ( ( ( ( ( static_cast<double>( 2 ) * level ) / 5 ) + 2 ) * move.power
+    damage = int( ( ( ( ( ( ( static_cast<double>( 2 ) * getLevel( ) ) / 5 ) + 2 ) * move.power
         * Att / Def ) / 50 ) + 2 ) * randRoll * critical * effectiveness );
 
     opponent.currentHealth -= damage;
@@ -184,10 +184,10 @@ inline bool beast::runAway( beast &opponent, int attemptNum )
     int odds, run;
     random_device rand;
 
-    if ( baseSpeed >= opponent.baseSpeed )
+    if ( getSpeed( ) >= opponent.getSpeed( ) )
         return true;
 
-    odds = ( ( ( baseSpeed * 32 ) / ( ( opponent.baseSpeed / 4 ) % 256 ) ) + 30 * attemptNum );
+    odds = ( ( ( getSpeed( ) * 32 ) / ( ( opponent.getSpeed( ) / 4 ) % 256 ) ) + 30 * attemptNum );
 
     run = rand( ) % 256;
 
@@ -214,8 +214,8 @@ inline void beast::heal( string healer )
     else if ( healer == "large" )
         currentHealth += 40;
 
-    if ( currentHealth > baseHealth )
-        currentHealth = baseHealth;
+    if ( currentHealth > getMaxHP( ) )
+        currentHealth = getMaxHP( );
 }
 
 
@@ -286,35 +286,35 @@ inline int beast::getCurrHP( )
 
 inline int beast::getDef( )
 {
-    return baseDefense;
+    return int( floor( .01 * ( 2 * baseDefense ) * level ) + 5 );
 }
 
 
 
 inline int beast::getSpDef( )
 {
-    return baseSpdefense;
+    return int( floor( .01 * ( 2 * baseSpdefense ) * level ) + 5 );
 }
 
 
 
 inline int beast::getAtt( )
 {
-    return baseAttack;
+    return int( floor( .01 * ( 2 * baseAttack ) * level ) + 5 );
 }
 
 
 
 inline int beast::getSpAtt( )
 {
-    return baseSpattack;
+    return int( floor( .01 * ( 2 * baseSpattack ) * level ) + 5 );
 }
 
 
 
 inline int beast::getSpeed( )
 {
-    return baseSpeed;
+    return int( floor( .01 * ( 2 * baseSpeed ) * level ) + 5 );
 }
 
 
@@ -331,14 +331,16 @@ inline string beast::getType( )
         if ( i == eleType )
             return element[i];
     }
+
+    return "ERROR";
 }
 
 
 
 //TODO: test runAway function, create more beasts and moves.
 
-const beast Flacora( "Flacora", 1, 0, 40, 40, 45, 48, 53, 60, 65, fire );
+const beast Flacora( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire );
 
-const beast Stropie( "Stropie", 1, 0, 45, 45, 60, 59, 46, 48, 45, water );
+const beast Stropie( "Stropie", 0, 45, 45, 60, 59, 46, 48, 45, water );
 
-const beast Fotosin( "Fotosin", 1, 0, 43, 43, 50, 64, 50, 63, 43, grass );
+const beast Fotosin( "Fotosin", 0, 43, 43, 50, 64, 50, 63, 43, grass );

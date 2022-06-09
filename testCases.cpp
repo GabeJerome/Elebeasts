@@ -15,7 +15,7 @@ TEST_CASE( "random_device test" )
 
     for ( i = 0; i < 100; i++ )
     {
-        val = hit( ) % 101;
+        val = ( hit( ) % 100 ) + 1;
 
         if ( val <= max && val >= min )
             pass = true;
@@ -55,42 +55,42 @@ TEST_CASE( "getLevel" )
 {
     SECTION( "level 1 lower" )
     {
-        beast testBeast( "Flacora", 1, 0, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 1 );
     }
     SECTION( "level 1 upper" )
     {
-        beast testBeast( "Flacora", 1, 7, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 7, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 1 );
     }
     SECTION( "level 2 lower" )
     {
-        beast testBeast( "Flacora", 1, 8, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 8, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 2 );
     }
     SECTION( "level 2 upper" )
     {
-        beast testBeast( "Flacora", 1, 26, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 26, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 2 );
     }
     SECTION( "level 3 lower" )
     {
-        beast testBeast( "Flacora", 1, 27, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 27, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 3 );
     }
     SECTION( "level 71" )
     {
-        beast testBeast( "Flacora", 1, 365346, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 365346, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 71 );
     }
     SECTION( "level 99" )
     {
-        beast testBeast( "Flacora", 1, 970300, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 970300, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 99 );
     }
     SECTION( "level 100" )
     {
-        beast testBeast( "Flacora", 1, 1043023, 40, 40, 45, 48, 53, 60, 65, fire );
+        beast testBeast( "Flacora", 1043023, 40, 40, 45, 48, 53, 60, 65, fire );
         REQUIRE( testBeast.getLevel( ) == 100 );
     }
 }
@@ -98,26 +98,44 @@ TEST_CASE( "getLevel" )
 
 //TODO: FINISH THESE TEST CASES BEFORE ANYTHING ELSE
 
-/*TEST_CASE( "get functions" )
+TEST_CASE( "get functions" )
 {
-    beast testBeast( Fotosin );
+    SECTION( "level 1" )
+    {
+        beast testBeast( Fotosin );
 
-    REQUIRE( testBeast.getLevel( ) == 1 );
-    REQUIRE( testBeast.getExp( ) == 0 );
-    REQUIRE( testBeast.getMaxHP( ) == 43 );
-    REQUIRE( testBeast.getCurrHP( ) == 43 );
-    REQUIRE( testBeast.getDef( ) == 50 );
-    REQUIRE( testBeast.getSpDef( ) == 64 );
-    REQUIRE( testBeast.getAtt( ) == 50 );
-    REQUIRE( testBeast.getSpAtt( ) == 63 );
-    REQUIRE( testBeast.getSpeed( ) == 43 );
-    REQUIRE( testBeast.getType( ) == 10 );
+        REQUIRE( testBeast.getLevel( ) == 1 );
+        REQUIRE( testBeast.getExp( ) == 0 );
+        REQUIRE( testBeast.getMaxHP( ) == 11 );
+        REQUIRE( testBeast.getCurrHP( ) == 11 );
+        REQUIRE( testBeast.getDef( ) == 6 );
+        REQUIRE( testBeast.getSpDef( ) == 6 );
+        REQUIRE( testBeast.getAtt( ) == 6 );
+        REQUIRE( testBeast.getSpAtt( ) == 6 );
+        REQUIRE( testBeast.getSpeed( ) == 5 );
+        REQUIRE( testBeast.getType( ) == "grass" );
+    }
+    SECTION( "level 34" )
+    {
+        beast testBeast( "Fotosin", 39521, 43, 43, 50, 64, 50, 63, 43, grass );
+
+        REQUIRE( testBeast.getLevel( ) == 34 );
+        REQUIRE( testBeast.getExp( ) == 39521 );
+        REQUIRE( testBeast.getMaxHP( ) == 73 );
+        REQUIRE( testBeast.getCurrHP( ) == 73 );
+        REQUIRE( testBeast.getDef( ) == 39 );
+        REQUIRE( testBeast.getSpDef( ) == 48 );
+        REQUIRE( testBeast.getAtt( ) == 39 );
+        REQUIRE( testBeast.getSpAtt( ) == 47 );
+        REQUIRE( testBeast.getSpeed( ) == 34 );
+        REQUIRE( testBeast.getType( ) == "grass" );
+    }
 
 }
 
 
 
-TEST_CASE("effectiveness")
+/*TEST_CASE( "effectiveness" )
 
 
 
