@@ -2,9 +2,12 @@
 #include <iostream>
 #include <random>
 #include <cmath>
+#include <vector>
 #include "moves.h"
 
 using namespace std;
+
+//FIGURE OUT HOW TO USE LEARNSETS
 
 #ifndef __ELEBEAST_H__
 #define __ELEBEAST_H__
@@ -23,10 +26,10 @@ private:
     int baseSpattack;
     int baseSpeed;
     int eleType;
-    vector<Move> learnMoves;    //USE
+    vector<Move> learnSet;    //USE
     int lvlProgression[100] =
             /* 0       1       2       3       4       5       6       7       8       9*/
-        /*0*/{ 0,      8,      27,     64,     125,    216,    343,    512,    729,
+        /*0*/        { 0,      8,      27,     64,     125,    216,    343,    512,    729,
         /*1*/  1000,   1331,   1728,   2197,   2744,   3375,   4096,   4913,   5832,   6859,
         /*2*/  8000,   9261,   10648,  12167,  13824,  15625,  17576,  19683,  21952,  24389,
         /*3*/  27000,  29791,  32768,  35937,  39304,  42875,  46656,  50653,  54872,  59319,
@@ -44,9 +47,9 @@ public:
         int spdef, int att, int spatt, int spd, int type );
     ~beast( );
     bool fight( Move move, beast &opponent );
-    bool runAway( beast &opponent, int attemptNum );
+    bool runAway( beast &opponent );
     void heal( string healer );
-    void levelup( );    //TODO: write levelup
+    bool levelup( );    //TODO: write levelup
     void changeMove( int move, Move replaceWith );
     void changeName( string newName );
     void gainExp( beast &opponent );
@@ -118,13 +121,13 @@ inline bool beast::fight( Move move, beast &opponent )
     if ( hit > move.accuracy )
         return false;
 
-    double randRoll = ( double( roll( ) % 16 ) / 100 ) + .85;
+    double randRoll = ( double( ( roll( ) % 15 ) + 1 ) / 100 ) + .85;
     int damage;
     int Def, Att;
     double critical = 1;
     double effectiveness;
     double effectiveChart[18][18] =
-    {              /* 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17*/
+    {                  /* 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17*/
         /*Normal   0*/  { 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,.5 , 0 , 1 , 1 ,.5 , 1 },
         /*Fire     1*/  { 1 ,.5 ,.5 , 2 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 2 ,.5 , 1 ,.5 , 1 , 2 , 1 },
         /*Water    2*/  { 1 , 2 ,.5 ,.5 , 1 , 1 , 1 ,.5 , 2 ,.5 , 1 ,.5 , 2 , 1 ,.5 , 1 , 1 , 1 },
@@ -147,6 +150,13 @@ inline bool beast::fight( Move move, beast &opponent )
 
     //calculate effectiveness
     effectiveness = effectiveChart[move.element][opponent.eleType];
+
+    if ( effectiveness == 0 )
+        cout << "It doesn't affect " << opponent.beastName << '.' << endl;
+    else if ( effectiveness == .5 )
+        cout << "It's not very effective." << endl;
+    else if ( effectiveness == 2 )
+        cout << "It's super effective!" << endl;
 
 
     //TODO: add comments
@@ -179,20 +189,29 @@ inline bool beast::fight( Move move, beast &opponent )
 
 
 
-inline bool beast::runAway( beast &opponent, int attemptNum )
+inline bool beast::runAway( beast &opponent )
 {
     int odds, run;
     random_device rand;
+    static int attemptNum = 1;
 
     if ( getSpeed( ) >= opponent.getSpeed( ) )
+    {
+        attemptNum = 1;
         return true;
+    }
 
     odds = ( ( ( getSpeed( ) * 32 ) / ( ( opponent.getSpeed( ) / 4 ) % 256 ) ) + 30 * attemptNum );
 
     run = rand( ) % 256;
 
     if ( odds > 255 || run < odds )
+    {
+        attemptNum = 1;
         return true;
+    }
+
+    attemptNum++;
 
     return false;
 }
@@ -216,6 +235,14 @@ inline void beast::heal( string healer )
 
     if ( currentHealth > getMaxHP( ) )
         currentHealth = getMaxHP( );
+}
+
+inline bool beast::levelup( )
+{
+    if ( level == getLevel( ) )
+        return false;
+
+
 }
 
 
@@ -340,6 +367,8 @@ inline string beast::getType( )
 //TODO: test runAway function, create more beasts and moves.
 
 const beast Flacora( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire );
+/*vector<Move> FlacoraLearnSet =  { kick, cinder };
+vector<int> learnSetLevel = { 3, 6 };*/
 
 const beast Stropie( "Stropie", 0, 45, 45, 60, 59, 46, 48, 45, water );
 

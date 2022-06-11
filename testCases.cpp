@@ -135,11 +135,33 @@ TEST_CASE( "get functions" )
 
 
 
-/*TEST_CASE( "effectiveness" )
+TEST_CASE( "effectiveness and multiple moves" )
+{
+    beast fireBeast( Flacora ), waterBeast( Stropie );
+
+    fireBeast.changeMove( 0, cinder );
+    fireBeast.changeMove( 1, swipe );
+    waterBeast.changeMove( 0, dowse );
+
+    fireBeast.fight( fireBeast.move[0], waterBeast );
+    waterBeast.fight( waterBeast.move[0], fireBeast );
+    fireBeast.fight( fireBeast.move[1], waterBeast );
+
+    REQUIRE( true );
+}
 
 
 
 TEST_CASE("runAway")
 {
-    beast fireBeast(Flacora), waterBeast(Stropie);
-}*/
+    bool success = false;
+
+    beast fireBeast(Flacora), grassBeast(Fotosin);
+
+    REQUIRE(fireBeast.runAway( grassBeast ) == true);
+
+    while ( success == false )
+        success = grassBeast.runAway( fireBeast );
+
+    REQUIRE( success );
+}

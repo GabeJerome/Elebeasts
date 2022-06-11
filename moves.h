@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 using namespace std;
 
@@ -56,8 +57,10 @@ inline Move::~Move( )
 /*normal moves*/
 const Move swipe( "swipe", 1, normal, 100, 20 );
 
+const Move kick( "kick", 1, normal, 90, 30 );
+
 const Move cinder( "cinder", 0, fire, 100, 30 );
 
-const Move dowse( "dowse", 1, water, 100, 30 );
+const Move dowse( "dowse", 0, water, 100, 30 );
 
 const Move thorn( "thorn", 1, grass, 100, 30 );
