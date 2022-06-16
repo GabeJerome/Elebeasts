@@ -9,6 +9,8 @@ enum element
     ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy
 };
 
+
+
 #ifndef __MOVES_H__
 #define __MOVES_H__
 
@@ -55,12 +57,15 @@ inline Move::~Move( )
 }
 
 /*normal moves*/
-const Move swipe( "swipe", 1, normal, 100, 20 );
+const Move swipe( "swipe", 1, normal, 100, 20 );    //0
 
-const Move kick( "kick", 1, normal, 90, 30 );
+const Move kick( "kick", 1, normal, 90, 30 );       //1
 
-const Move cinder( "cinder", 0, fire, 100, 30 );
+const Move cinder( "cinder", 0, fire, 100, 30 );    //2
 
-const Move dowse( "dowse", 0, water, 100, 30 );
+const Move dowse( "dowse", 0, water, 100, 30 );     //3
 
-const Move thorn( "thorn", 1, grass, 100, 30 );
+const Move thorn( "thorn", 1, grass, 100, 30 );     //4
+
+
+const Move allMoves[5] = { swipe, kick, cinder, dowse, thorn };
