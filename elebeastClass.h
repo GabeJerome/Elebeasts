@@ -16,10 +16,11 @@ struct LearnSet
 {
     Move move;
     int moveLevel = 0;
+    bool learned = false;
 };
 
 
-class beast
+class beast: private Move
 {
     //could add EXP yield (reference)-> https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield
 private:
@@ -32,9 +33,25 @@ private:
     int baseAttack;
     int baseSpattack;
     int baseSpeed;
+    int currentStats[6];
     int eleType;
-    LearnSet *learnSet = nullptr;
+    //LearnSet *learnSet = nullptr;
+    vector<LearnSet> learnSet;
     void writeLearnSet( int setSize, const int moves[] );
+    int lvlProgression[100] =
+            /* 0       1       2       3       4       5       6       7       8       9*/
+        /*0*/ {        0,      8,      27,     64,     125,    216,    343,    512,    729,
+        /*1*/  1000,   1331,   1728,   2197,   2744,   3375,   4096,   4913,   5832,   6859,
+        /*2*/  8000,   9261,   10648,  12167,  13824,  15625,  17576,  19683,  21952,  24389,
+        /*3*/  27000,  29791,  32768,  35937,  39304,  42875,  46656,  50653,  54872,  59319,
+        /*4*/  64000,  68921,  74088,  79507,  85184,  91125,  97336,  103823, 110592, 117649,
+        /*5*/  125000, 132651, 140608, 148877, 157464, 166375, 175616, 185193, 195112, 205379,
+        /*6*/  216000, 226981, 238328, 250047, 262144, 274625, 287496, 300763, 314432, 328509,
+        /*7*/  343000, 357911, 373248, 389017, 405224, 421875, 438976, 456533, 474552, 493039,
+        /*8*/  512000, 531441, 551368, 571787, 592704, 614125, 636056, 658503, 681472, 704969,
+        /*9*/  729000, 753571, 778688, 804357, 830584, 857375, 884736, 912673, 941192, 970299,
+        /*10*/ 1000000
+              };
 
 public:
     beast( );
@@ -44,12 +61,13 @@ public:
     bool fight( Move move, beast &opponent );
     bool runAway( beast &opponent );
     void heal( string healer );
-    bool levelup( );    //TODO: write levelup
+    void levelUp( );    //TODO: write levelup
     void changeMove( int move, Move replaceWith );
     void changeName( string newName );
     void gainExp( beast &opponent );
     string beastName;
     Move move[4];
+    void printMoves( );
 
     int getLevel( );
     int getExp( );
@@ -61,7 +79,8 @@ public:
     int getSpAtt( );
     int getSpeed( );
     string getType( );
-    void printStats( ); //TODO: write function
+    void printStats( );
+    void printLvlUpStats( );
 };
 
 #endif
@@ -99,6 +118,7 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     writeLearnSet( setSize, moves );
 
     changeMove( 0, learnSet[0].move );
+    learnSet[0].learned = true;
 }
 
 
@@ -114,13 +134,9 @@ inline void beast::writeLearnSet( int setSize, const int moves[] )
 {
     int i, num;
     short int moveNum = 0, moveLevel;
+    LearnSet temp;
 
-    learnSet = new ( nothrow ) LearnSet[setSize];
-    if ( learnSet == nullptr )
-    {
-        cout << "Could not allocate memory for learnSet." << endl;
-        return;
-    }
+    //TODO: completely rework this using vectors instead of dynamically allocated arrays.
 
     for ( i = 0; i < setSize; i++ )
     {
@@ -137,8 +153,10 @@ inline void beast::writeLearnSet( int setSize, const int moves[] )
             return;
         }
 
-        learnSet[i].moveLevel = moveLevel;
-        learnSet[i].move = allMoves[moveNum];
+        temp.moveLevel = moveLevel;
+        temp.move = allMoves[moveNum];
+
+        learnSet.push_back( temp );
     }
 }
 
@@ -272,11 +290,38 @@ inline void beast::heal( string healer )
         currentHealth = getMaxHP( );
 }
 
-inline bool beast::levelup( )
+inline void beast::levelUp( )
 {
-    
-    //TODO: WRITE THIS FUNCTION!!!
+    vector<LearnSet>::iterator itr;
+    int option = -1;
+    int level = getLevel();
 
+    printLvlUpStats( );
+
+    for ( itr = learnSet.begin(); itr < learnSet.end(); itr++ )
+    {
+        if ( (*itr).moveLevel <= level && ( *itr ).learned == false )
+        {
+            cout << beastName << " can learn " << (*itr).move.name
+                << "! What move do you want to replace?" << endl;
+
+            printMoves( );
+
+            while ( option < 1 || option > 4 )
+            {
+                cin >> option;
+                if ( option < 1 || option > 4 )
+                    cout << "Invalid input. Choose a move 1 - 4" << endl;
+            }
+
+            changeMove( option - 1, (*itr).move );
+            
+            cout << endl << beastName << " has learned " << (*itr).move.name << '!' << endl;
+            printMoves( );
+
+            ( *itr ).learned = true;
+        }
+    }
 }
 
 
@@ -295,15 +340,43 @@ inline void beast::changeName( string newName )
 
 inline void beast::gainExp( beast &opponent )
 {
+    int expYieldRange = 80;
     random_device rand;
+    int level = getLevel( );
     int oppLevel = opponent.getLevel( );
-    int expYield = ( rand( ) % 100 ) + 60;
+    int expYield = ( rand( ) % expYieldRange ) + 60;
+    
+    //store original stats in case of level up
+    //needed for display
+    currentStats[0] = getMaxHP( );
+    currentStats[1] = getDef( );
+    currentStats[2] = getSpDef( );
+    currentStats[3] = getAtt( );
+    currentStats[4] = getSpAtt( );
+    currentStats[5] = getSpeed( );
+
 
     experience += ( ( expYield * oppLevel) / 5 ) *
         ( ( 2 * oppLevel + 10 ) / ( oppLevel + getLevel( ) + 10 ) );
+
+    if ( getLevel( ) > level )
+    {
+        cout << beastName << " is now level " << getLevel( ) << '!' << endl;
+        levelUp( );
+    }
 }
 
 
+
+inline void beast::printMoves( )
+{
+    int i;
+
+    for ( i = 0; i < 4; i++ )
+    {
+        cout << "Move " << i + 1 << ": " << move[i].name << endl;
+    }
+}
 
 inline int beast::getLevel( )
 {
@@ -387,6 +460,28 @@ inline string beast::getType( )
     }
 
     return "ERROR";
+}
+
+
+
+inline void beast::printStats( )
+{
+    cout << "HP:          " << getMaxHP( ) << endl;
+    cout << "Defense:     " << getDef( ) << endl;
+    cout << "Sp Defense:  " << getSpDef( ) << endl;
+    cout << "Attack:      " << getAtt( ) << endl;
+    cout << "Sp Attack:   " << getSpAtt( ) << endl;
+    cout << "Speed:       " << getSpeed( ) << endl;
+}
+
+inline void beast::printLvlUpStats( )
+{
+    cout << "HP:          " << currentStats[0] << " + " << getMaxHP( ) - currentStats[0] << endl;
+    cout << "Defense:     " << currentStats[1] << " + " << getDef( ) - currentStats[1] << endl;
+    cout << "Sp Defense:  " << currentStats[2] << " + " << getSpDef( ) - currentStats[2] << endl;
+    cout << "Attack:      " << currentStats[3] << " + " << getAtt( ) - currentStats[3] << endl;
+    cout << "Sp Attack:   " << currentStats[4] << " + " << getSpAtt( ) - currentStats[4] << endl;
+    cout << "Speed:       " << currentStats[5] << " + " << getSpeed( ) - currentStats[5] << endl;
 }
 
 

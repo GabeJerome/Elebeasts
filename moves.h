@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -7,6 +8,11 @@ enum element
 {
     normal, fire, water, grass, electric, ice, fighting, poison,
     ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy
+};
+
+const string eleType[18] = {
+    "normal", "fire", "water", "grass", "electric", "ice", "fighting", "poison",
+    "ground", "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy"
 };
 
 
@@ -20,6 +26,7 @@ public:
     Move( );
     Move( string moveName, int moveType, int moveElement, int moveAccuracy, int movePower );
     ~Move( );
+    void printStats( );
 
     string name;
     int type;
@@ -34,6 +41,7 @@ public:
 
 inline Move::Move( )
 {
+    name = "";
     type = 0;
     element = 0;
     accuracy = 0;
@@ -51,21 +59,42 @@ inline Move::Move( string moveName, int moveType, int moveElement, int moveAccur
     power = movePower;
 }
 
+
+
 inline Move::~Move( )
 {
 
 }
 
+
+
+inline void Move::printStats( )
+{
+    string moveType;
+
+    if ( type == 0 )
+        moveType = "Special";
+    else
+        moveType = "Physical";
+
+    cout << name << endl;
+    cout << moveType << " move" << endl;
+    cout << "Element: " << eleType[element] << endl;
+    cout << "Accuracy: " << accuracy << endl;
+    cout << "Power: " << power;
+}
+
+
 /*normal moves*/
-const Move swipe( "swipe", 1, normal, 100, 20 );    //0
+const Move swipe( "Swipe", 1, normal, 100, 20 );    //0
 
-const Move kick( "kick", 1, normal, 90, 30 );       //1
+const Move kick( "Kick", 1, normal, 90, 30 );       //1
 
-const Move cinder( "cinder", 0, fire, 100, 30 );    //2
+const Move cinder( "Cinder", 0, fire, 100, 30 );    //2
 
-const Move dowse( "dowse", 0, water, 100, 30 );     //3
+const Move dowse( "Dowse", 0, water, 100, 30 );     //3
 
-const Move thorn( "thorn", 1, grass, 100, 30 );     //4
+const Move thorn( "Thorn", 1, grass, 100, 30 );     //4
 
 
 const Move allMoves[5] = { swipe, kick, cinder, dowse, thorn };

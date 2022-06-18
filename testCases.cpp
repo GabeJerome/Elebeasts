@@ -188,3 +188,26 @@ TEST_CASE( "bit mask testing" )
         REQUIRE( level == lvlAns[i] );
     }
 }
+
+
+
+TEST_CASE( "Print Moves" )
+{
+    beast beast1( Flacora );
+
+    beast1.printMoves( );
+
+    REQUIRE( true );
+}
+
+
+
+TEST_CASE( "levelUp" )
+{
+    beast beast1( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+    beast beast2( "Flacora", 200, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+
+    beast1.gainExp( beast2 );
+
+    REQUIRE( true );
+}
