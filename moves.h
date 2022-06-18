@@ -71,14 +71,21 @@ inline Move::~Move( )
 inline void Move::printStats( )
 {
     string moveType;
+    int i;
 
     if ( type == 0 )
         moveType = "Special";
     else
         moveType = "Physical";
 
-    cout << name << endl;
-    cout << moveType << " move" << endl;
+    //FINISH FORMATTING
+    cout << char( 201 );
+    for ( i = 0; i < 20; i++ )
+        cout << char( 205 );
+    cout << char(187) << endl;
+
+    cout << char( 186 ) << name << endl;
+    cout << char(186) << "Type: " << moveType << setw(10) << char(186) << endl;
     cout << "Element: " << eleType[element] << endl;
     cout << "Accuracy: " << accuracy << endl;
     cout << "Power: " << power;
@@ -97,4 +104,4 @@ const Move dowse( "Dowse", 0, water, 100, 30 );     //3
 const Move thorn( "Thorn", 1, grass, 100, 30 );     //4
 
 
-const Move allMoves[5] = { swipe, kick, cinder, dowse, thorn };
+const Move moveID[5] = { swipe, kick, cinder, dowse, thorn };

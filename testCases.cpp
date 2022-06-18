@@ -207,7 +207,17 @@ TEST_CASE( "levelUp" )
     beast beast1( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
     beast beast2( "Flacora", 200, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
 
-    beast1.gainExp( beast2 );
+    //beast1.gainExp( beast2 );
+
+    REQUIRE( true );
+}
+
+
+TEST_CASE( "printStats - move" )
+{
+    Move testMove( swipe );
+
+    testMove.printStats( );
 
     REQUIRE( true );
 }
