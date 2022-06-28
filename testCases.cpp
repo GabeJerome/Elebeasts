@@ -53,42 +53,42 @@ TEST_CASE( "getLevel" )
 {
     SECTION( "level 1 lower" )
     {
-        beast testBeast( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 1 );
     }
     SECTION( "level 1 upper" )
     {
-        beast testBeast( "Flacora", 7, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 7, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 1 );
     }
     SECTION( "level 2 lower" )
     {
-        beast testBeast( "Flacora", 8, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 8, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 2 );
     }
     SECTION( "level 2 upper" )
     {
-        beast testBeast( "Flacora", 26, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 26, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 2 );
     }
     SECTION( "level 3 lower" )
     {
-        beast testBeast( "Flacora", 27, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 27, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 3 );
     }
     SECTION( "level 71" )
     {
-        beast testBeast( "Flacora", 365346, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 365346, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 71 );
     }
     SECTION( "level 99" )
     {
-        beast testBeast( "Flacora", 970300, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 970300, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 99 );
     }
     SECTION( "level 100" )
     {
-        beast testBeast( "Flacora", 1043023, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+        beast testBeast( "Flacora", 1043023, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 100 );
     }
 }
@@ -115,7 +115,7 @@ TEST_CASE( "get functions" )
     }
     SECTION( "level 34" )
     {
-        beast testBeast( "Fotosin", 39521, 43, 43, 50, 64, 50, 63, 43, grass, 2, flacoraLearnSet );
+        beast testBeast( "Fotosin", 39521, 43, 43, 50, 64, 50, 63, 43, grass, flacoraLearnSet );
 
         REQUIRE( testBeast.getLevel( ) == 34 );
         REQUIRE( testBeast.getExp( ) == 39521 );
@@ -204,8 +204,8 @@ TEST_CASE( "Print Moves" )
 
 TEST_CASE( "levelUp" )
 {
-    beast beast1( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
-    beast beast2( "Flacora", 200, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+    beast beast1( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
+    beast beast2( "Flacora", 200, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
 
     //beast1.gainExp( beast2 );
 
@@ -218,6 +218,26 @@ TEST_CASE( "printStats - move" )
     Move testMove( swipe );
 
     testMove.printStats( );
+
+    REQUIRE( true );
+}
+
+
+
+TEST_CASE( "storeBeastDataBinary" )
+{
+    ifstream fin;
+    ofstream fout;
+
+    fin.open( "beastData.txt" );
+    if ( !fin.is_open( ) )
+        cout << "Could not open file: beastData.txt" << endl;
+
+    fout.open( "beastDataBin.bin", ios::out | ios::trunc | ios::binary );
+    if ( !fout.is_open( ) )
+        cout << "Could not open file: beastDataBin.txt" << endl;
+
+    storeBeastDataBinary( fin, fout );
 
     REQUIRE( true );
 }

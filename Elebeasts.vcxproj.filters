@@ -32,5 +32,8 @@
     <ClCompile Include="testCases.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dataStorageFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

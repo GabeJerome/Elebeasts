@@ -37,7 +37,7 @@ private:
     int eleType;
     //LearnSet *learnSet = nullptr;
     vector<LearnSet> learnSet;
-    void writeLearnSet( int setSize, const short int moves[] );
+    void writeLearnSet( const short int moves[] );
     int lvlProgression[100] =
             /* 0       1       2       3       4       5       6       7       8       9*/
         /*0*/ {        0,      8,      27,     64,     125,    216,    343,    512,    729,
@@ -56,7 +56,7 @@ private:
 public:
     beast( );
     beast( string name, int exp, int maxHP, int currHP, int def,
-        int spdef, int att, int spatt, int spd, int type, int setSize, const short int moves[] );
+        int spdef, int att, int spatt, int spd, int type, const short int moves[] );
     ~beast( );
     bool fight( Move move, beast &opponent );
     bool runAway( beast &opponent );
@@ -104,7 +104,7 @@ inline beast::beast( )
 
 
 inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
-    int spdef, int att, int spatt, int spd, int type, int setSize, const short int moves[] )
+    int spdef, int att, int spatt, int spd, int type, const short int moves[] )
 {
 
     beastName = name;
@@ -117,7 +117,7 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     baseSpeed = spd;
     eleType = type;
     currentHealth = getMaxHP( );
-    writeLearnSet( setSize, moves );
+    writeLearnSet( moves );
 
     changeMove( 0, learnSet[0].move );
     learnSet[0].learned = true;
@@ -132,15 +132,14 @@ inline beast::~beast( )
 
 
 
-inline void beast::writeLearnSet( int setSize, const short int moves[] )
+inline void beast::writeLearnSet( const short int moves[] )
 {
     int i, num;
     short int moveNum = 0, moveLevel;
     LearnSet temp;
 
-    //TODO: completely rework this using vectors instead of dynamically allocated arrays.
 
-    for ( i = 0; i < setSize; i++ )
+    for ( i = 0; i < 50; i++ )
     {
         num = moves[i];
 
@@ -155,6 +154,8 @@ inline void beast::writeLearnSet( int setSize, const short int moves[] )
             return;
         }
 
+        if ( temp.moveLevel == 0 )
+            temp.learned = true;
         temp.moveLevel = moveLevel;
         temp.move = moveID[moveNum];
 
@@ -494,11 +495,11 @@ Moves are stored as short integers.The first 7 bits represent the level that
 the beast learns the move. The remaining 9 bits represent the number ID of the move
 */
 
-const short int flacoraLearnSet[2] = { 0, 261 };
-const beast Flacora( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, 2, flacoraLearnSet );
+const short int flacoraLearnSet[50] = { 0, 261, 0 };
+const beast Flacora( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, flacoraLearnSet );
 
-const short int stropieLearnSet[2] = { 128, 389 };
-const beast Stropie( "Stropie", 0, 45, 45, 60, 59, 46, 48, 45, water, 2, stropieLearnSet );
+const short int stropieLearnSet[50] = { 128, 389, 0 };
+const beast Stropie( "Stropie", 0, 45, 45, 60, 59, 46, 48, 45, water, stropieLearnSet );
 
-const short int fotosinLearnSet[2] = { 0, 517 };
-const beast Fotosin( "Fotosin", 0, 43, 43, 50, 64, 50, 63, 43, grass, 2, fotosinLearnSet );
+const short int fotosinLearnSet[50] = { 0, 517, 0 };
+const beast Fotosin( "Fotosin", 0, 43, 43, 50, 64, 50, 63, 43, grass, fotosinLearnSet );

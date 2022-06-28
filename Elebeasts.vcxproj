@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mainGame.cpp" />
+    <ClCompile Include="dataStorageFunctions.cpp" />
     <ClCompile Include="testCases.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
