@@ -6,7 +6,7 @@ using namespace std;
 
 enum element
 {
-    normal, fire, water, grass, electric, ice, fighting, poison,
+    none = -1, normal, fire, water, grass, electric, ice, fighting, poison,
     ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy
 };
 
@@ -71,24 +71,18 @@ inline Move::~Move( )
 inline void Move::printStats( )
 {
     string moveType;
-    int i;
 
     if ( type == 0 )
         moveType = "Special";
     else
         moveType = "Physical";
 
-    //FINISH FORMATTING
-    cout << char( 201 );
-    for ( i = 0; i < 20; i++ )
-        cout << char( 205 );
-    cout << char(187) << endl;
 
-    cout << char( 186 ) << name << endl;
-    cout << char(186) << "Type: " << moveType << setw(10) << char(186) << endl;
+    cout << name << endl;
+    cout << "Type: " << moveType << endl;
     cout << "Element: " << eleType[element] << endl;
     cout << "Accuracy: " << accuracy << endl;
-    cout << "Power: " << power;
+    cout << "Power: " << power << endl;
 }
 
 
