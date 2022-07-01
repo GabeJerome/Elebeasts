@@ -86,6 +86,7 @@ inline void Move::printStats( )
 }
 
 
+//TODO: Store these into a binary file
 /*normal moves*/
 const Move swipe( "Swipe", 1, normal, 100, 20 );    //0
 

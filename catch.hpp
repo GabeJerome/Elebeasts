@@ -7740,7 +7740,7 @@ namespace Catch {
                 int j = static_cast<int>(idx);
                 double g = idx - j;
                 std::nth_element(first, first + j, last);
-                auto xj = first[j];
+                auto xj = first[i];
                 if (g == 0) return xj;
 
                 auto xj1 = *std::min_element(first + (j + 1), last);

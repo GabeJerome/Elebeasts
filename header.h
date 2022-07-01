@@ -11,4 +11,8 @@ using namespace std;
 
 
 
-void storeBeastDataBinary( ifstream &fin, ofstream &fout );
+bool storeBeastDataBinary( );
+
+
+
+bool getBeastData( beast &newBeast, int beastID );

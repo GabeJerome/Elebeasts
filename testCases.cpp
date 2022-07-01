@@ -229,15 +229,36 @@ TEST_CASE( "storeBeastDataBinary" )
     ifstream fin;
     ofstream fout;
 
-    fin.open( "beastData.txt" );
-    if ( !fin.is_open( ) )
-        cout << "Could not open file: beastData.txt" << endl;
+    storeBeastDataBinary( );
 
-    fout.open( "beastDataBin.bin", ios::out | ios::trunc | ios::binary );
-    if ( !fout.is_open( ) )
-        cout << "Could not open file: beastDataBin.txt" << endl;
-
-    storeBeastDataBinary( fin, fout );
 
     REQUIRE( true );
+}
+
+
+
+TEST_CASE( "reading beast data from file" )
+{
+    beast newBeast;
+    ifstream fin;
+
+    getBeastData( newBeast, 2 );
+
+    REQUIRE( newBeast.base.health[0] == 45 );
+}
+
+
+
+//TODO: Finish testing evolve function
+TEST_CASE( "Evolve" )
+{
+    beast testBeast1, testBeast2;
+
+    getBeastData( testBeast1, 1 );
+
+
+
+    testBeast1.gainExp( testBeast2 );
+
+    REQUIRE( testBeast1.base.attack );
 }

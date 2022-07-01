@@ -21,7 +21,7 @@ struct LearnSet
 
 struct baseStats
 {
-    char name[16];
+    char name[3][16];
     int health[3];
     int defense[3];
     int spdefense[3];
@@ -40,7 +40,7 @@ class beast: private Move
     //could add EXP yield (reference)-> https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield
 private:
     //TODO: move all evolution line stats to be contained in single object
-    baseStats base;
+    
     int experience;
     int currentHealth;
     int currentStats[6];
@@ -81,6 +81,7 @@ public:
     string nickName;
     Move move[4];
     void printMoves( );
+    baseStats base;
 
     int getLevel( );
     int getExp( );
@@ -149,7 +150,7 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 
 inline beast::beast( baseStats newBeast )
 {
-    beastName = newBeast.name;
+    beastName = newBeast.name[currEvolution];
     nickName = beastName;
     experience = 0;
     currEvolution = 0;
@@ -342,13 +343,29 @@ inline void beast::heal( string healer )
         currentHealth = getMaxHP( );
 }
 
+
+
+inline void beast::evolve( )
+{
+    currEvolution++;
+
+    cout << beastName << "evoloved into " << base.name[currEvolution] << '!' << endl;
+    printLvlUpStats( );
+}
+
+
+
 inline void beast::levelUp( )
 {
     vector<LearnSet>::iterator itr;
     int option = -1;
     int level = getLevel();
 
-    printLvlUpStats( );
+    if ( level >= base.evolveLevel[currEvolution] )
+        evolve( );
+    else
+        printLvlUpStats( );
+
 
     for ( itr = learnSet.begin(); itr < learnSet.end(); itr++ )
     {
