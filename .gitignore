@@ -367,7 +367,6 @@ FodyWeavers.xsd
 *.out
 *.dat
 *.data
-*.bin
 *.sol
 *.doc
 *.docx
@@ -381,7 +380,6 @@ FodyWeavers.xsd
 *.mp3
 *.exe
 *.obj
-*.txt
 *.ppm
 *.pgm
 *.cmd
