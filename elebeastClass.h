@@ -77,7 +77,6 @@ public:
     void changeName( string newName );
     void gainExp( beast &opponent );
     void evolve( );
-    string beastName;
     string nickName;
     Move move[4];
     void printMoves( );
@@ -95,6 +94,8 @@ public:
     string getType( );
     void printStats( );
     void printLvlUpStats( );
+
+    void setExp( ); //Needed for initializing new pokemon from file
 };
 
 #endif
@@ -103,8 +104,7 @@ public:
 
 inline beast::beast( )
 {
-    beastName = "";
-    nickName = beastName;
+    nickName = base.name[0];
     currEvolution = 0;
     experience = 0;
     base.health[0] = currentHealth = 0;
@@ -117,6 +117,13 @@ inline beast::beast( )
     base.eleType1[0] = 0;
     base.eleType2[0] = -1;
     base.evolveLevel[0] = 101;
+
+    currentStats[0] = getMaxHP( );
+    currentStats[1] = getDef( );
+    currentStats[2] = getSpDef( );
+    currentStats[3] = getAtt( );
+    currentStats[4] = getSpAtt( );
+    currentStats[5] = getSpeed( );
 }
 
 
@@ -126,10 +133,10 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     short int evolveLvl, short currEvo, const short int moves[] )
 {
 
-    beastName = name;
-    nickName = beastName;
+    nickName = base.name[0];
     currEvolution = 0;
     experience = exp;
+
     base.health[currEvo] = maxHP;
     base.defense[currEvo] = def;
     base.spdefense[currEvo] = spdef;
@@ -138,6 +145,14 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     base.speed[currEvo] = spd;
     base.eleType1[currEvo] = type1;
     base.eleType2[currEvo] = type2;
+
+    currentStats[0] = getMaxHP( );
+    currentStats[1] = getDef( );
+    currentStats[2] = getSpDef( );
+    currentStats[3] = getAtt( );
+    currentStats[4] = getSpAtt( );
+    currentStats[5] = getSpeed( );
+
     currentHealth = getMaxHP( );
     base.evolveLevel[currEvo] = evolveLvl;
     writeLearnSet( moves );
@@ -150,10 +165,10 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 
 inline beast::beast( baseStats newBeast )
 {
-    beastName = newBeast.name[currEvolution];
-    nickName = beastName;
-    experience = 0;
     currEvolution = 0;
+    nickName = newBeast.name[currEvolution];
+    experience = 0;
+
     base.health[currEvolution] = newBeast.health[currEvolution];
     base.defense[currEvolution] = newBeast.defense[currEvolution];
     base.spdefense[currEvolution] = newBeast.spdefense[currEvolution];
@@ -162,7 +177,15 @@ inline beast::beast( baseStats newBeast )
     base.speed[currEvolution] = newBeast.speed[currEvolution];
     base.eleType1[currEvolution] = newBeast.eleType1[currEvolution];
     base.eleType2[currEvolution] = newBeast.eleType2[currEvolution];
+
+    currentStats[0] = getMaxHP( );
+    currentStats[1] = getDef( );
+    currentStats[2] = getSpDef( );
+    currentStats[3] = getAtt( );
+    currentStats[4] = getSpAtt( );
+    currentStats[5] = getSpeed( );
     currentHealth = getMaxHP( );
+
     base.evolveLevel[currEvolution] = newBeast.evolveLevel[currEvolution];
     writeLearnSet( newBeast.moveSet );
 
@@ -196,7 +219,7 @@ inline void beast::writeLearnSet( const short int moves[] )
         moveNum = num & 511;
         if ( moveNum < 0 || moveNum > 4 )
         {
-            cout << "Invalid move number for " << beastName << endl;
+            cout << "Invalid move number for " << nickName << endl;
             cout << "Exiting..." << endl;
             return;
         }
@@ -256,7 +279,7 @@ inline bool beast::fight( Move move, beast &opponent )
         effectiveness = effectiveChart[move.element][opponent.base.eleType1[currEvolution]] * effectiveChart[move.element][opponent.base.eleType2[currEvolution]];
 
     if ( effectiveness == 0 )
-        cout << "It doesn't affect " << opponent.beastName << '.' << endl;
+        cout << "It doesn't affect " << opponent.nickName << '.' << endl;
     else if ( effectiveness == .5 )
         cout << "It's not very effective." << endl;
     else if ( effectiveness == 2 )
@@ -349,7 +372,10 @@ inline void beast::evolve( )
 {
     currEvolution++;
 
-    cout << beastName << "evoloved into " << base.name[currEvolution] << '!' << endl;
+    cout << nickName << " evoloved into " << base.name[currEvolution] << '!' << endl;
+
+    if ( nickName == base.name[currEvolution - 1] )
+        nickName = base.name[currEvolution];
     printLvlUpStats( );
 }
 
@@ -361,17 +387,14 @@ inline void beast::levelUp( )
     int option = -1;
     int level = getLevel();
 
-    if ( level >= base.evolveLevel[currEvolution] )
-        evolve( );
-    else
-        printLvlUpStats( );
+    
 
 
     for ( itr = learnSet.begin(); itr < learnSet.end(); itr++ )
     {
         if ( ( *itr ).moveLevel != 0 && ( *itr ).moveLevel <= level && ( *itr ).learned == false )
         {
-            cout << beastName << " can learn " << ( *itr ).move.name
+            cout << nickName << " can learn " << ( *itr ).move.name
                 << "! What move do you want to replace? Enter 5 to not learn the move." << endl;
 
             printMoves( );
@@ -391,7 +414,7 @@ inline void beast::levelUp( )
 
             changeMove( option - 1, ( *itr ).move );
 
-            cout << endl << beastName << " has learned " << ( *itr ).move.name << '!' << endl;
+            cout << endl << nickName << " has learned " << ( *itr ).move.name << '!' << endl;
             printMoves( );
 
             ( *itr ).learned = true;
@@ -410,7 +433,7 @@ inline void beast::changeMove( int moveNum, Move replaceWith )
 
 inline void beast::changeName( string newName )
 {
-    beastName = newName;
+    nickName = newName;
 }
 
 inline void beast::gainExp( beast &opponent )
@@ -423,12 +446,7 @@ inline void beast::gainExp( beast &opponent )
     
     //store original stats in case of level up
     //needed for display
-    currentStats[0] = getMaxHP( );
-    currentStats[1] = getDef( );
-    currentStats[2] = getSpDef( );
-    currentStats[3] = getAtt( );
-    currentStats[4] = getSpAtt( );
-    currentStats[5] = getSpeed( );
+    
 
 
     experience += ( ( expYield * oppLevel) / 5 ) *
@@ -436,9 +454,22 @@ inline void beast::gainExp( beast &opponent )
 
     if ( getLevel( ) > level )
     {
-        cout << beastName << " is now level " << getLevel( ) << '!' << endl;
+        cout << nickName << " is now level " << getLevel( ) << '!' << endl;
+
+        if ( getLevel() >= base.evolveLevel[currEvolution] )
+            evolve( );
+        else
+            printLvlUpStats( );
+
         levelUp( );
     }
+
+    currentStats[0] = getMaxHP( );
+    currentStats[1] = getDef( );
+    currentStats[2] = getSpDef( );
+    currentStats[3] = getAtt( );
+    currentStats[4] = getSpAtt( );
+    currentStats[5] = getSpeed( );
 }
 
 

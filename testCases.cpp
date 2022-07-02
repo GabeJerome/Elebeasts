@@ -252,13 +252,16 @@ TEST_CASE( "reading beast data from file" )
 //TODO: Finish testing evolve function
 TEST_CASE( "Evolve" )
 {
-    beast testBeast1, testBeast2;
+    beast testBeast1;
+    beast testBeast2( "Flacora", 6000000, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
 
     getBeastData( testBeast1, 1 );
 
-
+    testBeast1.changeName( "Gerald" );
 
     testBeast1.gainExp( testBeast2 );
+    testBeast1.gainExp( testBeast2 );
 
-    REQUIRE( testBeast1.base.attack );
+
+    REQUIRE( testBeast1.base.attack[1] == 69 );
 }

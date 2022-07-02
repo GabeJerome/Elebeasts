@@ -92,6 +92,8 @@ bool getBeastData( beast &newBeast, int beastID )
     fin.seekg( ( beastID - 1 ) * sizeof( baseStats ), ios::beg );
     fin.read( (char *)&newBeast.base, sizeof( baseStats ) );
 
+    newBeast.nickName = newBeast.base.name[0];
+
     fin.close( );
 
     return true;
