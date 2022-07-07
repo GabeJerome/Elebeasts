@@ -244,7 +244,11 @@ TEST_CASE( "reading beast data from file" )
 
     getBeastData( newBeast, 2 );
 
-    REQUIRE( newBeast.base.health[0] == 45 );
+    REQUIRE( newBeast.base.health == 58 );
+
+    getBeastData( newBeast, 8 );
+
+    REQUIRE( newBeast.base.attack == 81 );
 }
 
 
@@ -253,15 +257,41 @@ TEST_CASE( "reading beast data from file" )
 TEST_CASE( "Evolve" )
 {
     beast testBeast1;
-    beast testBeast2( "Flacora", 6000000, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
+    beast testBeast2;
 
-    getBeastData( testBeast1, 1 );
+    testBeast2.setExp( 6000000 );
 
-    testBeast1.changeName( "Gerald" );
+    SECTION( "first to second evolution" )
+    {
+        getBeastData( testBeast1, 1 );
 
-    testBeast1.gainExp( testBeast2 );
-    testBeast1.gainExp( testBeast2 );
+        testBeast1.changeName( "Gerald" );
+        testBeast1.setExp( 3370 );
 
+        testBeast1.gainExp( testBeast2 );
 
-    REQUIRE( testBeast1.base.attack[1] == 69 );
+        REQUIRE( testBeast1.base.attack == 69 );
+    }
+    SECTION( "second to third evolution" )
+    {
+        getBeastData( testBeast1, 5 );
+
+        testBeast1.changeName( "Henry" );
+        testBeast1.setExp( 42870 );
+
+        testBeast1.gainExp( testBeast2 );
+
+        REQUIRE( testBeast1.base.speed == 91 );
+    }
+    SECTION( "third evolution should not evolve" )
+    {
+        getBeastData( testBeast1, 9 );
+
+        testBeast1.changeName( "Peter" );
+        testBeast1.setExp( 999999 );
+
+        testBeast1.gainExp( testBeast2 );
+
+        REQUIRE( testBeast1.base.spdefense == 92 );
+    }
 }

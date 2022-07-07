@@ -1,0 +1,21 @@
+Data Storage Format: ID Name baseHealth def spdef att spatt spd type1 type2 evolveLvl {moveSet}
+
+1:
+Flacora   - Fire Pup
+Firectric - Fire Dog
+Volcorage - Fire Sabretooth
+
+2:
+Stropie   - 
+Apolozard -
+Reptide   -
+
+3:
+Fotosin
+Synthescor
+Drakosis
+
+4:
+Bunnalope
+Shrubun
+Jackonfa

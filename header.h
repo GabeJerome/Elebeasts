@@ -11,8 +11,3 @@ using namespace std;
 
 
 
-bool storeBeastDataBinary( );
-
-
-
-bool getBeastData( beast &newBeast, int beastID );
