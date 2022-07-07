@@ -50,7 +50,6 @@ private:
     int experience;
     int currentHealth;
     int currentStats[6];
-    short currEvolution;
     vector<LearnSet> learnSet;
     void writeLearnSet( const short int moves[] );
     int lvlProgression[100] =
@@ -74,6 +73,7 @@ public:
         int spdef, int att, int spatt, int spd, int type1, int type2, 
         short int evolveLvl, short currEvo, const short int moves[] );
     beast( baseStats newBeast );
+    beast( int level, int ID );
     ~beast( );
     bool fight( Move move, beast &opponent );
     bool runAway( beast &opponent );
@@ -112,7 +112,6 @@ public:
 inline beast::beast( )
 {
     nickName = base.name[0];
-    currEvolution = 0;
     experience = 0;
     base.health = currentHealth = 0;
     currentHealth = base.health;
@@ -141,7 +140,6 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 {
 
     nickName = base.name[0];
-    currEvolution = 0;
     experience = exp;
 
     base.health = maxHP;
@@ -172,7 +170,6 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 
 inline beast::beast( baseStats newBeast )
 {
-    currEvolution = 0;
     nickName = newBeast.name;
     experience = 0;
 
@@ -198,6 +195,22 @@ inline beast::beast( baseStats newBeast )
 
     changeMove( 0, learnSet[0].move );
     learnSet[0].learned = true;
+}
+
+
+
+inline beast::beast(int level, int ID )
+{
+    getBeastData( *this, ID );
+
+    currentHealth = getMaxHP( );
+    experience = level * level * level;
+    currentStats[0] = getMaxHP( );
+    currentStats[1] = getDef( );
+    currentStats[2] = getSpDef( );
+    currentStats[3] = getAtt( );
+    currentStats[4] = getSpAtt( );
+    currentStats[5] = getSpeed( );
 }
 
 
@@ -657,12 +670,3 @@ inline void beast::setExp( int exp )
 Moves are stored as short integers.The first 7 bits represent the level that
 the beast learns the move. The remaining 9 bits represent the number ID of the move
 */
-
-const short int flacoraLearnSet[50] = { 0, 261, 0 };
-const beast Flacora( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
-
-const short int stropieLearnSet[50] = { 128, 389, 0 };
-const beast Stropie( "Stropie", 0, 45, 45, 60, 59, 46, 48, 45, water, none, 101, 0, stropieLearnSet );
-
-const short int fotosinLearnSet[50] = { 0, 517, 0 };
-const beast Fotosin( "Fotosin", 0, 43, 43, 50, 64, 50, 63, 43, grass, none, 101, 0, fotosinLearnSet );

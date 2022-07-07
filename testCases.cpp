@@ -1,7 +1,9 @@
 #include "catch.hpp"
 #include "header.h"
 
-
+enum beastID { Flacora = 1, Firectric, Volcorage,
+               Stropie, Apolozard, Reptide, 
+               Fotosin, Synthescor, DSrakosis };
 
 TEST_CASE( "random_device test" )
 {
@@ -28,7 +30,7 @@ TEST_CASE( "random_device test" )
 
 TEST_CASE( "fight" )
 {
-    beast fireBeast( Flacora ), waterBeast( Stropie );
+    beast fireBeast(1, Flacora ), waterBeast(1, Stropie );
 
     fireBeast.fight( fireBeast.move[0], waterBeast );
 
@@ -39,7 +41,7 @@ TEST_CASE( "fight" )
 
 TEST_CASE( "gainExp" )
 {
-    beast Beast1( Stropie ), Beast2( Flacora );
+    beast Beast1( 1, Stropie ), Beast2( 1, Flacora );
     int originalExp = Beast1.getExp( );
 
     Beast1.gainExp( Beast2 );
@@ -51,6 +53,7 @@ TEST_CASE( "gainExp" )
 
 TEST_CASE( "getLevel" )
 {
+    const short int flacoraLearnSet[50] = { 0, 261, 0 };
     SECTION( "level 1 lower" )
     {
         beast testBeast( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
@@ -100,7 +103,8 @@ TEST_CASE( "get functions" )
 {
     SECTION( "level 1" )
     {
-        beast testBeast( Fotosin );
+        beast testBeast( 1, Fotosin );
+        testBeast.setExp( 0 );
 
         REQUIRE( testBeast.getLevel( ) == 1 );
         REQUIRE( testBeast.getExp( ) == 0 );
@@ -115,16 +119,16 @@ TEST_CASE( "get functions" )
     }
     SECTION( "level 34" )
     {
-        beast testBeast( "Fotosin", 39521, 43, 43, 50, 64, 50, 63, 43, grass, none, 101, 0, flacoraLearnSet );
+        beast testBeast( 1, Fotosin );
+        testBeast.setExp( 39521 );
 
         REQUIRE( testBeast.getLevel( ) == 34 );
         REQUIRE( testBeast.getExp( ) == 39521 );
         REQUIRE( testBeast.getMaxHP( ) == 73 );
-        REQUIRE( testBeast.getCurrHP( ) == 73 );
         REQUIRE( testBeast.getDef( ) == 39 );
-        REQUIRE( testBeast.getSpDef( ) == 48 );
-        REQUIRE( testBeast.getAtt( ) == 39 );
-        REQUIRE( testBeast.getSpAtt( ) == 47 );
+        REQUIRE( testBeast.getSpDef( ) == 45 );
+        REQUIRE( testBeast.getAtt( ) == 47 );
+        REQUIRE( testBeast.getSpAtt( ) == 42 );
         REQUIRE( testBeast.getSpeed( ) == 34 );
         REQUIRE( testBeast.getType( ) == "grass" );
     }
@@ -135,7 +139,7 @@ TEST_CASE( "get functions" )
 
 TEST_CASE( "effectiveness and multiple moves" )
 {
-    beast fireBeast( Flacora ), waterBeast( Stropie );
+    beast fireBeast( 1, Flacora ), waterBeast( 1, Stropie );
 
     fireBeast.changeMove( 0, cinder );
     fireBeast.changeMove( 1, swipe );
@@ -154,7 +158,7 @@ TEST_CASE("runAway")
 {
     bool success = false;
 
-    beast fireBeast(Flacora), grassBeast(Fotosin);
+    beast fireBeast(5, Flacora), grassBeast(1, Fotosin);
 
     REQUIRE(fireBeast.runAway( grassBeast ) == true);
 
@@ -193,7 +197,7 @@ TEST_CASE( "bit mask testing" )
 
 TEST_CASE( "Print Moves" )
 {
-    beast beast1( Flacora );
+    beast beast1( 1, Flacora );
 
     beast1.printMoves( );
 
@@ -204,6 +208,8 @@ TEST_CASE( "Print Moves" )
 
 TEST_CASE( "levelUp" )
 {
+    const short int flacoraLearnSet[50] = { 0, 261, 0 };
+
     beast beast1( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
     beast beast2( "Flacora", 200, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
 
