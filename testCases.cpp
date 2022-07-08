@@ -53,7 +53,7 @@ TEST_CASE( "gainExp" )
 
 TEST_CASE( "getLevel" )
 {
-    const short int flacoraLearnSet[50] = { 0, 261, 0 };
+    const short int flacoraLearnSet[50] = { 128, 389, 0 };
     SECTION( "level 1 lower" )
     {
         beast testBeast( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
@@ -97,7 +97,6 @@ TEST_CASE( "getLevel" )
 }
 
 
-//TODO: FINISH THESE TEST CASES BEFORE ANYTHING ELSE
 
 TEST_CASE( "get functions" )
 {
@@ -140,6 +139,12 @@ TEST_CASE( "get functions" )
 TEST_CASE( "effectiveness and multiple moves" )
 {
     beast fireBeast( 1, Flacora ), waterBeast( 1, Stropie );
+
+    Move cinder, swipe, dowse;
+
+    getData( cinder, 3 );
+    getData( swipe, 1 );
+    getData( dowse, 4 );
 
     fireBeast.changeMove( 0, cinder );
     fireBeast.changeMove( 1, swipe );
@@ -208,7 +213,7 @@ TEST_CASE( "Print Moves" )
 
 TEST_CASE( "levelUp" )
 {
-    const short int flacoraLearnSet[50] = { 0, 261, 0 };
+    const short int flacoraLearnSet[50] = { 128, 389, 0 };
 
     beast beast1( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
     beast beast2( "Flacora", 200, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, 0, flacoraLearnSet );
@@ -221,7 +226,9 @@ TEST_CASE( "levelUp" )
 
 TEST_CASE( "printStats - move" )
 {
-    Move testMove( swipe );
+    Move testMove;
+
+    getData( testMove, 3 );
 
     testMove.printStats( );
 
@@ -232,11 +239,7 @@ TEST_CASE( "printStats - move" )
 
 TEST_CASE( "storeBeastDataBinary" )
 {
-    ifstream fin;
-    ofstream fout;
-
     storeBeastDataBinary( );
-
 
     REQUIRE( true );
 }
@@ -248,11 +251,11 @@ TEST_CASE( "reading beast data from file" )
     beast newBeast;
     ifstream fin;
 
-    getBeastData( newBeast, 2 );
+    getData( newBeast, 2 );
 
     REQUIRE( newBeast.base.health == 58 );
 
-    getBeastData( newBeast, 8 );
+    getData( newBeast, 8 );
 
     REQUIRE( newBeast.base.attack == 81 );
 }
@@ -269,7 +272,7 @@ TEST_CASE( "Evolve" )
 
     SECTION( "first to second evolution" )
     {
-        getBeastData( testBeast1, 1 );
+        getData( testBeast1, 1 );
 
         testBeast1.changeName( "Gerald" );
         testBeast1.setExp( 3370 );
@@ -280,7 +283,7 @@ TEST_CASE( "Evolve" )
     }
     SECTION( "second to third evolution" )
     {
-        getBeastData( testBeast1, 5 );
+        getData( testBeast1, 5 );
 
         testBeast1.changeName( "Henry" );
         testBeast1.setExp( 42870 );
@@ -291,7 +294,7 @@ TEST_CASE( "Evolve" )
     }
     SECTION( "third evolution should not evolve" )
     {
-        getBeastData( testBeast1, 9 );
+        getData( testBeast1, 9 );
 
         testBeast1.changeName( "Peter" );
         testBeast1.setExp( 999999 );
@@ -300,4 +303,72 @@ TEST_CASE( "Evolve" )
 
         REQUIRE( testBeast1.base.spdefense == 92 );
     }
+}
+
+
+
+TEST_CASE( "move data storage" )
+{
+    storeMoveDataBinary( );
+
+    REQUIRE( true );
+}
+
+
+
+TEST_CASE( "reading move data from file" )
+{
+    Move newMove;
+
+    SECTION( "Swipe" )
+    {
+        getData( newMove, 1 );
+
+
+        REQUIRE( newMove.type == 1 );
+        REQUIRE( newMove.element == 0 );
+        REQUIRE( newMove.power == 20 );
+        REQUIRE( newMove.accuracy == 100 );
+    }
+    SECTION( "Kick" )
+    {
+        getData( newMove, 2 );
+
+
+        REQUIRE( newMove.type == 1 );
+        REQUIRE( newMove.element == 0 );
+        REQUIRE( newMove.power == 30 );
+        REQUIRE( newMove.accuracy == 90 );
+    }
+    SECTION( "Cinder" )
+    {
+        getData( newMove, 3 );
+
+
+        REQUIRE( newMove.type == 0 );
+        REQUIRE( newMove.element == 1 );
+        REQUIRE( newMove.power == 30 );
+        REQUIRE( newMove.accuracy == 100 );
+    }
+    SECTION( "Dowse" )
+    {
+        getData( newMove, 4 );
+
+
+        REQUIRE( newMove.type == 0 );
+        REQUIRE( newMove.element == 2 );
+        REQUIRE( newMove.power == 30 );
+        REQUIRE( newMove.accuracy == 100 );
+    }
+    SECTION( "Thorn" )
+    {
+        getData( newMove, 5 );
+
+
+        REQUIRE( newMove.type == 1 );
+        REQUIRE( newMove.element == 3 );
+        REQUIRE( newMove.power == 30 );
+        REQUIRE( newMove.accuracy == 100 );
+    }
+
 }

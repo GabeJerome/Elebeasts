@@ -4,6 +4,14 @@
 
 using namespace std;
 
+
+
+class Move;
+
+bool storeMoveDataBinary( );
+
+bool getData( Move &newMove, int moveID );
+
 enum element
 {
     none = -1, normal, fire, water, grass, electric, ice, fighting, poison,
@@ -28,7 +36,7 @@ public:
     ~Move( );
     void printStats( );
 
-    string name;
+    char name[20];
     int type;
     int element;
     int accuracy;
@@ -41,7 +49,7 @@ public:
 
 inline Move::Move( )
 {
-    name = "";
+    strcpy_s( name, "" );
     type = 0;
     element = 0;
     accuracy = 0;
@@ -52,7 +60,12 @@ inline Move::Move( )
 inline Move::Move( string moveName, int moveType, int moveElement, int moveAccuracy,
     int movePower )
 {
-    name = moveName;
+    int i;
+
+    for ( i = 0; i < moveName.size( ); i++ )
+        name[i] = moveName[i];
+    for ( i = i; i < 20; i++ )
+        name[i] = '\0';
     type = moveType;
     element = moveElement;
     accuracy = moveAccuracy;
@@ -84,19 +97,3 @@ inline void Move::printStats( )
     cout << "Accuracy: " << accuracy << endl;
     cout << "Power: " << power << endl;
 }
-
-
-//TODO: Store these into a binary file
-/*normal moves*/
-const Move swipe( "Swipe", 1, normal, 100, 20 );    //0
-
-const Move kick( "Kick", 1, normal, 90, 30 );       //1
-
-const Move cinder( "Cinder", 0, fire, 100, 30 );    //2
-
-const Move dowse( "Dowse", 0, water, 100, 30 );     //3
-
-const Move thorn( "Thorn", 1, grass, 100, 30 );     //4
-
-
-const Move moveID[5] = { swipe, kick, cinder, dowse, thorn };

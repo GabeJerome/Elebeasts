@@ -12,7 +12,7 @@ class beast;
 
 bool storeBeastDataBinary( );
 
-bool getBeastData( beast &newBeast, int beastID );
+bool getData( beast &newBeast, int beastID );
 
 
 #ifndef __ELEBEAST_H__
@@ -201,7 +201,7 @@ inline beast::beast( baseStats newBeast )
 
 inline beast::beast(int level, int ID )
 {
-    getBeastData( *this, ID );
+    getData( *this, ID );
 
     currentHealth = getMaxHP( );
     experience = level * level * level;
@@ -211,6 +211,10 @@ inline beast::beast(int level, int ID )
     currentStats[3] = getAtt( );
     currentStats[4] = getSpAtt( );
     currentStats[5] = getSpeed( );
+
+    writeLearnSet( base.moveSet );
+    changeMove( 0, learnSet[0].move );
+    learnSet[0].learned = true;
 }
 
 
@@ -225,29 +229,35 @@ inline beast::~beast( )
 inline void beast::writeLearnSet( const short int moves[] )
 {
     int i, num;
-    short int moveNum = 0, moveLevel;
+    short int moveID = 0, moveLevel;
     LearnSet temp;
+    Move newMove;
 
 
-    for ( i = 0; i < 50; i++ )
+    for ( i = 0; i < 50 && moves[i] != 0; i++ )
     {
         num = moves[i];
 
         moveLevel = num & 127;
         num >>= 7;
 
-        moveNum = num & 511;
-        if ( moveNum < 0 || moveNum > 4 )
+        moveID = num & 511;
+        if ( moveID < 0 || moveID > 5 )
         {
             cout << "Invalid move number for " << nickName << endl;
             cout << "Exiting..." << endl;
             return;
         }
 
-        if ( temp.moveLevel == 0 )
+        if ( moveLevel == 0 )
             temp.learned = true;
+        else
+            temp.learned = false;
         temp.moveLevel = moveLevel;
-        temp.move = moveID[moveNum];
+
+        getData( newMove, moveID );
+
+        temp.move = newMove;
 
         learnSet.push_back( temp );
     }
@@ -394,7 +404,7 @@ inline void beast::evolve( )
 
     base.ID++;
 
-    if ( !getBeastData( newBeast, base.ID ) )
+    if ( !getData( newBeast, base.ID ) )
         return;
 
     *this = newBeast;

@@ -68,7 +68,7 @@ bool storeBeastDataBinary( )
 
 
 
-bool getBeastData( beast &newBeast, int beastID )
+bool getData( beast &newBeast, int beastID )
 {
     ifstream fin;
     fin.open( "beastData.bin", ios::in | ios::binary );
@@ -82,6 +82,70 @@ bool getBeastData( beast &newBeast, int beastID )
     fin.read( (char *)&newBeast.base, sizeof( baseStats ) );
 
     newBeast.nickName = newBeast.base.name[0];
+
+    fin.close( );
+
+    return true;
+}
+
+
+
+bool storeMoveDataBinary( )
+{
+    Move temp;
+    ifstream fin;
+    ofstream fout;
+
+    fin.clear( );
+    fout.clear( );
+
+    fin.open( "moveData.txt" );
+    if ( !fin.is_open( ) )
+    {
+        cout << "Could not open file: moveData.txt" << endl;
+        return false;
+    }
+
+    fout.open( "moveData.bin", ios::out | ios::trunc | ios::binary );
+    if ( !fout.is_open( ) )
+    {
+        cout << "Could not open file: moveDataBin.txt" << endl;
+        return false;
+    }
+
+    while ( fin.peek( ) != EOF )
+    {
+        fin.get( temp.name, 20, ' ' );
+        fin >> temp.type;
+        fin >> temp.element;
+        fin >> temp.power;
+        fin >> temp.accuracy;
+
+        fout.write( (char *)&temp, sizeof( Move ) );
+
+        fin.ignore( );
+    }
+
+    fin.close( );
+    fout.close( );
+
+    return true;
+}
+
+
+
+bool getData( Move &newMove, int moveID )
+{
+    ifstream fin;
+    fin.open( "moveData.bin", ios::in | ios::binary );
+    if ( !fin.is_open( ) )
+    {
+        cout << "Could not open file: moveData.bin" << endl;
+        return false;
+    }
+    fin.clear( );
+    fin.seekg( ( moveID - 1 ) * sizeof( Move ), ios::beg );
+    fin.read( (char *)&newMove, sizeof( Move ) );
 
     fin.close( );
 

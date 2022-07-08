@@ -1,0 +1,7 @@
+Data Storage Format: ID Name Type Element Power Accuracy
+
+1: Swipe
+2: Kick
+3: Cinder
+4: Dowse
+5: Thorn
