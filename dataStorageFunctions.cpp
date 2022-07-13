@@ -1,4 +1,4 @@
-#include "elebeastClass.h"
+#include "trainer.h"
 
 using namespace std;
 
@@ -81,7 +81,7 @@ bool getData( beast &newBeast, int beastID )
     fin.seekg( ( beastID - 1 ) * sizeof( baseStats ), ios::beg );
     fin.read( (char *)&newBeast.base, sizeof( baseStats ) );
 
-    newBeast.nickName = newBeast.base.name[0];
+    strcpy_s( newBeast.nickName, 16, newBeast.base.name );
 
     fin.close( );
 

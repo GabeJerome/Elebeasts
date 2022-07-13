@@ -42,13 +42,12 @@ struct baseStats
 };
 
 
-class beast: private Move
+class beast
 {
     //could add EXP yield (reference)-> https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield
 private:
     
     int experience;
-    int currentHealth;
     int currentStats[6];
     vector<LearnSet> learnSet;
     void writeLearnSet( const short int moves[] );
@@ -77,17 +76,18 @@ public:
     ~beast( );
     bool fight( Move move, beast &opponent );
     bool runAway( beast &opponent );
-    void heal( string healer );
     void levelUp( );
     void changeMove( int move, Move replaceWith );
     void changeName( string newName );
     void gainExp( beast &opponent );
     void evolve( );
-    void operator=( beast newBeast );
-    string nickName;
+    void changeBaseStats( beast &newBeast );
+    void operator=( beast &newBeast );
+    char nickName[16];
     Move move[4];
     void printMoves( );
     baseStats base;
+    int currentHealth;
 
     int getLevel( );
     int getExp( );
@@ -111,7 +111,7 @@ public:
 
 inline beast::beast( )
 {
-    nickName = base.name[0];
+    strcpy_s( nickName, 16, base.name );
     experience = 0;
     base.health = currentHealth = 0;
     currentHealth = base.health;
@@ -139,7 +139,7 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     short int evolveLvl, short currEvo, const short int moves[] )
 {
 
-    nickName = base.name[0];
+    strcpy_s( nickName, 16, base.name );
     experience = exp;
 
     base.health = maxHP;
@@ -170,7 +170,7 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 
 inline beast::beast( baseStats newBeast )
 {
-    nickName = newBeast.name;
+    strcpy_s( nickName, 16, newBeast.name );
     experience = 0;
 
     base.health = newBeast.health;
@@ -377,24 +377,7 @@ inline bool beast::runAway( beast &opponent )
 
 
 
-inline void beast::heal( string healer )
-{
-    if ( currentHealth == 0 )
-    {
-        cout << "This beast needs to be revived first!" << endl;
-        return;
-    }
 
-    if ( healer == "small" )
-        currentHealth += 15;
-    else if ( healer == "medium" )
-        currentHealth += 25;
-    else if ( healer == "large" )
-        currentHealth += 40;
-
-    if ( currentHealth > getMaxHP( ) )
-        currentHealth = getMaxHP( );
-}
 
 
 
@@ -407,18 +390,16 @@ inline void beast::evolve( )
     if ( !getData( newBeast, base.ID ) )
         return;
 
-    *this = newBeast;
+    changeBaseStats( newBeast );
 
     cout << nickName << " evoloved into " << base.name << '!' << endl;
 
-    if ( nickName == base.name )
-        nickName = base.name;
+    if ( strcmp( nickName, base.name ) != 0 )
+        strcpy_s( nickName, 16, base.name );
     printLvlUpStats( );
 }
 
-
-
-inline void beast::operator=( beast newBeast )
+inline void beast::changeBaseStats( beast &newBeast )
 {
     base.health = newBeast.base.health;
     base.defense = newBeast.base.defense;
@@ -429,6 +410,32 @@ inline void beast::operator=( beast newBeast )
     base.eleType1 = newBeast.base.eleType1;
     base.eleType2 = newBeast.base.eleType2;
     base.evolveLevel = newBeast.base.evolveLevel;
+}
+
+
+
+inline void beast::operator=( beast &newBeast )
+{
+    int experience;
+    int currentStats[6];
+    vector<LearnSet> learnSet;
+
+    int i;
+
+    base.ID = newBeast.base.ID;
+    strcpy_s( base.name, 16, newBeast.base.name );
+    changeBaseStats( newBeast );
+
+    for ( i = 0; i < 50; i++ )
+        base.moveSet[i] = newBeast.base.moveSet[i];
+
+    experience = newBeast.experience;
+    
+    for ( i = 0; i < 6; i++ )
+        currentStats[i] = newBeast.currentStats[i];
+
+    //Do nothing until learnSet is converted to non dynamic memory
+    learnSet = newBeast.learnSet;
 }
 
 
@@ -485,7 +492,7 @@ inline void beast::changeMove( int moveNum, Move replaceWith )
 
 inline void beast::changeName( string newName )
 {
-    nickName = newName;
+    strcpy_s( nickName, 16, newName.c_str( ) );
 }
 
 inline void beast::gainExp( beast &opponent )

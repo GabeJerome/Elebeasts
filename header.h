@@ -5,7 +5,7 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
-#include "elebeastClass.h"
+#include "trainer.h"
 
 using namespace std;
 
