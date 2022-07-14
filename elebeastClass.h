@@ -38,7 +38,7 @@ struct baseStats
     int eleType1;
     int eleType2;
     short int evolveLevel;
-    short int moveSet[50] = { 0 };
+    short int moveSet[30] = { 0 };
 };
 
 
@@ -83,7 +83,7 @@ public:
     void evolve( );
     void changeBaseStats( beast &newBeast );
     void operator=( beast &newBeast );
-    string nickName;
+    char nickName[16];
     Move move[4];
     void printMoves( );
     baseStats base;
@@ -111,8 +111,11 @@ public:
 
 inline beast::beast( )
 {
+    int i;
+
     //strcpy_s( nickName, 16, base.name );
-    nickName = base.name;
+    for ( i = 0; i < 16; i++ )
+        nickName[i] = base.name[i];
     experience = 0;
     base.health = currentHealth = 0;
     currentHealth = base.health;
@@ -139,9 +142,11 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     int spdef, int att, int spatt, int spd, int type1, int type2,
     short int evolveLvl, const short int moves[] )
 {
+    int i;
 
     //strcpy_s( nickName, 15, base.name );
-    nickName = base.name;
+    for ( i = 0; i < 16; i++ )
+        nickName[i] = base.name[i];
     experience = exp;
 
     base.health = maxHP;
@@ -172,8 +177,10 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 
 inline beast::beast( baseStats newBeast )
 {
+    int i;
     //strcpy_s( nickName, 15, newBeast.name );
-    nickName = base.name;
+    for ( i = 0; i < 16; i++ )
+        nickName[i] = base.name[i];
     experience = 0;
 
     base.health = newBeast.health;
@@ -386,6 +393,7 @@ inline bool beast::runAway( beast &opponent )
 
 inline void beast::evolve( )
 {
+    int i;
     beast newBeast;
 
     base.ID++;
@@ -401,14 +409,19 @@ inline void beast::evolve( )
         strcpy_s( nickName, 15, base.name );*/
 
     if ( nickName != base.name )
-        nickName = base.name;
+    {
+        for ( i = 0; i < 16; i++ )
+            nickName[i] = base.name[i];
+    }
     printLvlUpStats( );
 }
 
 inline void beast::changeBaseStats( beast &newBeast )
 {
-    //base.name = newBeast.base.name;
-    strcpy_s( base.name, 16, newBeast.base.name );
+    int i;
+
+    for ( i = 0; i < 16; i++ )
+        base.name[i] = newBeast.base.name[i];
     base.health = newBeast.base.health;
     base.defense = newBeast.base.defense;
     base.spdefense = newBeast.base.spdefense;
@@ -422,19 +435,18 @@ inline void beast::changeBaseStats( beast &newBeast )
 
 
 
-/*inline void beast::operator=( beast &newBeast )
+inline void beast::operator=( beast &newBeast )
 {
-    int experience;
-    int currentStats[6];
-    vector<LearnSet> learnSet;
-
     int i;
-
+     
     base.ID = newBeast.base.ID;
-    strcpy_s( base.name, 16, newBeast.base.name );
+
+    for ( i = 0; i < 16; i++ )
+        base.name[i] = newBeast.base.name[i];
+
     changeBaseStats( newBeast );
 
-    for ( i = 0; i < 50; i++ )
+    for ( i = 0; i < 30; i++ )
         base.moveSet[i] = newBeast.base.moveSet[i];
 
     experience = newBeast.experience;
@@ -442,9 +454,17 @@ inline void beast::changeBaseStats( beast &newBeast )
     for ( i = 0; i < 6; i++ )
         currentStats[i] = newBeast.currentStats[i];
 
-    //Do nothing until learnSet is converted to non dynamic memory
-    learnSet = newBeast.learnSet;
-}*/
+    for ( i = 0; i < 30; i++ )
+        learnSet[i] = newBeast.learnSet[i];
+
+    for ( i = 0; i < 16; i++ )
+        nickName[i] = newBeast.nickName[i];
+
+    for ( i = 0; i < 4; i++ )
+        move[i] = newBeast.move[i];
+
+    currentHealth = newBeast.currentHealth;
+}
 
 
 
@@ -500,8 +520,18 @@ inline void beast::changeMove( int moveNum, Move replaceWith )
 
 inline void beast::changeName( string newName )
 {
-    //strcpy_s( nickName, 15, newName.c_str( ) );
-    nickName = newName;
+    int i;
+    for ( i = 0; i < 16; i++ )
+        nickName[i] = '\0';
+
+    for ( i = 0; i < 16 && i < newName.size( ); i++ )
+        nickName[i] = newName[i];
+
+    while ( i < 16 )
+    {
+        nickName[i] = '\0';
+        i++;
+    }
 }
 
 inline void beast::gainExp( beast &opponent )

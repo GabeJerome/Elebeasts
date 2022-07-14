@@ -5,6 +5,13 @@ enum beastID { Flacora = 1, Firectric, Volcorage,
                Stropie, Apolozard, Reptide, 
                Fotosin, Synthescor, DSrakosis };
 
+
+TEST_CASE( "Store Data" )
+{
+    storeMoveDataBinary( );
+    storeBeastDataBinary( );
+}
+
 TEST_CASE( "random_device test" )
 {
     std::random_device hit;

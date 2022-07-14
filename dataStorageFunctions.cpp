@@ -54,7 +54,7 @@ bool storeBeastDataBinary( )
         fin.ignore( );
         fin.ignore( );
 
-        for ( i = i; i < 50; i++ )
+        for ( i = i; i < 30; i++ )
             temp.moveSet[i] = 0;
 
         fout.write( (char *)&temp, sizeof( baseStats ) );
@@ -71,18 +71,21 @@ bool storeBeastDataBinary( )
 bool getData( beast &newBeast, int beastID )
 {
     ifstream fin;
+    int i;
+
     fin.open( "beastData.bin", ios::in | ios::binary );
     if ( !fin.is_open( ) )
     {
         cout << "Could not open file: beastData.bin" << endl;
         return false;
     }
+
     fin.clear( );
     fin.seekg( ( beastID - 1 ) * sizeof( baseStats ), ios::beg );
     fin.read( (char *)&newBeast.base, sizeof( baseStats ) );
 
-    //strcpy_s( newBeast.nickName, 15, newBeast.base.name );
-    newBeast.nickName = newBeast.base.name;
+    for ( i = 0; i < 16; i++ )
+        newBeast.nickName[i] = newBeast.base.name[i];
 
     fin.close( );
 
