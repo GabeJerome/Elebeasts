@@ -49,7 +49,7 @@ public:
 
 inline Move::Move( )
 {
-    strcpy_s( name, "" );
+    strcpy_s( name, 1, "" );
     type = 0;
     element = 0;
     accuracy = 0;

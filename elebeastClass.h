@@ -49,7 +49,7 @@ private:
     
     int experience;
     int currentStats[6];
-    vector<LearnSet> learnSet;
+    LearnSet learnSet[30];
     void writeLearnSet( const short int moves[] );
     int lvlProgression[100] =
             /* 0       1       2       3       4       5       6       7       8       9*/
@@ -70,7 +70,7 @@ public:
     beast( );
     beast( string name, int exp, int maxHP, int currHP, int def,
         int spdef, int att, int spatt, int spd, int type1, int type2, 
-        short int evolveLvl, short currEvo, const short int moves[] );
+        short int evolveLvl, const short int moves[] );
     beast( baseStats newBeast );
     beast( int level, int ID );
     ~beast( );
@@ -83,7 +83,7 @@ public:
     void evolve( );
     void changeBaseStats( beast &newBeast );
     void operator=( beast &newBeast );
-    char nickName[16];
+    string nickName;
     Move move[4];
     void printMoves( );
     baseStats base;
@@ -111,7 +111,8 @@ public:
 
 inline beast::beast( )
 {
-    strcpy_s( nickName, 16, base.name );
+    //strcpy_s( nickName, 16, base.name );
+    nickName = base.name;
     experience = 0;
     base.health = currentHealth = 0;
     currentHealth = base.health;
@@ -136,10 +137,11 @@ inline beast::beast( )
 
 inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     int spdef, int att, int spatt, int spd, int type1, int type2,
-    short int evolveLvl, short currEvo, const short int moves[] )
+    short int evolveLvl, const short int moves[] )
 {
 
-    strcpy_s( nickName, 16, base.name );
+    //strcpy_s( nickName, 15, base.name );
+    nickName = base.name;
     experience = exp;
 
     base.health = maxHP;
@@ -170,7 +172,8 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 
 inline beast::beast( baseStats newBeast )
 {
-    strcpy_s( nickName, 16, newBeast.name );
+    //strcpy_s( nickName, 15, newBeast.name );
+    nickName = base.name;
     experience = 0;
 
     base.health = newBeast.health;
@@ -234,7 +237,7 @@ inline void beast::writeLearnSet( const short int moves[] )
     Move newMove;
 
 
-    for ( i = 0; i < 50 && moves[i] != 0; i++ )
+    for ( i = 0; i < 30 && moves[i] != 0; i++ )
     {
         num = moves[i];
 
@@ -259,7 +262,7 @@ inline void beast::writeLearnSet( const short int moves[] )
 
         temp.move = newMove;
 
-        learnSet.push_back( temp );
+        learnSet[i] = temp;
     }
 }
 
@@ -394,13 +397,18 @@ inline void beast::evolve( )
 
     cout << nickName << " evoloved into " << base.name << '!' << endl;
 
-    if ( strcmp( nickName, base.name ) != 0 )
-        strcpy_s( nickName, 16, base.name );
+    /*if ( strcmp( nickName, base.name ) != 0 )
+        strcpy_s( nickName, 15, base.name );*/
+
+    if ( nickName != base.name )
+        nickName = base.name;
     printLvlUpStats( );
 }
 
 inline void beast::changeBaseStats( beast &newBeast )
 {
+    //base.name = newBeast.base.name;
+    strcpy_s( base.name, 16, newBeast.base.name );
     base.health = newBeast.base.health;
     base.defense = newBeast.base.defense;
     base.spdefense = newBeast.base.spdefense;
@@ -414,7 +422,7 @@ inline void beast::changeBaseStats( beast &newBeast )
 
 
 
-inline void beast::operator=( beast &newBeast )
+/*inline void beast::operator=( beast &newBeast )
 {
     int experience;
     int currentStats[6];
@@ -436,24 +444,24 @@ inline void beast::operator=( beast &newBeast )
 
     //Do nothing until learnSet is converted to non dynamic memory
     learnSet = newBeast.learnSet;
-}
+}*/
 
 
 
 inline void beast::levelUp( )
 {
-    vector<LearnSet>::iterator itr;
+    int i;
     int option = -1;
     int level = getLevel();
 
     
 
 
-    for ( itr = learnSet.begin(); itr < learnSet.end(); itr++ )
+    for ( i = 0; i < 30; i++ )
     {
-        if ( ( *itr ).moveLevel != 0 && ( *itr ).moveLevel <= level && ( *itr ).learned == false )
+        if ( learnSet[i].moveLevel != 0 && learnSet[i].moveLevel <= level && learnSet[i].learned == false )
         {
-            cout << nickName << " can learn " << ( *itr ).move.name
+            cout << nickName << " can learn " << learnSet[i].move.name
                 << "! What move do you want to replace? Enter 5 to not learn the move." << endl;
 
             printMoves( );
@@ -467,16 +475,16 @@ inline void beast::levelUp( )
 
             if ( option == 5 )
             {
-                cout << ( *itr ).move.name << " was not learned." << endl;
+                cout << learnSet[i].move.name << " was not learned." << endl;
                 return;
             }
 
-            changeMove( option - 1, ( *itr ).move );
+            changeMove( option - 1, learnSet[i].move );
 
-            cout << endl << nickName << " has learned " << ( *itr ).move.name << '!' << endl;
+            cout << endl << nickName << " has learned " << learnSet[i].move.name << '!' << endl;
             printMoves( );
 
-            ( *itr ).learned = true;
+            learnSet[i].learned = true;
         }
     }
 }
@@ -492,7 +500,8 @@ inline void beast::changeMove( int moveNum, Move replaceWith )
 
 inline void beast::changeName( string newName )
 {
-    strcpy_s( nickName, 16, newName.c_str( ) );
+    //strcpy_s( nickName, 15, newName.c_str( ) );
+    nickName = newName;
 }
 
 inline void beast::gainExp( beast &opponent )

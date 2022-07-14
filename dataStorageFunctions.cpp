@@ -81,7 +81,8 @@ bool getData( beast &newBeast, int beastID )
     fin.seekg( ( beastID - 1 ) * sizeof( baseStats ), ios::beg );
     fin.read( (char *)&newBeast.base, sizeof( baseStats ) );
 
-    strcpy_s( newBeast.nickName, 16, newBeast.base.name );
+    //strcpy_s( newBeast.nickName, 15, newBeast.base.name );
+    newBeast.nickName = newBeast.base.name;
 
     fin.close( );
 
