@@ -378,6 +378,7 @@ TEST_CASE( "reading move data from file" )
 
 
 
+/*
 TEST_CASE( "Capture Beast" )
 {
     trainer me;
@@ -386,6 +387,18 @@ TEST_CASE( "Capture Beast" )
     me.party[0] = myBeast;
 
     me.captureBeast( testBeast, great );
+
+    REQUIRE( true );
+}
+*/
+
+
+
+TEST_CASE( "Bag" )
+{
+    trainer me;
+
+    me.enterBag( );
 
     REQUIRE( true );
 }

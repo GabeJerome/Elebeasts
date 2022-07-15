@@ -12,8 +12,8 @@ enum ball { decent = 1, good, great };
 
 struct Bag
 {
-    int heals[20] = { 0 };
-    int balls[100] = { 0 };
+    int heals[3][20] = { 0 };
+    int balls[3][30] = { 0 };
 };
 
 class trainer
@@ -26,7 +26,9 @@ public:
     Bag bag;
     beast party[5];
     int currBeast;
+    int money;
     
+    void enterBag( );
     void swapParty( int beast1, int beast2 );
     void heal( int healer );
     bool captureBeast( beast &newBeast, int ball );
@@ -52,6 +54,7 @@ inline trainer::trainer( )
         party[i] = null;
 
     currBeast = 0;
+    money = 0;
 }
 
 
@@ -59,6 +62,64 @@ inline trainer::trainer( )
 inline trainer::~trainer( )
 {
 
+}
+
+
+
+inline void trainer::enterBag( )
+{
+    int i, j;
+    int option = -1;
+    int totalBalls = 0, totalHeals = 0;
+    string balls[3] = { "Decent Balls", "Good Balls", "Great Balls" };
+    string heals[3] = { "Small", "Medium", "Large" };
+
+    cout << "What would you like to use?" << endl;
+    cout << "1: Heals" << endl;
+    cout << "2: Balls" << endl;
+    cout << "3: Exit" << endl;
+
+    while ( option < 1 || option > 3 )
+    {
+        cin >> option;
+
+        if ( option < 1 || option > 3 )
+            cout << "Invalid option. Please choose 1 - 3." << endl;
+    }
+
+
+    if ( option == 1 )
+    {
+        for ( i = 0; i < 3; i++ )
+        {
+            for ( j = 0; j < 20; j++ )
+            {
+                if ( bag.heals[i][j] == 1 )
+                    totalHeals++;
+            }
+
+            cout << heals[i] << ": " << totalHeals << endl;
+            totalHeals = 0;
+        }
+
+        //choose a heal and choose a beast to use it on
+    }
+    if ( option == 2 )
+    {
+        for ( i = 0; i < 3; i++ )
+        {
+            for ( j = 0; j < 30; j++ )
+            {
+                if ( bag.balls[i][j] == 1 )
+                    totalBalls++;
+            }
+
+            cout << balls[i] << ": " << totalBalls << endl;
+            totalBalls = 0;
+        }
+
+        //choose which ball to use
+    }
 }
 
 
