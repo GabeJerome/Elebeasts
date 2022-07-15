@@ -269,7 +269,6 @@ TEST_CASE( "reading beast data from file" )
 
 
 
-//TODO: Finish testing evolve function
 TEST_CASE( "Evolve" )
 {
     beast testBeast1;
@@ -370,11 +369,23 @@ TEST_CASE( "reading move data from file" )
     {
         getData( newMove, 5 );
 
-
         REQUIRE( newMove.type == 1 );
         REQUIRE( newMove.element == 3 );
         REQUIRE( newMove.power == 30 );
         REQUIRE( newMove.accuracy == 100 );
     }
+}
 
+
+
+TEST_CASE( "Capture Beast" )
+{
+    trainer me;
+    beast testBeast( 4, Fotosin ), myBeast( 15, Synthescor );
+
+    me.party[0] = myBeast;
+
+    me.captureBeast( testBeast, great );
+
+    REQUIRE( true );
 }

@@ -67,6 +67,11 @@ private:
               };
 
 public:
+    char nickName[16];
+    Move move[4];
+    baseStats base;
+    int currentHealth;
+
     beast( );
     beast( string name, int exp, int maxHP, int currHP, int def,
         int spdef, int att, int spatt, int spd, int type1, int type2, 
@@ -83,11 +88,7 @@ public:
     void evolve( );
     void changeBaseStats( beast &newBeast );
     void operator=( beast &newBeast );
-    char nickName[16];
-    Move move[4];
-    void printMoves( );
-    baseStats base;
-    int currentHealth;
+    
 
     int getLevel( );
     int getExp( );
@@ -99,10 +100,11 @@ public:
     int getSpAtt( );
     int getSpeed( );
     string getType( );
+    int getBaseStatTotal( );
     void printStats( );
     void printLvlUpStats( );
-
-    void setExp( int exp ); //Needed for initializing new pokemon from file
+    void printMoves( );
+    void setExp( int exp );
 };
 
 #endif
@@ -113,7 +115,7 @@ inline beast::beast( )
 {
     int i;
 
-    //strcpy_s( nickName, 16, base.name );
+    base.ID = -1;
     for ( i = 0; i < 16; i++ )
         nickName[i] = base.name[i];
     experience = 0;
@@ -144,7 +146,6 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 {
     int i;
 
-    //strcpy_s( nickName, 15, base.name );
     for ( i = 0; i < 16; i++ )
         nickName[i] = base.name[i];
     experience = exp;
@@ -178,7 +179,7 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 inline beast::beast( baseStats newBeast )
 {
     int i;
-    //strcpy_s( nickName, 15, newBeast.name );
+
     for ( i = 0; i < 16; i++ )
         nickName[i] = base.name[i];
     experience = 0;
@@ -474,8 +475,6 @@ inline void beast::levelUp( )
     int option = -1;
     int level = getLevel();
 
-    
-
 
     for ( i = 0; i < 30; i++ )
     {
@@ -540,11 +539,7 @@ inline void beast::gainExp( beast &opponent )
     random_device rand;
     int level = getLevel( );
     int oppLevel = opponent.getLevel( );
-    int expYield = ( rand( ) % expYieldRange ) + 60;
-    
-    //store original stats in case of level up
-    //needed for display
-    
+    int expYield = ( 10 * ( getBaseStatTotal( ) - 200 ) ) / int( sqrt( getBaseStatTotal( ) ) / 3 );
 
 
     experience += ( ( expYield * oppLevel) / 5 ) *
@@ -675,12 +670,18 @@ inline string beast::getType( )
         }
         for ( i = 0; i < 18; i++ )
         {
-            if ( i == base.eleType1 )
-                return type1 + ' ' + element[i];
+            if ( i == base.eleType2 )
+                return type1 + '/' + element[i];
         }
     }
 
     return "ERROR";
+}
+
+inline int beast::getBaseStatTotal( )
+{
+    return base.health + base.defense + base.spdefense + base.attack +
+        base.spattack + base.speed;
 }
 
 
