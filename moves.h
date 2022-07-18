@@ -50,10 +50,10 @@ public:
 inline Move::Move( )
 {
     strcpy_s( name, 1, "" );
-    type = 0;
-    element = 0;
-    accuracy = 0;
-    power = 0;
+    type = -1;
+    element = -1;
+    accuracy = -1;
+    power = -1;
 }
 
 

@@ -3,7 +3,7 @@
 
 enum beastID { Flacora = 1, Firectric, Volcorage,
                Stropie, Apolozard, Reptide, 
-               Fotosin, Synthescor, DSrakosis };
+               Fotosin, Synthescor, Drakosis };
 
 
 TEST_CASE( "Store Data" )
@@ -39,7 +39,7 @@ TEST_CASE( "fight" )
 {
     beast fireBeast(1, Flacora ), waterBeast(1, Stropie );
 
-    fireBeast.fight( fireBeast.move[0], waterBeast );
+    fireBeast.attack( fireBeast.move[0], waterBeast );
 
     REQUIRE( true );
 }
@@ -157,9 +157,9 @@ TEST_CASE( "effectiveness and multiple moves" )
     fireBeast.changeMove( 1, swipe );
     waterBeast.changeMove( 0, dowse );
 
-    fireBeast.fight( fireBeast.move[0], waterBeast );
-    waterBeast.fight( waterBeast.move[0], fireBeast );
-    fireBeast.fight( fireBeast.move[1], waterBeast );
+    fireBeast.attack( fireBeast.move[0], waterBeast );
+    waterBeast.attack( waterBeast.move[0], fireBeast );
+    fireBeast.attack( fireBeast.move[1], waterBeast );
 
     REQUIRE( true );
 }
@@ -390,15 +390,39 @@ TEST_CASE( "Capture Beast" )
 
     REQUIRE( true );
 }
-*/
+
 
 
 
 TEST_CASE( "Bag" )
 {
     trainer me;
+    beast myBeast( 40, Reptide ), wildBeast( 30, Drakosis );
+
+    me.party[0] = myBeast;
+
+    wildBeast.attack( wildBeast.move[0], me.party[0] );
+
+    me.giveHeals( 0, 11 );
+    me.giveHeals( 2, 1 );
+
+    me.giveBalls( 0, 24 );
+    me.giveBalls( 2, 2 );
 
     me.enterBag( );
 
     REQUIRE( true );
+}*/
+
+
+
+TEST_CASE( "Fight" )
+{
+    trainer me;
+    beast myBeast( 40, Reptide ), wildBeast( 37, Drakosis );
+
+    me.party[0] = myBeast;
+
+    me.currOpponent = wildBeast;
+    me.fight( );
 }

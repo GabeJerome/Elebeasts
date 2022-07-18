@@ -3,6 +3,10 @@
 
 using namespace std;
 
+
+
+int find( int arr[], int tgt, int n );
+
 enum healer { small, medium, large };
 enum ball { decent = 1, good, great };
 
@@ -22,23 +26,26 @@ public:
     trainer( );
     ~trainer( );
 
-    char name[16] = "Julio";
+    char name[16] = "Trainer";
     Bag bag;
     beast party[5];
     int currBeast;
     int money;
+    beast currOpponent;
     
     void enterBag( );
     void swapParty( int beast1, int beast2 );
-    void heal( int healer );
+    bool heal( int partyNum, int healer );
     bool captureBeast( beast &newBeast, int ball );
+    bool fight( );
     void putInParty( beast &newBeast );
     void printParty( );
+    friend bool enterHeals( trainer &me );
+    friend bool enterBalls( trainer &me );
+    int giveHeals( int healer, int numHeals );
+    int giveBalls( int ballType, int numBalls );
     //add beast storage box?
     //add achievments?
-
-private:
-
 };
 
 #endif
@@ -68,57 +75,36 @@ inline trainer::~trainer( )
 
 inline void trainer::enterBag( )
 {
-    int i, j;
-    int option = -1;
-    int totalBalls = 0, totalHeals = 0;
-    string balls[3] = { "Decent Balls", "Good Balls", "Great Balls" };
-    string heals[3] = { "Small", "Medium", "Large" };
+    int option;
+    int totalBalls = 0;
+    bool redo = false;
+    
 
-    cout << "What would you like to use?" << endl;
-    cout << "1: Heals" << endl;
-    cout << "2: Balls" << endl;
-    cout << "3: Exit" << endl;
-
-    while ( option < 1 || option > 3 )
+    while ( !redo )
     {
-        cin >> option;
+        option = -1;
 
-        if ( option < 1 || option > 3 )
-            cout << "Invalid option. Please choose 1 - 3." << endl;
-    }
+        cout << "What would you like to use?" << endl;
+        cout << "1: Heals" << endl;
+        cout << "2: Balls" << endl;
+        cout << "3: Exit" << endl;
 
-
-    if ( option == 1 )
-    {
-        for ( i = 0; i < 3; i++ )
+        while ( option < 1 || option > 3 )
         {
-            for ( j = 0; j < 20; j++ )
-            {
-                if ( bag.heals[i][j] == 1 )
-                    totalHeals++;
-            }
+            cin >> option;
 
-            cout << heals[i] << ": " << totalHeals << endl;
-            totalHeals = 0;
+            if ( option < 1 || option > 3 )
+                cout << "Invalid option. Please choose 1 - 3." << endl;
         }
 
-        //choose a heal and choose a beast to use it on
-    }
-    if ( option == 2 )
-    {
-        for ( i = 0; i < 3; i++ )
-        {
-            for ( j = 0; j < 30; j++ )
-            {
-                if ( bag.balls[i][j] == 1 )
-                    totalBalls++;
-            }
+        if ( option == 3 )
+            return;
 
-            cout << balls[i] << ": " << totalBalls << endl;
-            totalBalls = 0;
-        }
+        if ( option == 1 )
+            redo = enterHeals( *this );
 
-        //choose which ball to use
+        if ( option == 2 )
+            redo = enterBalls( *this );
     }
 }
 
@@ -133,23 +119,27 @@ inline void trainer::swapParty( int beast1, int beast2 )
 
 
 
-inline void trainer::heal( int healer )
+inline bool trainer::heal(int partyNum, int healer )
 {
-    if ( party[currBeast].currentHealth == 0 )
+    if ( party[partyNum].currentHealth == 0 )
     {
         cout << "This beast needs to be revived first!" << endl;
-        return;
+        return false;
     }
 
     if ( healer == 0 )
-        party[currBeast].currentHealth += 15;
+        party[partyNum].currentHealth += 15;
     else if ( healer == 1 )
-        party[currBeast].currentHealth += 25;
+        party[partyNum].currentHealth += 50;
     else if ( healer == 2 )
-        party[currBeast].currentHealth += 40;
+        party[partyNum].currentHealth += 100;
 
-    if ( party[currBeast].currentHealth > party[currBeast].getMaxHP( ) )
-        party[currBeast].currentHealth = party[currBeast].getMaxHP( );
+    if ( party[partyNum].currentHealth > party[partyNum].getMaxHP( ) )
+        party[partyNum].currentHealth = party[partyNum].getMaxHP( );
+
+    bag.heals[healer][find( bag.heals[healer], 1, 20 )] = 0;
+
+    return true;
 }
 
 
@@ -196,6 +186,36 @@ inline bool trainer::captureBeast( beast &newBeast, int ball )
 
 
 
+inline bool trainer::fight( )
+{
+    int valid = false;
+    int input;
+
+    cout << "Choose a move" << endl;
+
+    party[currBeast].printMoves( );
+    cout << "5: Back" << endl;
+
+    while ( !valid )
+    {
+        cin >> input;
+
+        if ( input == 5 )
+            return false;
+
+        if ( input < 1 || input > 4 )
+            cout << "Invalid option. Please choose 1 - 5." << endl;
+        else if ( party[currBeast].move[input - 1].element == -1 )
+            cout << "There is no move there. Please choose a move." << endl;
+        else
+            valid = true;
+    }
+
+    return party[currBeast].attack( party[currBeast].move[input - 1], currOpponent );
+}
+
+
+
 inline void trainer::putInParty( beast &newBeast )
 {
     int partySlot = -1;
@@ -231,8 +251,50 @@ inline void trainer::printParty( )
     for ( i = 0; i < 5; i++ )
     {
         if ( party[i].base.ID != -1 )
-            cout << i + 1 << ": " << party[i].nickName << ' ' << party[i].getType( ) << endl;
+            cout << i + 1 << ": " << party[i].nickName << " | Type: " << party[i].getType( ) <<
+            " | HP: " << party[i].currentHealth << '/' << party[i].getMaxHP( ) << endl;
         else
             cout << i + 1 << ": empty" << endl;
     }
 }
+
+
+
+inline int trainer::giveHeals( int healer, int numHeals )
+{
+    int location = find( bag.heals[healer], 0, 20 );
+    int i;
+
+    if ( location == -1 )
+        return 0;
+
+    for ( i = 0; i < numHeals; i++ )
+    {
+        location = find( bag.heals[healer], 0, 20 );
+        bag.heals[healer][location] = 1;
+    }
+
+    return i;
+}
+
+
+
+inline int trainer::giveBalls( int ballType, int numBalls )
+{
+    int location = find( bag.balls[ballType], 0, 20 );
+    int i;
+
+    if ( location == -1 )
+        return 0;
+
+    for ( i = 0; i < numBalls; i++ )
+    {
+        location = find( bag.balls[ballType], 0, 30 );
+        bag.balls[ballType][location] = 1;
+    }
+
+    return i;
+}
+
+
+

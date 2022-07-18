@@ -79,7 +79,7 @@ public:
     beast( baseStats newBeast );
     beast( int level, int ID );
     ~beast( );
-    bool fight( Move move, beast &opponent );
+    bool attack( Move move, beast &opponent );
     bool runAway( beast &opponent );
     void levelUp( );
     void changeMove( int move, Move replaceWith );
@@ -213,9 +213,10 @@ inline beast::beast( baseStats newBeast )
 inline beast::beast(int level, int ID )
 {
     getData( *this, ID );
-
-    currentHealth = getMaxHP( );
+    
     experience = level * level * level;
+    currentHealth = getMaxHP( );
+    
     currentStats[0] = getMaxHP( );
     currentStats[1] = getDef( );
     currentStats[2] = getSpDef( );
@@ -298,7 +299,7 @@ const double effectiveChart[18][18] =
     /*Fairy    17*/ { 1 ,.5 , 1 , 1 , 1 , 1 , 2 ,.5 , 1 , 1 , 1 , 1 , 1 , 1 , 2 , 2 ,.5 , 1 }
 };
 
-inline bool beast::fight( Move move, beast &opponent )
+inline bool beast::attack( Move move, beast &opponent )
 {
     random_device rand;
     random_device roll;
@@ -317,7 +318,8 @@ inline bool beast::fight( Move move, beast &opponent )
     if ( opponent.base.eleType2 == -1 )
         effectiveness = effectiveChart[move.element][opponent.base.eleType1];
     else
-        effectiveness = effectiveChart[move.element][opponent.base.eleType1] * effectiveChart[move.element][opponent.base.eleType2];
+        effectiveness = effectiveChart[move.element][opponent.base.eleType1]
+        * effectiveChart[move.element][opponent.base.eleType2];
 
     if ( effectiveness == 0 )
         cout << "It doesn't affect " << opponent.nickName << '.' << endl;
@@ -385,10 +387,6 @@ inline bool beast::runAway( beast &opponent )
 
     return false;
 }
-
-
-
-
 
 
 
@@ -573,7 +571,12 @@ inline void beast::printMoves( )
 
     for ( i = 0; i < 4; i++ )
     {
-        cout << "Move " << i + 1 << ": " << move[i].name << endl;
+        if ( move[i].element != -1 )
+            cout << "Move " << i + 1 << ": " << move[i].name << " | " <<
+            eleType[move[i].element] << endl;
+        else 
+            cout << "Move " << i + 1 << ": empty" << endl;
+
     }
 }
 

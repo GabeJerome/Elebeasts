@@ -145,6 +145,7 @@
     <ClInclude Include="trainer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="functions.cpp" />
     <ClCompile Include="mainGame.cpp" />
     <ClCompile Include="dataStorageFunctions.cpp" />
     <ClCompile Include="testCases.cpp" />
