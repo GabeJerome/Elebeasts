@@ -386,7 +386,9 @@ TEST_CASE( "Capture Beast" )
 
     me.party[0] = myBeast;
 
-    me.captureBeast( testBeast, great );
+    me.currOpponent = testBeast;
+
+    me.captureBeast( great );
 
     REQUIRE( true );
 }
@@ -412,7 +414,7 @@ TEST_CASE( "Bag" )
     me.enterBag( );
 
     REQUIRE( true );
-}*/
+}
 
 
 
@@ -425,4 +427,33 @@ TEST_CASE( "Fight" )
 
     me.currOpponent = wildBeast;
     me.fight( );
+}
+
+
+
+TEST_CASE( "healthBar" )
+{
+    beast myBeast( 40, Drakosis ), oppBeast( 40, Reptide );
+
+    healthBar( myBeast );
+
+    oppBeast.attack( oppBeast.move[0], myBeast );
+
+    healthBar( myBeast );
+
+    REQUIRE( true );
+}
+*/
+
+
+TEST_CASE( "wildBattle" )
+{
+    trainer me;
+    beast myBeast( 40, Drakosis ), oppBeast( 40, Reptide );
+
+    me.party[0] = myBeast;
+    
+    wildBattle( me, oppBeast );
+
+    REQUIRE( true );
 }

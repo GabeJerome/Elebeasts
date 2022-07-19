@@ -5,6 +5,8 @@ using namespace std;
 
 
 
+void healthBar( beast curr );
+
 int find( int arr[], int tgt, int n );
 
 enum healer { small, medium, large };
@@ -36,7 +38,7 @@ public:
     void enterBag( );
     void swapParty( int beast1, int beast2 );
     bool heal( int partyNum, int healer );
-    bool captureBeast( beast &newBeast, int ball );
+    bool captureBeast( int ball );
     bool fight( );
     void putInParty( beast &newBeast );
     void printParty( );
@@ -44,6 +46,7 @@ public:
     friend bool enterBalls( trainer &me );
     int giveHeals( int healer, int numHeals );
     int giveBalls( int ballType, int numBalls );
+    void displayBattleMenu( );
     //add beast storage box?
     //add achievments?
 };
@@ -144,14 +147,17 @@ inline bool trainer::heal(int partyNum, int healer )
 
 
 
-inline bool trainer::captureBeast( beast &newBeast, int ball )
+inline bool trainer::captureBeast( int ball )
 {
     random_device shakeCheck;
+    beast newBeast = currOpponent;
     int i;
     int finalCatchRate;
     unsigned int shakeProb;
     int catchRate = int(( 6000 / cbrt( newBeast.getBaseStatTotal( ) ) ) - 700);
     float ballCatchRate = 1;
+
+    cout << endl;
 
     if ( ball == 2 )
         ballCatchRate = 1.5;
@@ -180,6 +186,7 @@ inline bool trainer::captureBeast( beast &newBeast, int ball )
 
     putInParty( newBeast );
     
+    cout << endl;
 
     return true;
 }
@@ -211,7 +218,14 @@ inline bool trainer::fight( )
             valid = true;
     }
 
-    return party[currBeast].attack( party[currBeast].move[input - 1], currOpponent );
+    cout << endl;
+
+    if( party[currBeast].attack( party[currBeast].move[input - 1], currOpponent ) )
+        return true;
+
+    cout << endl;
+
+    return false;
 }
 
 
@@ -294,6 +308,17 @@ inline int trainer::giveBalls( int ballType, int numBalls )
     }
 
     return i;
+}
+
+
+
+inline void trainer::displayBattleMenu( )
+{
+    healthBar( currOpponent );
+    cout << endl;
+    healthBar( party[currBeast] );
+
+    //Finish alongside wildBattle function in functions.cpp
 }
 
 

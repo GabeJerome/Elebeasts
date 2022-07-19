@@ -11,3 +11,5 @@ using namespace std;
 
 
 
+bool wildBattle( trainer &me, beast &opp );
+

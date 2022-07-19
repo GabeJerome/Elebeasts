@@ -25,6 +25,8 @@ bool enterHeals( trainer &me )
     int healInput = -1, beastInput = 6;
     string heals[3] = { "Small", "Medium", "Large" };
 
+    cout << endl;
+
     //choose a heal and choose a beast to use it on
     while ( beastInput == 6 )
     {
@@ -60,6 +62,8 @@ bool enterHeals( trainer &me )
         }
         valid = false;
 
+        cout << endl;
+
         cout << "Which beast will you use it on?" << endl;
         me.printParty( );
         cout << "6: Back" << endl;
@@ -81,7 +85,11 @@ bool enterHeals( trainer &me )
         valid = false;
     }
 
+    cout << endl;
+
     me.printParty( );
+
+    cout << endl;
         
     return true;
 }
@@ -95,6 +103,8 @@ bool enterBalls( trainer &me )
     bool valid = false;
     int input = -1;
     string balls[3] = { "Decent Balls", "Good Balls", "Great Balls" };
+
+    cout << endl;
 
     for ( i = 0; i < 3; i++ )
     {
@@ -118,6 +128,12 @@ bool enterBalls( trainer &me )
         if ( input == i + 1 )
             return false;
 
+        if ( me.currOpponent.base.ID == -1 )
+        {
+            cout << "You can't use that here!" << endl;
+            return false;
+        }
+
         if ( input < 1 || input > 3 )
             cout << "Invalid option. Please choose 1 - 4." << endl;
         else if ( find( me.bag.balls[input - 1], 1, 20 ) == -1 )
@@ -126,7 +142,59 @@ bool enterBalls( trainer &me )
             valid = true;
     }
 
-    me.captureBeast( me.currOpponent, input - 1 );
+    cout << endl;
+
+    me.captureBeast( input - 1 );
+
+    cout << endl;
 
     return true;
+}
+
+
+//FINISH
+bool wildBattle( trainer &me, beast &opp )
+{
+    random_device oppMove;
+
+    me.currOpponent = opp;
+
+    me.displayBattleMenu( );
+    
+
+    return false;
+}
+
+
+
+void healthBar( beast curr )
+{
+    int i = 0;
+    float healthPercent = float( curr.currentHealth ) / float( curr.getMaxHP( ) );
+    int numBars = int( healthPercent * 25 );
+
+    while ( curr.nickName[i] != '\0' )
+    {
+        cout << ' ';
+        i++;
+    }
+    cout << "   ";
+    for ( i = 0; i < 25; i++ )
+        cout << char( 95 );
+    cout << ' ' << endl;
+
+    cout << curr.nickName << ": ";
+    cout << char( 179 );
+    for ( i = 0; i < numBars; i++ )
+        cout << char( 219 );
+    for ( i = i; i < 25; i++ )
+        cout << ' ';
+    cout << char( 179 ) << endl;
+
+    while ( curr.nickName[i] != '\0' )
+    {
+        cout << ' ';
+        i++;
+    }
+    cout << curr.currentHealth << '/' << curr.getMaxHP( ) << endl;
 }

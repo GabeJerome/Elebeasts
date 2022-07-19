@@ -306,8 +306,10 @@ inline bool beast::attack( Move move, beast &opponent )
     int hit = ( rand( ) % 100 ) + 1;
 
     if ( hit > move.accuracy )
+    {
+        cout << this->nickName << " missed." << endl;
         return false;
-
+    }
     double randRoll = ( double( ( roll( ) % 15 ) + 1 ) / 100 ) + .85;
     int damage;
     int Def, Att;
@@ -349,10 +351,12 @@ inline bool beast::attack( Move move, beast &opponent )
     damage = int( ( ( ( ( ( ( static_cast<double>( 2 ) * getLevel( ) ) / 5 ) + 2 ) * move.power
         * Att / Def ) / 50 ) + 2 ) * randRoll * critical * effectiveness );
 
+    if ( damage > opponent.currentHealth )
+        damage = opponent.currentHealth;
+
     opponent.currentHealth -= damage;
 
-    if ( opponent.currentHealth < 0 )
-        opponent.currentHealth = 0;
+    cout << opponent.nickName << " took " << damage << " damage." << endl;
 
     return true;
 }
@@ -394,6 +398,7 @@ inline void beast::evolve( )
 {
     int i;
     beast newBeast;
+
 
     base.ID++;
 
@@ -473,6 +478,7 @@ inline void beast::levelUp( )
     int option = -1;
     int level = getLevel();
 
+    cout << endl;
 
     for ( i = 0; i < 30; i++ )
     {
