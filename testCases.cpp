@@ -449,9 +449,12 @@ TEST_CASE( "healthBar" )
 TEST_CASE( "wildBattle" )
 {
     trainer me;
-    beast myBeast( 40, Drakosis ), oppBeast( 40, Reptide );
+    beast myBeast1( 40, Drakosis ), myBeast2( 41, Volcorage ), myBeast3( 34, Apolozard );
+    beast oppBeast( 40, Reptide );
 
-    me.party[0] = myBeast;
+    me.party[0] = myBeast1;
+    me.party[1] = myBeast2;
+    me.party[2] = myBeast3;
     
     wildBattle( me, oppBeast );
 

@@ -156,12 +156,16 @@ bool enterBalls( trainer &me )
 bool wildBattle( trainer &me, beast &opp )
 {
     random_device oppMove;
+    beast nullBeast;
 
     me.currOpponent = opp;
 
     me.displayBattleMenu( );
     
+    //code
 
+    me.currBeast = 0;
+    me.currOpponent = nullBeast;
     return false;
 }
 

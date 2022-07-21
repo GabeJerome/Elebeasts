@@ -374,6 +374,7 @@ inline bool beast::runAway( beast &opponent )
     if ( mySpeed >= oppSpeed )
     {
         attemptNum = 1;
+        cout << "Got away!" << endl;
         return true;
     }
 
@@ -384,11 +385,13 @@ inline bool beast::runAway( beast &opponent )
     if ( odds > 255 || run < odds )
     {
         attemptNum = 1;
+        cout << "Got away!" << endl;
         return true;
     }
 
     attemptNum++;
 
+    cout << "Didn't escape!" << endl;
     return false;
 }
 
