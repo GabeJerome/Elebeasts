@@ -1,4 +1,5 @@
 #include "trainer.h"
+#include "header.h"
 
 using namespace std;
 
@@ -152,6 +153,56 @@ bool getData( Move &newMove, int moveID )
     fin.read( (char *)&newMove, sizeof( Move ) );
 
     fin.close( );
+
+    return true;
+}
+
+
+
+bool saveFile( trainer &player, int num )
+{
+    string fileName = "Save";
+    char saveNum = num + 48;
+    ofstream fout;
+
+    fileName = fileName + saveNum + ".bin";
+
+    fout.open( fileName, ios::out | ios::binary | ios::trunc );
+    if ( !fout.is_open( ) )
+    {
+        cout << "Could not open save file " << num << endl;
+        return false;
+    }
+
+    fout.seekp( ios::beg, 0 );
+    fout.write( (char *)&player, sizeof( trainer ) );
+
+    cout << "Successfully saved to save " << num << '.' << endl;
+
+    return true;
+}
+
+
+
+bool loadFile( trainer &player, int num )
+{
+    string fileName = "Save";
+    char saveNum = num + 48;
+    ifstream fin;
+
+    fileName = fileName + saveNum + ".bin";
+
+    fin.open( fileName, ios::in | ios::binary );
+    if ( !fin.is_open( ) )
+    {
+        cout << "Could not load save file " << num << '.' << endl;
+        return false;
+    }
+
+    fin.seekg( ios::beg, 0 );
+    fin.read( (char *)&player, sizeof( trainer ) );
+
+    cout << "Save file " << num << " loaded." << endl;
 
     return true;
 }

@@ -1,13 +1,17 @@
+#pragma once
 #include "elebeastClass.h"
-#include <thread>
 
 using namespace std;
 
-
+class trainer;
 
 void healthBar( beast curr );
 
+void printLine( );
+
 int find( int arr[], int tgt, int n );
+
+bool checkLoss( trainer &player );
 
 enum healer { small, medium, large };
 enum ball { decent = 1, good, great };
@@ -40,14 +44,16 @@ public:
     bool heal( int partyNum, int healer );
     bool captureBeast( int ball );
     bool fight( );
+    void setCurrBeast( );
     void putInParty( beast &newBeast );
     void printParty( );
-    friend bool enterHeals( trainer &me );
-    friend bool enterBalls( trainer &me );
+    friend bool enterHeals( trainer &player );
+    friend bool enterBalls( trainer &player );
     int giveHeals( int healer, int numHeals );
     int giveBalls( int ballType, int numBalls );
-    void displayBattleMenu( );
-    bool displayCurrBeastSwap( );
+
+private:
+    void displayFaintedBeastSwap( );
     //add beast storage box?
     //add achievments?
 };
@@ -198,14 +204,20 @@ inline bool trainer::captureBeast( int ball )
 
 inline bool trainer::fight( )
 {
+    random_device rand;
+    int randMove = rand( ) % 4;
     int valid = false;
     int input;
+    bool hit;
+
+    printLine( );
+    cout << endl;
 
     healthBar( currOpponent );
     cout << endl;
     healthBar( party[currBeast] );
 
-    cout << "Choose a move" << endl;
+    cout << endl << "Choose a move" << endl;
 
     party[currBeast].printMoves( );
     cout << "5: Back" << endl;
@@ -227,12 +239,52 @@ inline bool trainer::fight( )
 
     cout << endl;
 
-    if( party[currBeast].attack( party[currBeast].move[input - 1], currOpponent ) )
-        return true;
+    if ( party[currBeast].getSpeed( ) < currOpponent.getSpeed( ) )
+    {
+        while ( currOpponent.move[randMove].type == -1 )
+            randMove = rand( ) % 4;
 
-    cout << endl;
+        currOpponent.attack( currOpponent.move[randMove], party[currBeast] );
+
+        if ( checkLoss( *this ) )
+            return false;
+        else if ( party[currBeast].currentHealth == 0 )
+            displayFaintedBeastSwap( );
+        else
+            return party[currBeast].attack( party[currBeast].move[input - 1], currOpponent );
+    }
+    else
+    {
+        hit = party[currBeast].attack( party[currBeast].move[input - 1], currOpponent );
+
+        if ( currOpponent.currentHealth != 0 )
+        {
+            while ( currOpponent.move[randMove].type == -1 )
+                randMove = rand( ) % 4;
+
+            currOpponent.attack( currOpponent.move[randMove], party[currBeast] );
+        }
+
+        return hit;
+    }
+
+    cout << endl << endl;
 
     return false;
+}
+
+inline void trainer::setCurrBeast( )
+{
+    int i;
+
+    for ( i = 0; i < 5; i++ )
+    {
+        if ( party[i].currentHealth != 0 )
+        {
+            currBeast = i;
+            return;
+        }
+    }
 }
 
 
@@ -319,63 +371,18 @@ inline int trainer::giveBalls( int ballType, int numBalls )
 
 
 
-inline void trainer::displayBattleMenu( )
+inline void trainer::displayFaintedBeastSwap( )
 {
     int option = -1;
     bool valid = false;
 
-    while ( !valid )
-    {
-        cout << endl << endl << endl;
-        healthBar( currOpponent );
-        cout << endl;
-        healthBar( party[currBeast] );
-
-        cout << endl << "Choose an action" << endl;
-        cout << "1. Attack" << endl;
-        cout << "2. Run" << endl;
-        cout << "3. Bag" << endl;
-        cout << "4. Party" << endl;
-
-        cin >> option;
-
-        if ( option < 1 || option > 4 )
-            cout << "Invalid option. Please choose 1 - 4." << endl;
-        else
-            valid = true;
-
-        cout << endl;
-
-        if ( option == 1 )
-            fight( );
-        if ( option == 2 )
-            party[currBeast].runAway( currOpponent );
-        if ( option == 3 )
-            valid = enterBag( );
-        if ( option == 4 )
-            valid = displayCurrBeastSwap( );
-    }
-    //Finish alongside wildBattle function in functions.cpp
-}
-
-
-
-inline bool trainer::displayCurrBeastSwap( )
-{
-    int option = -1;
-    bool valid = false;
-
-    cout << "Choose a beast to swap." << endl;
+    cout << party[currBeast].nickName << " fainted. Choose a beast to swap to." << endl;
 
     printParty( );
-    cout << "6: Back" << endl;
 
     while ( !valid )
     {
         cin >> option;
-
-        if ( option == 6 )
-            return false;
 
         if ( option < 1 || option > 5 )
             cout << "Invalid option. Please choose 1 - 6" << endl;
@@ -383,15 +390,15 @@ inline bool trainer::displayCurrBeastSwap( )
             cout << "There is no beast there! Choose a beast." << endl;
         else if ( currBeast == option - 1 )
             cout << "You are already using that beast!" << endl;
+        else if ( party[option - 1].currentHealth == 0 )
+            cout << "That beast is fainted." << endl;
         else
-            valid = true;  
+            valid = true;
     }
 
     currBeast = option - 1;
 
     cout << "Swapped to " << party[currBeast].nickName << '!' << endl;
-
-    return true;
 }
 
 

@@ -5,11 +5,12 @@
 #include <string>
 #include <iomanip>
 #include <fstream>
-#include "trainer.h"
+#include "battle.h"
 
 using namespace std;
 
+bool saveFile( trainer &player, int num );
 
+bool loadFile( trainer &player, int num );
 
-bool wildBattle( trainer &me, beast &opp );
-
+void tutorial( trainer &player );

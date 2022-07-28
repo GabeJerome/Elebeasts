@@ -1,9 +1,11 @@
+#pragma once
 #include <string>
 #include <iostream>
 #include <random>
 #include <cmath>
 #include <vector>
 #include <fstream>
+#include <thread>
 #include "moves.h"
 
 using namespace std;
@@ -88,6 +90,7 @@ public:
     void evolve( );
     void changeBaseStats( beast &newBeast );
     void operator=( beast &newBeast );
+    void learnMoves( );
     
 
     int getLevel( );
@@ -170,8 +173,7 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     base.evolveLevel = evolveLvl;
     writeLearnSet( moves );
 
-    changeMove( 0, learnSet[0].move );
-    learnSet[0].learned = true;
+    learnMoves( );
 }
 
 
@@ -204,8 +206,7 @@ inline beast::beast( baseStats newBeast )
     base.evolveLevel = newBeast.evolveLevel;
     writeLearnSet( newBeast.moveSet );
 
-    changeMove( 0, learnSet[0].move );
-    learnSet[0].learned = true;
+    learnMoves( );
 }
 
 
@@ -225,8 +226,8 @@ inline beast::beast(int level, int ID )
     currentStats[5] = getSpeed( );
 
     writeLearnSet( base.moveSet );
-    changeMove( 0, learnSet[0].move );
-    learnSet[0].learned = true;
+    
+    learnMoves( );
 }
 
 
@@ -302,15 +303,18 @@ const double effectiveChart[18][18] =
 inline bool beast::attack( Move move, beast &opponent )
 {
     random_device rand;
-    random_device roll;
     int hit = ( rand( ) % 100 ) + 1;
+
+    this_thread::sleep_for( chrono::seconds( 1 ) );
+    cout << nickName << " used " << move.name << '.' << endl;
+    this_thread::sleep_for( chrono::seconds( 2 ) );
 
     if ( hit > move.accuracy )
     {
-        cout << this->nickName << " missed." << endl;
+        cout << this->nickName << " missed." << endl << endl;
         return false;
     }
-    double randRoll = ( double( ( roll( ) % 15 ) + 1 ) / 100 ) + .85;
+    double randRoll = ( double( ( rand( ) % 15 ) + 1 ) / 100 ) + .85;
     int damage;
     int Def, Att;
     double critical = 1;
@@ -324,11 +328,20 @@ inline bool beast::attack( Move move, beast &opponent )
         * effectiveChart[move.element][opponent.base.eleType2];
 
     if ( effectiveness == 0 )
+    {
         cout << "It doesn't affect " << opponent.nickName << '.' << endl;
+        this_thread::sleep_for( chrono::seconds( 1 ) );
+    }
     else if ( effectiveness == .5 )
+    {
         cout << "It's not very effective." << endl;
+        this_thread::sleep_for( chrono::seconds( 1 ) );
+    }
     else if ( effectiveness == 2 )
+    {
         cout << "It's super effective!" << endl;
+        this_thread::sleep_for( chrono::seconds( 1 ) );
+    }
 
 
     //TODO: add comments
@@ -356,7 +369,8 @@ inline bool beast::attack( Move move, beast &opponent )
 
     opponent.currentHealth -= damage;
 
-    cout << opponent.nickName << " took " << damage << " damage." << endl;
+    cout << opponent.nickName << " took " << damage << " damage." << endl << endl;
+    this_thread::sleep_for( chrono::seconds( 1 ) );
 
     return true;
 }
@@ -471,6 +485,24 @@ inline void beast::operator=( beast &newBeast )
         move[i] = newBeast.move[i];
 
     currentHealth = newBeast.currentHealth;
+}
+
+inline void beast::learnMoves( )
+{
+    int i;
+    int lastLearned = 0;
+
+    for ( i = 0; i < 30; i++ )
+    {
+        if ( learnSet[i].moveLevel > getLevel( ) || learnSet[i].move.type == -1 )
+            return;
+
+        changeMove( lastLearned, learnSet[i].move );
+
+        lastLearned = ( lastLearned + 1 ) % 4;
+
+        learnSet[i].learned = true;
+    }
 }
 
 

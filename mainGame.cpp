@@ -2,7 +2,7 @@
 #include "catch.hpp"
 #include "header.h"
 
-const bool RUNCATCH = true;
+const bool RUNCATCH = false;
 
 int main( )
 {
@@ -19,16 +19,24 @@ int main( )
         }
     }
 
-    int menuOption = 0;
 
-    /*cout << "Welcome to the realm of Elebeasts!" << endl << endl;
+    int menuOption = 0;
+    int option = 0;
+    trainer player;
+    bool valid = false;
+    beast starter;
+
+    
     while (menuOption != 1 && menuOption != 2)
     {
         cout << "Enter 1 to start a new game or enter 2 to load your file: ";
         cin >> menuOption;
         if (menuOption != 1 && menuOption != 2)
             cout << "That's not a valid option!" << endl << endl;
-    }*/
+    }
 
-
+    if ( menuOption == 1 )
+    {
+        tutorial( player );
+    }
 }

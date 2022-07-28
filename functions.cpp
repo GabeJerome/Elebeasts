@@ -1,4 +1,4 @@
-#include "trainer.h"
+#include "header.h"
 
 
 
@@ -17,7 +17,7 @@ int find( int arr[], int tgt, int n )
 
 
 
-bool enterHeals( trainer &me )
+bool enterHeals( trainer &player )
 {
     int i, j;
     int totalHeals = 0;
@@ -36,7 +36,7 @@ bool enterHeals( trainer &me )
         {
             for ( j = 0; j < 20; j++ )
             {
-                if ( me.bag.heals[i][j] == 1 )
+                if ( player.bag.heals[i][j] == 1 )
                     totalHeals++;
             }
 
@@ -55,7 +55,7 @@ bool enterHeals( trainer &me )
 
             if ( healInput < 1 || healInput > 4 )
                 cout << "Invalid option. Please choose 1 - 4." << endl;
-            else if ( find( me.bag.heals[healInput - 1], 1, 20 ) == -1 )
+            else if ( find( player.bag.heals[healInput - 1], 1, 20 ) == -1 )
                 cout << "You don't have any of those! Choose another." << endl;
             else
                 valid = true;
@@ -65,7 +65,7 @@ bool enterHeals( trainer &me )
         cout << endl;
 
         cout << "Which beast will you use it on?" << endl;
-        me.printParty( );
+        player.printParty( );
         cout << "6: Back" << endl;
 
         while ( !valid )
@@ -76,18 +76,18 @@ bool enterHeals( trainer &me )
                 valid = true;
             else if ( beastInput < 1 || beastInput > 5 )
                 cout << "Invalid option. Please choose a beast in your party." << endl;
-            else if ( me.party[beastInput - 1].base.ID == -1 )
+            else if ( player.party[beastInput - 1].base.ID == -1 )
                 cout << "There is no beast in that spot. Try again." << endl;
             else valid = true;
         }
-        if ( !me.heal( beastInput - 1, healInput - 1 ) )
+        if ( !player.heal( beastInput - 1, healInput - 1 ) )
             beastInput = 6;
         valid = false;
     }
 
     cout << endl;
 
-    me.printParty( );
+    player.printParty( );
 
     cout << endl;
         
@@ -96,7 +96,7 @@ bool enterHeals( trainer &me )
 
 
 
-bool enterBalls( trainer &me )
+bool enterBalls( trainer &player )
 {
     int i, j;
     int totalBalls = 0;
@@ -110,7 +110,7 @@ bool enterBalls( trainer &me )
     {
         for ( j = 0; j < 30; j++ )
         {
-            if ( me.bag.balls[i][j] == 1 )
+            if ( player.bag.balls[i][j] == 1 )
                 totalBalls++;
         }
 
@@ -128,7 +128,7 @@ bool enterBalls( trainer &me )
         if ( input == i + 1 )
             return false;
 
-        if ( me.currOpponent.base.ID == -1 )
+        if ( player.currOpponent.base.ID == -1 )
         {
             cout << "You can't use that here!" << endl;
             return false;
@@ -136,7 +136,7 @@ bool enterBalls( trainer &me )
 
         if ( input < 1 || input > 3 )
             cout << "Invalid option. Please choose 1 - 4." << endl;
-        else if ( find( me.bag.balls[input - 1], 1, 20 ) == -1 )
+        else if ( find( player.bag.balls[input - 1], 1, 20 ) == -1 )
             cout << "You don't have any of those! Choose another." << endl;
         else
             valid = true;
@@ -144,7 +144,7 @@ bool enterBalls( trainer &me )
 
     cout << endl;
 
-    me.captureBeast( input - 1 );
+    player.captureBeast( input - 1 );
 
     cout << endl;
 
@@ -152,21 +152,18 @@ bool enterBalls( trainer &me )
 }
 
 
-//FINISH
-bool wildBattle( trainer &me, beast &opp )
+
+bool checkLoss( trainer &player )
 {
-    random_device oppMove;
-    beast nullBeast;
+    int i;
 
-    me.currOpponent = opp;
+    for ( i = 0; i < 5; i++ )
+    {
+        if ( player.party[i].base.ID != -1 && player.party[i].currentHealth != 0 )
+            return false;
+    }
 
-    me.displayBattleMenu( );
-    
-    //code
-
-    me.currBeast = 0;
-    me.currOpponent = nullBeast;
-    return false;
+    return true;
 }
 
 
@@ -201,4 +198,81 @@ void healthBar( beast curr )
         i++;
     }
     cout << curr.currentHealth << '/' << curr.getMaxHP( ) << endl;
+}
+
+void printLine( )
+{
+    int i;
+
+    for ( i = 0; i < 40; i++ )
+    {
+        cout << char( 205 );
+    }
+}
+
+
+
+void tutorial( trainer &player )
+{
+    bool valid = false;
+    int option = 0;
+    beast starter;
+    string name;
+
+    cout << "Welcome to the realm of Elebeasts!" << endl << endl;;
+    cout << "Here, you battle with your beasts to become the best" <<
+        " beast master in the land!" << endl << endl;
+    cout << "Your first step is to choose which beast you want to begin" <<
+        " your adventure with. (enter 1, 2, or 3)" << endl << endl;
+    while ( !valid )
+    {
+        cout << "1: Flacora - The fire pup" << endl;
+        cout << "2: Stropie - The water reptile" << endl;
+        cout << "3: Fotosin - The grass dinosaur" << endl << endl;
+
+        cin >> option;
+
+        if ( option < 1 || option > 3 )
+            cout << "Invalid option. Choose 1, 2, or 3" << endl << endl;
+        else
+            valid = true;
+    }
+    valid = false;
+
+    cout << "You chose " << starter.nickName << '.' << endl;
+
+    if ( option == 1 )
+        getData( starter, 1 );
+    else if ( option == 2 )
+        getData( starter, 4 );
+    else
+        getData( starter, 7 );
+
+    player.party[0] = starter;
+
+    while ( !valid )
+    {
+        cout << "Would you like to give your beast a nick name?" << endl;
+        cout << "1: Yes\n2: No" << endl;
+
+        cin >> option;
+
+        if ( option != 1 && option != 2 )
+            cout << "Please choose 1 or 2" << endl;
+        else valid = true;
+    }
+    valid = false;
+
+    while ( !valid )
+    {
+        cout << "Enter a nick name. (max 15 characters)" << endl;
+
+        cin >> name;
+
+        if ( name.size( ) > 15 )
+            cout << "That name is too long." << endl;
+
+    }
+
+    cout << "Your adventure begins!" << endl << endl;
 }

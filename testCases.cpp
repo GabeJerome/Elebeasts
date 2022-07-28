@@ -443,11 +443,12 @@ TEST_CASE( "healthBar" )
 
     REQUIRE( true );
 }
-*/
+
 
 
 TEST_CASE( "wildBattle" )
 {
+    battle battle;
     trainer me;
     beast myBeast1( 40, Drakosis ), myBeast2( 41, Volcorage ), myBeast3( 34, Apolozard );
     beast oppBeast( 40, Reptide );
@@ -456,7 +457,25 @@ TEST_CASE( "wildBattle" )
     me.party[1] = myBeast2;
     me.party[2] = myBeast3;
     
-    wildBattle( me, oppBeast );
+    battle.wildBattle( me, oppBeast );
 
     REQUIRE( true );
+}
+*/
+
+
+TEST_CASE( "saveFile" )
+{
+    trainer me, me2;
+    beast myBeast1( 40, Drakosis ), myBeast2( 41, Volcorage ), myBeast3( 34, Apolozard );
+
+    me.party[0] = myBeast1;
+    me.party[1] = myBeast2;
+    me.party[2] = myBeast3;
+
+    REQUIRE( saveFile( me, 1 ) );
+
+    REQUIRE( loadFile( me2, 1 ) );
+
+    me2.printParty( );
 }
