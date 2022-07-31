@@ -200,6 +200,8 @@ void healthBar( beast curr )
     cout << curr.currentHealth << '/' << curr.getMaxHP( ) << endl;
 }
 
+
+
 void printLine( )
 {
     int i;
@@ -217,12 +219,15 @@ void tutorial( trainer &player )
     bool valid = false;
     int option = 0;
     beast starter;
-    string name;
 
     cout << "Welcome to the realm of Elebeasts!" << endl << endl;;
     cout << "Here, you battle with your beasts to become the best" <<
         " beast master in the land!" << endl << endl;
-    cout << "Your first step is to choose which beast you want to begin" <<
+
+    getPlayerName( player );
+
+    cout << "Okay " << player.name << ". " << "Your first step is to " << 
+        "choose which beast you want to begin" <<
         " your adventure with. (enter 1, 2, or 3)" << endl << endl;
     while ( !valid )
     {
@@ -239,8 +244,6 @@ void tutorial( trainer &player )
     }
     valid = false;
 
-    cout << "You chose " << starter.nickName << '.' << endl;
-
     if ( option == 1 )
         getData( starter, 1 );
     else if ( option == 2 )
@@ -250,6 +253,8 @@ void tutorial( trainer &player )
 
     player.party[0] = starter;
 
+    cout << "You chose " << starter.nickName << '.' << endl;
+
     while ( !valid )
     {
         cout << "Would you like to give your beast a nick name?" << endl;
@@ -257,11 +262,28 @@ void tutorial( trainer &player )
 
         cin >> option;
 
-        if ( option != 1 && option != 2 )
+        if ( option == 1 )
+        {
+            giveNickname( player );
+            valid = true;
+        }
+        else if ( option == 2 )
+            valid = true;
+        else
             cout << "Please choose 1 or 2" << endl;
-        else valid = true;
     }
-    valid = false;
+    
+    cout << "You and " << player.party[0].nickName << " will now begin your adventure!" << endl << endl;
+}
+
+
+
+void giveNickname( trainer &player )
+{
+    bool valid = false, valid2 = false;
+    int option = -1;
+    int i;
+    string name;
 
     while ( !valid )
     {
@@ -271,8 +293,80 @@ void tutorial( trainer &player )
 
         if ( name.size( ) > 15 )
             cout << "That name is too long." << endl;
+        else
+        {
+            valid2 = false;
+            while ( !valid2 )
+            {
+                cout << "Are you sure you want to go with " << name << "?" << endl;
+                cout << "1: Yes\n2: No" << endl;
+                cin >> option;
 
+                if ( option == 1 )
+                    valid = valid2 = true;
+                else if ( option != 2 )
+                    cout << "That is not a valid option." << endl;
+                else
+                    valid2 = true;
+            }
+        }
     }
 
-    cout << "Your adventure begins!" << endl << endl;
+    for ( i = 0; i < name.size( ); i++ )
+    {
+        player.party[0].nickName[i] = name[i];
+    }
+
+    while ( i < 16 )
+    {
+        player.party[0].nickName[i] = '\0';
+        i++;
+    }
+}
+
+void getPlayerName( trainer &player )
+{
+    bool valid = false, valid2 = false;
+    int i;
+    int option = -1;
+    string name;
+
+    while ( !valid )
+    {
+        cout << "Enter your name. (max 15 characters)" << endl;
+
+        cin >> name;
+
+        if ( name.size( ) > 15 )
+            cout << "That name is too long." << endl;
+        else
+        {
+            valid2 = false;
+            while ( !valid2 )
+            {
+                cout << "Your name is " << name << "?" << endl;
+                cout << "1: Yes\n2: No" << endl;
+                
+                cin >> option;
+
+                if ( option == 1 )
+                    valid = valid2 = true;
+                else if ( option != 2 )
+                    cout << "That is not a valid option." << endl;
+                else
+                    valid2 = true;
+            }
+        }
+    }
+
+    for ( i = 0; i < name.size( ); i++ )
+    {
+        player.name[i] = name[i];
+    }
+
+    while ( i < 16 )
+    {
+        player.name[i] = '\0';
+        i++;
+    }
 }

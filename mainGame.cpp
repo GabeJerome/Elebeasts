@@ -36,7 +36,10 @@ int main( )
     }
 
     if ( menuOption == 1 )
-    {
         tutorial( player );
+    else
+    {
+        cout << "Which file would you like to load?" << endl;
+        //display files 1, 2, and 3 with trainer names beside each.
     }
 }

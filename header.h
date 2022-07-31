@@ -14,3 +14,7 @@ bool saveFile( trainer &player, int num );
 bool loadFile( trainer &player, int num );
 
 void tutorial( trainer &player );
+
+void giveNickname( trainer &player );
+
+void getPlayerName( trainer &player );
