@@ -467,15 +467,47 @@ TEST_CASE( "wildBattle" )
 TEST_CASE( "saveFile" )
 {
     trainer me, me2;
-    beast myBeast1( 40, Drakosis ), myBeast2( 41, Volcorage ), myBeast3( 34, Apolozard );
 
-    me.party[0] = myBeast1;
-    me.party[1] = myBeast2;
-    me.party[2] = myBeast3;
+    SECTION( "File 1" )
+    {
+        beast myBeast1( 40, Drakosis ), myBeast2( 41, Volcorage ), myBeast3( 34, Apolozard );
 
-    REQUIRE( saveFile( me, 1 ) );
+        me.party[0] = myBeast1;
+        me.party[1] = myBeast2;
+        me.party[2] = myBeast3;
 
-    REQUIRE( loadFile( me2, 1 ) );
+        REQUIRE( saveFile( me, 1 ) );
 
-    me2.printParty( );
+        REQUIRE( loadFile( me2, 1 ) );
+
+        me2.printParty( );
+    }
+    SECTION( "File 2" )
+    {
+        beast myBeast1( 2, Stropie ), myBeast2( 4, Flacora );
+
+        me.party[0] = myBeast1;
+        me.party[1] = myBeast2;
+
+        REQUIRE( saveFile( me, 2 ) );
+
+        REQUIRE( loadFile( me2, 2 ) );
+
+        me2.printParty( );
+    }
+    SECTION( "File 3" )
+    {
+        beast myBeast1( 94, Volcorage ), myBeast2( 88, Reptide ), myBeast3( 34, Synthescor ), myBeast4( 4, Stropie );
+
+        me.party[0] = myBeast1;
+        me.party[1] = myBeast2;
+        me.party[2] = myBeast3;
+        me.party[3] = myBeast4;
+
+        REQUIRE( saveFile( me, 3 ) );
+
+        REQUIRE( loadFile( me2, 3 ) );
+
+        me2.printParty( );
+    }
 }

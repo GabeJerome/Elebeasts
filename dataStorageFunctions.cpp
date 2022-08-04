@@ -202,7 +202,5 @@ bool loadFile( trainer &player, int num )
     fin.seekg( ios::beg, 0 );
     fin.read( (char *)&player, sizeof( trainer ) );
 
-    cout << "Save file " << num << " loaded." << endl;
-
     return true;
 }

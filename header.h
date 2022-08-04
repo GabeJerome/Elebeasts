@@ -18,3 +18,7 @@ void tutorial( trainer &player );
 void giveNickname( trainer &player );
 
 void getPlayerName( trainer &player );
+
+void chooseFile( );
+
+void printTitle( );

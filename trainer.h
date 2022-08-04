@@ -324,10 +324,10 @@ inline void trainer::printParty( )
     for ( i = 0; i < 5; i++ )
     {
         if ( party[i].base.ID != -1 )
-            cout << i + 1 << ": " << party[i].nickName << " | Type: " << party[i].getType( ) <<
+            cout << setw(5) << i + 1 << ": " << party[i].nickName << " | Type: " << party[i].getType( ) <<
             " | HP: " << party[i].currentHealth << '/' << party[i].getMaxHP( ) << endl;
         else
-            cout << i + 1 << ": empty" << endl;
+            cout << setw(5) << i + 1 << ": empty" << endl;
     }
 }
 

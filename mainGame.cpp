@@ -25,12 +25,16 @@ int main( )
     trainer player;
     bool valid = false;
     beast starter;
+    int i;
 
     
+    printTitle( );
+
     while (menuOption != 1 && menuOption != 2)
     {
         cout << "Enter 1 to start a new game or enter 2 to load your file: ";
         cin >> menuOption;
+        cout << endl;
         if (menuOption != 1 && menuOption != 2)
             cout << "That's not a valid option!" << endl << endl;
     }
@@ -39,7 +43,13 @@ int main( )
         tutorial( player );
     else
     {
-        cout << "Which file would you like to load?" << endl;
+        
+
+        chooseFile( );
+
+        //cout << "Save file " << input << " loaded." << endl;
         //display files 1, 2, and 3 with trainer names beside each.
     }
+
+    return 0;
 }

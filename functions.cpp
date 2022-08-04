@@ -370,3 +370,51 @@ void getPlayerName( trainer &player )
         i++;
     }
 }
+
+void chooseFile( )
+{
+    int i;
+    trainer player;
+    int fileNum;
+    bool valid = false;
+
+
+    cout << "Which file would you like to load?" << endl << endl;
+    for ( i = 1; i < 4; i++ )
+    {
+        loadFile( player, i );
+        cout << "Save File " << i << ": " << endl;
+        cout << player.name << endl;
+        player.printParty( );
+        cout << endl;
+    }
+
+    while ( !valid )
+    {
+        cout << "Enter a file number ";
+        cin >> fileNum;
+
+        if ( fileNum );
+    }
+}
+
+
+//FINISH THIS
+void printTitle( )
+{
+    int i;
+
+    for ( i = 0; i < 75; i++ )
+        cout << char( 205 );
+    cout << endl << setw( 10 ) << char( 218 ) << char( 196 ) << char( 196 ) << char( 196 );
+
+    cout << endl << setw( 10 ) << char( 179 ) << setw( 5 );
+
+    cout << endl << setw( 10 ) << char( 195 ) << char( 196 ) << char( 196 ) << setw( 3 ) << char( 179 ) << setw( 3 ) << char( 218 ) << char( 196 ) << char( 196 ) << setw( 2 ) << char( 218 ) << char( 196 ) << char( 191 ) << setw( 2 ) << char( 218 ) << char( 196 ) << char( 196 );
+
+    cout << endl << setw( 10 ) << char( 179 ) << setw( 5 ) << char( 179 ) << setw(3 ) << char(195 ) << char(196 ) << setw(3) << char( 195 ) << char(196 ) << char(193 ) << char(191 ) << char( 195 ) << char( 196 );
+
+    cout << endl << setw( 10 ) << char( 192 ) << char( 196 ) << char( 196 ) << char( 196 ) << " " << char( 192 ) << char( 196 ) << setw(2 ) << char( 192 ) << char(196 ) << char(196 ) << setw(2) << char( 192 ) << char(196 ) << char(196 ) << char( 217 ) << char( 192 ) << char( 196 ) << char( 196 );
+
+    cout << endl;
+}
