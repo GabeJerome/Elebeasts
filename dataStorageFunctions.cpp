@@ -82,11 +82,13 @@ bool getData( beast &newBeast, int beastID )
     }
 
     fin.clear( );
-    fin.seekg( ( beastID - 1 ) * sizeof( baseStats ), ios::beg );
+    fin.seekg( ( static_cast<unsigned long long>( beastID ) - 1 ) * sizeof( baseStats ), ios::beg );
     fin.read( (char *)&newBeast.base, sizeof( baseStats ) );
 
     for ( i = 0; i < 16; i++ )
         newBeast.nickName[i] = newBeast.base.name[i];
+
+    newBeast.currentHealth = newBeast.getMaxHP( );
 
     fin.close( );
 
@@ -149,7 +151,7 @@ bool getData( Move &newMove, int moveID )
         return false;
     }
     fin.clear( );
-    fin.seekg( ( moveID - 1 ) * sizeof( Move ), ios::beg );
+    fin.seekg( ( static_cast<unsigned long long>( moveID ) - 1 ) * sizeof( Move ), ios::beg );
     fin.read( (char *)&newMove, sizeof( Move ) );
 
     fin.close( );
@@ -198,6 +200,9 @@ bool loadFile( trainer &player, int num )
         cout << "Could not load save file " << num << '.' << endl;
         return false;
     }
+
+    if ( fin.peek( ) == EOF )
+        return false;
 
     fin.seekg( ios::beg, 0 );
     fin.read( (char *)&player, sizeof( trainer ) );

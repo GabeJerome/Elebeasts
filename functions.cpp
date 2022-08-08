@@ -371,50 +371,74 @@ void getPlayerName( trainer &player )
     }
 }
 
-void chooseFile( )
+
+
+void chooseFile( trainer &player )
 {
     int i;
-    trainer player;
+    trainer testPlayer;
     int fileNum;
     bool valid = false;
-
 
     cout << "Which file would you like to load?" << endl << endl;
     for ( i = 1; i < 4; i++ )
     {
-        loadFile( player, i );
         cout << "Save File " << i << ": " << endl;
-        cout << player.name << endl;
-        player.printParty( );
+        if ( loadFile( testPlayer, i ) )
+        {
+            cout << testPlayer.name << endl;
+            testPlayer.printParty( );
+        }
+        else
+            cout << "New Game" << endl;
         cout << endl;
     }
 
     while ( !valid )
     {
-        cout << "Enter a file number ";
+        cout << "Enter a file number: ";
         cin >> fileNum;
 
-        if ( fileNum );
+        if ( fileNum < 1 || fileNum > 3 )
+            cout << "That is not a valid input (choose 1, 2, or 3)" << endl;
+        else
+            valid = true;
+    }
+
+    if ( loadFile( player, fileNum ) )
+    {
+        cout << "File " << fileNum << " loading..." << endl;
+        this_thread::sleep_for( chrono::seconds( 3 ) );
+        valid = true;
+    }
+    else
+    {
+        tutorial( player );
+        valid = true;
     }
 }
 
 
-//FINISH THIS
+
 void printTitle( )
 {
     int i;
 
-    for ( i = 0; i < 75; i++ )
+    for ( i = 0; i < 58; i++ )
         cout << char( 205 );
     cout << endl << setw( 10 ) << char( 218 ) << char( 196 ) << char( 196 ) << char( 196 );
 
     cout << endl << setw( 10 ) << char( 179 ) << setw( 5 );
 
-    cout << endl << setw( 10 ) << char( 195 ) << char( 196 ) << char( 196 ) << setw( 3 ) << char( 179 ) << setw( 3 ) << char( 218 ) << char( 196 ) << char( 196 ) << setw( 2 ) << char( 218 ) << char( 196 ) << char( 191 ) << setw( 2 ) << char( 218 ) << char( 196 ) << char( 196 );
+    cout << endl << setw( 10 ) << char( 195 ) << char( 196 ) << char( 196 ) << setw( 3 ) << char( 179 ) << setw( 3 ) << char( 218 ) << char( 196 ) << char( 196 ) << setw( 2 ) << char( 218 ) << char( 196 ) << char( 191 ) << setw( 2 ) << char( 218 ) << char( 196 ) << char( 196 ) << setw(2) << char(218 ) << char(196 ) << char( 196 ) << char( 191 ) << setw(2) << char(218 ) << char( 196 ) << char( 196 ) << char( 191 ) << setw(2) << char( 218 ) << char( 196 ) << char( 194 ) << char( 196 ) << char( 191 ) << setw( 2 ) << char( 218 ) << char( 196 ) << char( 196 ) << char( 191 );
 
-    cout << endl << setw( 10 ) << char( 179 ) << setw( 5 ) << char( 179 ) << setw(3 ) << char(195 ) << char(196 ) << setw(3) << char( 195 ) << char(196 ) << char(193 ) << char(191 ) << char( 195 ) << char( 196 );
+    cout << endl << setw( 10 ) << char( 179 ) << setw( 5 ) << char( 179 ) << setw(3 ) << char(195 ) << char(196 ) << setw(3) << char( 195 ) << char(196 ) << char(193 ) << char(191 ) << char( 195 ) << char( 196 ) << setw(3) << char(195 ) << char( 196 ) << char( 196 ) << char( 180 ) << setw(2) << char( 192 ) << char( 196 ) << char( 196 ) << char( 191 ) << setw(4) << char( 179 ) << setw( 4 ) << char( 192 ) << char( 196 ) << char( 196 ) << char( 191 );
 
-    cout << endl << setw( 10 ) << char( 192 ) << char( 196 ) << char( 196 ) << char( 196 ) << " " << char( 192 ) << char( 196 ) << setw(2 ) << char( 192 ) << char(196 ) << char(196 ) << setw(2) << char( 192 ) << char(196 ) << char(196 ) << char( 217 ) << char( 192 ) << char( 196 ) << char( 196 );
+    cout << endl << setw( 10 ) << char( 192 ) << char( 196 ) << char( 196 ) << char( 196 ) << " " << char( 192 ) << char( 196 ) << setw(2 ) << char( 192 ) << char(196 ) << char(196 ) << setw(2) << char( 192 ) << char(196 ) << char(196 ) << char( 217 ) << char( 192 ) << char( 196 ) << char( 196 ) << setw( 2 ) << char( 193 ) << setw(3) << char( 193 ) << setw(2) << char( 192 ) << char( 196 ) << char( 196 ) << char( 217 ) << setw(4) << char( 193 ) << setw( 4 ) << char( 192 ) << char( 196 ) << char( 196 ) << char( 217 );
+
+    cout << endl;
+    for ( i = 0; i < 58; i++ )
+        cout << char( 205 );
 
     cout << endl;
 }

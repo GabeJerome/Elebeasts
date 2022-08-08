@@ -461,7 +461,7 @@ TEST_CASE( "wildBattle" )
 
     REQUIRE( true );
 }
-*/
+
 
 
 TEST_CASE( "saveFile" )
@@ -482,19 +482,6 @@ TEST_CASE( "saveFile" )
 
         me2.printParty( );
     }
-    SECTION( "File 2" )
-    {
-        beast myBeast1( 2, Stropie ), myBeast2( 4, Flacora );
-
-        me.party[0] = myBeast1;
-        me.party[1] = myBeast2;
-
-        REQUIRE( saveFile( me, 2 ) );
-
-        REQUIRE( loadFile( me2, 2 ) );
-
-        me2.printParty( );
-    }
     SECTION( "File 3" )
     {
         beast myBeast1( 94, Volcorage ), myBeast2( 88, Reptide ), myBeast3( 34, Synthescor ), myBeast4( 4, Stropie );
@@ -511,3 +498,4 @@ TEST_CASE( "saveFile" )
         me2.printParty( );
     }
 }
+*/

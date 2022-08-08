@@ -20,36 +20,26 @@ int main( )
     }
 
 
-    int menuOption = 0;
     int option = 0;
     trainer player;
     bool valid = false;
     beast starter;
-    int i;
 
     
     printTitle( );
 
-    while (menuOption != 1 && menuOption != 2)
+    do 
     {
-        cout << "Enter 1 to start a new game or enter 2 to load your file: ";
-        cin >> menuOption;
-        cout << endl;
-        if (menuOption != 1 && menuOption != 2)
-            cout << "That's not a valid option!" << endl << endl;
-    }
+        cout << '\n' << "Press enter to start...";
+    } while ( !cin.get( ) );
 
-    if ( menuOption == 1 )
-        tutorial( player );
-    else
-    {
-        
+    chooseFile( player );
 
-        chooseFile( );
+    cout << endl << endl;
 
-        //cout << "Save file " << input << " loaded." << endl;
-        //display files 1, 2, and 3 with trainer names beside each.
-    }
+    player.printParty( );
+
+    //Main menu complete, start game
 
     return 0;
 }

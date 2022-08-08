@@ -19,6 +19,6 @@ void giveNickname( trainer &player );
 
 void getPlayerName( trainer &player );
 
-void chooseFile( );
+void chooseFile( trainer &player );
 
 void printTitle( );
