@@ -447,3 +447,62 @@ void printTitle( )
 
     cout << endl;
 }
+
+
+
+void findEvolution( beast &randBeast )
+{
+    beast belowBeast;
+
+    getData( randBeast, randBeast.base.ID );
+
+    if( randBeast.base.ID != 1 )
+        getData( belowBeast, randBeast.base.ID - 1 );
+    else
+        getData( belowBeast, randBeast.base.ID );
+
+
+    if ( randBeast.getLevel( ) >= randBeast.base.evolveLevel )
+    {
+        randBeast.base.ID++;
+        return findEvolution( randBeast );
+    }
+
+    if ( belowBeast.base.evolveLevel != 101 && randBeast.getLevel( ) < belowBeast.base.evolveLevel )
+    {
+        randBeast.base.ID--;
+        return findEvolution( randBeast );
+    }
+}
+
+
+
+void generateRandBeast( trainer player, beast &randBeast )
+{
+    int maxExp = player.party[0].getExp( );
+    int lowExpBound, highExpBound;
+    int i;
+    random_device rand;
+    int randExp, randID;
+
+    for ( i = 1; i < 5; i++ )
+    {
+        if ( maxExp < player.party[i].getExp( ) )
+        {
+            maxExp = player.party[i].getExp( );
+        }
+    }
+
+    lowExpBound = int( maxExp - ( maxExp * ( 2 / cbrt( maxExp ) ) ) );
+    highExpBound = int( maxExp + ( maxExp * ( 5 / cbrt( maxExp ) ) ) );
+
+    randExp = ( rand( ) % ( highExpBound - lowExpBound ) + 1 ) + lowExpBound;
+
+    randID = ( rand( ) % TOTAL_BEASTS ) + 1;
+
+    randBeast.setExp( randExp );
+
+    getData( randBeast, randID );
+
+    findEvolution( randBeast );
+}

@@ -12,7 +12,7 @@ TEST_CASE( "Store Data" )
     storeBeastDataBinary( );
 }
 
-TEST_CASE( "random_device test" )
+/*TEST_CASE( "random_device test" )
 {
     std::random_device hit;
     unsigned int min, max, val;
@@ -61,7 +61,7 @@ TEST_CASE( "gainExp" )
 TEST_CASE( "getLevel" )
 {
     const short int flacoraLearnSet[50] = { 128, 389, 0 };
-    /*SECTION( "level 1 lower" )
+    SECTION( "level 1 lower" )
     {
         beast testBeast( "Flacora", 0, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 1 );
@@ -80,7 +80,7 @@ TEST_CASE( "getLevel" )
     {
         beast testBeast( "Flacora", 26, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, flacoraLearnSet );
         REQUIRE( testBeast.getLevel( ) == 2 );
-    }*/
+    }
     SECTION( "level 3 lower" )
     {
         beast testBeast( "Flacora", 27, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, flacoraLearnSet );
@@ -378,7 +378,7 @@ TEST_CASE( "reading move data from file" )
 
 
 
-/*
+
 TEST_CASE( "Capture Beast" )
 {
     trainer me;
@@ -498,7 +498,7 @@ TEST_CASE( "saveFile" )
         me2.printParty( );
     }
 }
-*/
+
 
 
 TEST_CASE( "Trainer Battle" )
@@ -517,4 +517,130 @@ TEST_CASE( "Trainer Battle" )
     battle.trainerBattle( me, opponent );
 
     REQUIRE( true );
+}
+*/
+
+
+TEST_CASE( "findEvolution" )
+{
+    beast testBeast;
+
+    SECTION( "Level 5 Flacora" )
+    {
+        string ans = "Flacora";
+
+        testBeast.setExp( 126 );
+        getData( testBeast, Flacora );
+
+        findEvolution( testBeast );
+
+        REQUIRE( testBeast.nickName == ans );
+    }
+    SECTION( "Level 6 Stropie" )
+    {
+        string ans = "Stropie";
+
+        testBeast.setExp( 220 );
+        getData( testBeast, Stropie );
+
+        findEvolution( testBeast );
+
+        REQUIRE( testBeast.nickName == ans );
+    }
+    SECTION( "Level 19 Stropie" )
+    {
+        string ans = "Apolozard";
+
+        testBeast.setExp( 6859 );
+        getData( testBeast, Stropie );
+
+        findEvolution( testBeast );
+
+        REQUIRE( testBeast.nickName == ans );
+    }
+    SECTION( "Level 13 Apolozard" )
+    {
+        string ans = "Stropie";
+
+        testBeast.setExp( 2197 );
+        getData( testBeast, Apolozard );
+
+        findEvolution( testBeast );
+
+        REQUIRE( testBeast.nickName == ans );
+    }
+    SECTION( "Level 41 Stropie" )
+    {
+        string ans = "Reptide";
+
+        testBeast.setExp( 68921 );
+        getData( testBeast, Apolozard );
+
+        findEvolution( testBeast );
+
+        REQUIRE( testBeast.nickName == ans );
+    }
+    SECTION( "Level 2 Reptide" )
+    {
+        string ans = "Stropie";
+
+        testBeast.setExp( 8 );
+        getData( testBeast, Reptide );
+
+        findEvolution( testBeast );
+
+        REQUIRE( testBeast.nickName == ans );
+    }
+    SECTION( "Level 42 Apolozard" )
+    {
+        string ans = "Reptide";
+
+        testBeast.setExp( 74088 );
+        getData( testBeast, Apolozard );
+
+        findEvolution( testBeast );
+
+        REQUIRE( testBeast.nickName == ans );
+    }
+
+}
+
+
+
+TEST_CASE( "generateRandBeast" )
+{
+    beast testBeast;
+    trainer testTrainer;
+    beast beast1, beast2, beast3;
+    int i;
+    random_device rand;
+
+    for ( i = 0; i < 10; i++ )
+    {
+        beast1.setExp( rand( ) % 100000 );
+        beast2.setExp( rand( ) % 100000 );
+        beast3.setExp( rand( ) % 100000 );
+
+        getData( beast1, Stropie );
+        getData( beast2, Flacora );
+        getData( beast3, Fotosin );
+
+        testTrainer.party[0] = beast1;
+        testTrainer.party[1] = beast2;
+        testTrainer.party[2] = beast3;
+
+        generateRandBeast( testTrainer, testBeast );
+
+        printLine( );
+        cout << endl;
+
+        cout << "Beast 1 Exp/Level: " << beast1.getExp( ) << "/" << beast1.getLevel( ) << endl;
+        cout << "Beast 2 Exp/Level: " << beast2.getExp( ) << "/" << beast2.getLevel( ) << endl;
+        cout << "Beast 3 Exp/Level: " << beast3.getExp( ) << "/" << beast3.getLevel( ) << endl << endl;
+
+        cout << "Generated beast: " << testBeast.nickName << "\nExp/Level: " << testBeast.getExp( ) << "/" << testBeast.getLevel( ) << endl;
+
+        printLine( );
+        cout << endl;
+    }
 }

@@ -2,7 +2,7 @@
 #include "catch.hpp"
 #include "header.h"
 
-const bool RUNCATCH = false;
+const bool RUNCATCH = true;
 
 int main( )
 {
@@ -38,6 +38,8 @@ int main( )
     cout << endl << endl;
 
     //Main menu complete, start game
+
+
     
     return 0;
 }
