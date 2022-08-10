@@ -13,6 +13,7 @@ public:
     battle( );
     ~battle( );
     bool wildBattle( trainer &player, beast &opp );
+    bool trainerBattle( trainer &player, trainer opponent );
     void displayBattleMenu( trainer &player );
     bool displayCurrBeastSwap( trainer &player );
 
@@ -43,6 +44,8 @@ inline bool battle::wildBattle( trainer &player, beast &opp )
     beast nullBeast;
     bool won;
 
+    player.inWildBattle = true;
+
     player.currOpponent = opp;
 
     while ( !checkLoss( player ) && player.currOpponent.currentHealth != 0 )
@@ -61,7 +64,52 @@ inline bool battle::wildBattle( trainer &player, beast &opp )
     player.setCurrBeast( );
     player.currOpponent = nullBeast;
 
+    player.inWildBattle = false;
+
     return won;
+}
+
+inline bool battle::trainerBattle( trainer &player, trainer opponent )
+{
+    int currOpponentBeast = 0;
+    
+    player.currOpponent = opponent.party[currOpponentBeast];
+    
+    while ( true )
+    {
+        opponent.party[currOpponentBeast] = player.currOpponent;
+
+        //loss
+        if ( checkLoss( player ) )
+        {
+            cout << "You lost to " << opponent.name << "." << endl;
+            return false;
+        }
+        //win
+        if ( checkLoss( opponent ) )
+        {
+            cout << "You beat " << opponent.name << "." << endl;
+            return true;
+        }
+
+        if ( opponent.party[currOpponentBeast].currentHealth <= 0 )
+        {
+            this_thread::sleep_for( chrono::seconds( 1 ) );
+            cout << player.currOpponent.nickName << " fainted." << endl;
+            this_thread::sleep_for( chrono::seconds( 1 ) );
+            currOpponentBeast++;
+            player.currOpponent = opponent.party[currOpponentBeast];
+            cout << opponent.name << " sent out " << opponent.party[currOpponentBeast].nickName << "." << endl;
+            this_thread::sleep_for( chrono::seconds( 1 ) );
+        }
+
+        displayBattleMenu( player );
+    }
+
+    return false;
+
+    //Test this function
+    //Test player loss
 }
 
 
@@ -104,7 +152,6 @@ inline void battle::displayBattleMenu( trainer &player )
         if ( option == 4 )
             valid = displayCurrBeastSwap( player );
     }
-    //Finish alongside wildBattle function in functions.cpp
 }
 
 

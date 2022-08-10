@@ -499,3 +499,24 @@ TEST_CASE( "saveFile" )
     }
 }
 */
+
+
+TEST_CASE( "Trainer Battle" )
+{
+    battle battle;
+    trainer me, opponent;
+    beast myBeast1( 40, Drakosis ), myBeast2( 41, Volcorage ), myBeast3( 34, Apolozard );
+    beast oppBeast1( 40, Reptide ), oppBeast2( 46, Synthescor ), oppBeast3( 40, Volcorage );
+
+    me.party[0] = myBeast1;
+    me.party[1] = myBeast2;
+    me.party[2] = myBeast3;
+
+    opponent.party[0] = oppBeast1;
+    opponent.party[1] = oppBeast2;
+    opponent.party[2] = oppBeast3;
+
+    battle.trainerBattle( me, opponent );
+
+    REQUIRE( true );
+}

@@ -2,7 +2,7 @@
 #include "catch.hpp"
 #include "header.h"
 
-const bool RUNCATCH = false;
+const bool RUNCATCH = true;
 
 int main( )
 {
@@ -40,6 +40,6 @@ int main( )
     player.printParty( );
 
     //Main menu complete, start game
-
+    
     return 0;
 }

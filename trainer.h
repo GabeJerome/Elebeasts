@@ -38,6 +38,7 @@ public:
     int currBeast;
     int money;
     beast currOpponent;
+    bool inWildBattle;
     
     bool enterBag( );
     void swapParty( int beast1, int beast2 );
@@ -72,6 +73,7 @@ inline trainer::trainer( )
 
     currBeast = 0;
     money = 0;
+    inWildBattle = false;
 }
 
 

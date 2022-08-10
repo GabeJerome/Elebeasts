@@ -128,16 +128,16 @@ bool enterBalls( trainer &player )
         if ( input == i + 1 )
             return false;
 
-        if ( player.currOpponent.base.ID == -1 )
-        {
-            cout << "You can't use that here!" << endl;
-            return false;
-        }
+        
 
         if ( input < 1 || input > 3 )
             cout << "Invalid option. Please choose 1 - 4." << endl;
+        else if ( player.currOpponent.base.ID == -1 )
+            cout << "You can't use that here!" << endl;
         else if ( find( player.bag.balls[input - 1], 1, 20 ) == -1 )
             cout << "You don't have any of those! Choose another." << endl;
+        else if ( !player.inWildBattle )
+            cout << "You can only catch wild beasts!" << endl;
         else
             valid = true;
     }
@@ -159,6 +159,7 @@ bool checkLoss( trainer &player )
 
     for ( i = 0; i < 5; i++ )
     {
+        //if there is a beast in this spot and it has more than zero health
         if ( player.party[i].base.ID != -1 && player.party[i].currentHealth != 0 )
             return false;
     }
@@ -192,11 +193,14 @@ void healthBar( beast curr )
         cout << ' ';
     cout << char( 179 ) << endl;
 
+    cout << "lvl " << curr.getLevel( );
+
     while ( curr.nickName[i] != '\0' )
     {
         cout << ' ';
         i++;
     }
+    cout << setw( 14 );
     cout << curr.currentHealth << '/' << curr.getMaxHP( ) << endl;
 }
 
