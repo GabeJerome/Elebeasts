@@ -343,10 +343,6 @@ inline bool beast::attack( Move move, beast &opponent )
         this_thread::sleep_for( chrono::seconds( 1 ) );
     }
 
-
-    //TODO: add comments
-
-
     if ( hit < 5 )
         critical = 1.5;
 

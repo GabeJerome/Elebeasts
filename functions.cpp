@@ -413,6 +413,7 @@ void chooseFile( trainer &player )
     {
         cout << "File " << fileNum << " loading..." << endl;
         this_thread::sleep_for( chrono::seconds( 3 ) );
+        cout << "Welcom back " << player.name << '!' << endl;
         valid = true;
     }
     else

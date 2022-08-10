@@ -69,6 +69,8 @@ inline bool battle::wildBattle( trainer &player, beast &opp )
     return won;
 }
 
+
+
 inline bool battle::trainerBattle( trainer &player, trainer opponent )
 {
     int currOpponentBeast = 0;
@@ -103,13 +105,13 @@ inline bool battle::trainerBattle( trainer &player, trainer opponent )
             this_thread::sleep_for( chrono::seconds( 1 ) );
         }
 
+        if ( player.party[player.currBeast].currentHealth == 0 )
+            player.displayFaintedBeastSwap( );
+
         displayBattleMenu( player );
     }
 
     return false;
-
-    //Test this function
-    //Test player loss
 }
 
 
@@ -136,8 +138,15 @@ inline void battle::displayBattleMenu( trainer &player )
 
         cin >> option;
 
+        
+
         if ( option < 1 || option > 4 )
             cout << "Invalid option. Please choose 1 - 4." << endl;
+        else if ( option == 2 && !player.inWildBattle )
+        {
+            cout << "You can't run from trainer battles!" << endl;
+            this_thread::sleep_for( chrono::seconds( 1 ) );
+        }
         else
             valid = true;
 
@@ -145,7 +154,7 @@ inline void battle::displayBattleMenu( trainer &player )
 
         if ( option == 1 )
             player.fight( );
-        if ( option == 2 )
+        if ( option == 2 && player.inWildBattle )
             player.party[player.currBeast].runAway( player.currOpponent );
         if ( option == 3 )
             valid = player.enterBag( );
@@ -160,6 +169,8 @@ inline bool battle::displayCurrBeastSwap( trainer &player )
 {
     int option = -1;
     bool valid = false;
+    random_device rand;
+    int randMove = rand( ) % 4;
 
     cout << "Choose a beast to swap." << endl;
 
@@ -187,7 +198,12 @@ inline bool battle::displayCurrBeastSwap( trainer &player )
 
     player.currBeast = option - 1;
 
-    cout << "Swapped to " << player.party[player.currBeast].nickName << '!' << endl;
+    cout << "Swapped to " << player.party[player.currBeast].nickName << '!' << endl << endl;
+
+    while ( player.currOpponent.move[randMove].type == -1 )
+        randMove = rand( ) % 4;
+
+    player.currOpponent.attack( player.currOpponent.move[randMove], player.party[player.currBeast] );
 
     return true;
 }

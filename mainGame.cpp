@@ -2,7 +2,7 @@
 #include "catch.hpp"
 #include "header.h"
 
-const bool RUNCATCH = true;
+const bool RUNCATCH = false;
 
 int main( )
 {
@@ -36,8 +36,6 @@ int main( )
     chooseFile( player );
 
     cout << endl << endl;
-
-    player.printParty( );
 
     //Main menu complete, start game
     

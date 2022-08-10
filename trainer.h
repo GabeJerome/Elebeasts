@@ -52,9 +52,10 @@ public:
     friend bool enterBalls( trainer &player );
     int giveHeals( int healer, int numHeals );
     int giveBalls( int ballType, int numBalls );
+    void displayFaintedBeastSwap( );
 
 private:
-    void displayFaintedBeastSwap( );
+    
     //add beast storage box?
     //add achievments?
 };
@@ -274,6 +275,8 @@ inline bool trainer::fight( )
 
     return false;
 }
+
+
 
 inline void trainer::setCurrBeast( )
 {
