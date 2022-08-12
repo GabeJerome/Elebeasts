@@ -195,6 +195,7 @@ void healthBar( beast curr )
 
     cout << "lvl " << curr.getLevel( );
 
+    i = 0;
     while ( curr.nickName[i] != '\0' )
     {
         cout << ' ';
@@ -450,33 +451,6 @@ void printTitle( )
 
 
 
-void findEvolution( beast &randBeast )
-{
-    beast belowBeast;
-
-    getData( randBeast, randBeast.base.ID );
-
-    if( randBeast.base.ID != 1 )
-        getData( belowBeast, randBeast.base.ID - 1 );
-    else
-        getData( belowBeast, randBeast.base.ID );
-
-
-    if ( randBeast.getLevel( ) >= randBeast.base.evolveLevel )
-    {
-        randBeast.base.ID++;
-        return findEvolution( randBeast );
-    }
-
-    if ( belowBeast.base.evolveLevel != 101 && randBeast.getLevel( ) < belowBeast.base.evolveLevel )
-    {
-        randBeast.base.ID--;
-        return findEvolution( randBeast );
-    }
-}
-
-
-
 void generateRandBeast( trainer player, beast &randBeast )
 {
     int maxExp = player.party[0].getExp( );
@@ -505,4 +479,89 @@ void generateRandBeast( trainer player, beast &randBeast )
     getData( randBeast, randID );
 
     findEvolution( randBeast );
+
+    randBeast.writeLearnSet( randBeast.base.moveSet );
+    randBeast.learnMoves( );
+}
+
+
+
+void findEvolution( beast &randBeast )
+{
+    beast belowBeast;
+
+    getData( randBeast, randBeast.base.ID );
+
+    if ( randBeast.base.ID != 1 )
+        getData( belowBeast, randBeast.base.ID - 1 );
+    else
+        getData( belowBeast, randBeast.base.ID );
+
+
+    if ( randBeast.getLevel( ) >= randBeast.base.evolveLevel )
+    {
+        randBeast.base.ID++;
+        return findEvolution( randBeast );
+    }
+
+    if ( belowBeast.base.evolveLevel != 101 && randBeast.getLevel( ) < belowBeast.base.evolveLevel )
+    {
+        randBeast.base.ID--;
+        return findEvolution( randBeast );
+    }
+}
+
+
+
+int displayWorldOptions( )
+{
+    int option = -1;
+
+    while ( true )
+    {
+        cout << "What would you like to do?" << endl;
+        cout << "1: Battle" << endl;
+        cout << "2: Bag" << endl;
+        cout << "3: Shop" << endl;
+        cout << "4: Beasts" << endl;
+
+        cin >> option;
+
+        if ( option > 0 && option < 5 )
+            return option;
+        else
+            cout << "That is not a valid input." << endl << endl;
+    }
+}
+
+
+
+void playerBattle( trainer &player )
+{
+    int option = -1;
+    bool valid = false;
+    battle currBattle;
+
+    while ( !valid )
+    {
+        cout << "What kind of battle do you want to do?" << endl;
+        cout << "1: Wild Battle" << endl;
+        cout << "2: Trainer Battle" << endl;
+        cout << "3: Boss Battle" << endl;
+        cout << "4: Back" << endl;
+
+        cin >> option;
+
+        if ( option == 4 )
+            return;
+
+        if ( option > 0 && option < 4 )
+            valid = true;
+        else
+            cout << "That is not a valid input." << endl << endl;
+    }
+
+    if ( option == 1 )
+        currBattle.wildBattle( player );
+    
 }

@@ -52,7 +52,6 @@ private:
     int experience;
     int currentStats[6];
     LearnSet learnSet[30];
-    void writeLearnSet( const short int moves[] );
     int lvlProgression[100] =
             /* 0       1       2       3       4       5       6       7       8       9*/
         /*0*/ {        0,      8,      27,     64,     125,    216,    343,    512,    729,
@@ -90,6 +89,7 @@ public:
     void evolve( );
     void changeBaseStats( beast &newBeast );
     void operator=( beast &newBeast );
+    void writeLearnSet( const short int moves[] );
     void learnMoves( );
     
 
@@ -478,10 +478,12 @@ inline void beast::operator=( beast &newBeast )
         nickName[i] = newBeast.nickName[i];
 
     for ( i = 0; i < 4; i++ )
-        move[i] = newBeast.move[i];
+        move[i] = newBeast.move[i]; 
 
     currentHealth = newBeast.currentHealth;
 }
+
+
 
 inline void beast::learnMoves( )
 {

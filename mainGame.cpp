@@ -39,7 +39,10 @@ int main( )
 
     //Main menu complete, start game
 
+    option = displayWorldOptions( );
 
+    if ( option == 1 )
+        playerBattle( player );
     
     return 0;
 }

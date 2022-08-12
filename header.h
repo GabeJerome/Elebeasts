@@ -25,6 +25,6 @@ void chooseFile( trainer &player );
 
 void printTitle( );
 
-void findEvolution( beast &randBeast );
+int displayWorldOptions( );
 
-void generateRandBeast( trainer player, beast &randBeast );
+void playerBattle( trainer &player );

@@ -3,6 +3,9 @@
 
 using namespace std;
 
+void generateRandBeast( trainer player, beast &randBeast );
+
+void findEvolution( beast &randBeast );
 
 #ifndef __BATTLE_H__
 #define __BATTLE_H__
@@ -12,8 +15,8 @@ class battle
 public:
     battle( );
     ~battle( );
-    bool wildBattle( trainer &player, beast &opp );
-    bool trainerBattle( trainer &player, trainer opponent );
+    bool wildBattle( trainer &player );
+    bool trainerBattle( trainer &player );
     void displayBattleMenu( trainer &player );
     bool displayCurrBeastSwap( trainer &player );
 
@@ -38,15 +41,17 @@ inline battle::~battle( )
 
 
 
-inline bool battle::wildBattle( trainer &player, beast &opp )
+inline bool battle::wildBattle( trainer &player )
 {
     random_device oppMove;
-    beast nullBeast;
+    beast randBeast, nullBeast;
     bool won;
+
+    generateRandBeast( player, randBeast );
 
     player.inWildBattle = true;
 
-    player.currOpponent = opp;
+    player.currOpponent = randBeast;
 
     while ( !checkLoss( player ) && player.currOpponent.currentHealth != 0 )
         displayBattleMenu( player );
@@ -71,11 +76,26 @@ inline bool battle::wildBattle( trainer &player, beast &opp )
 
 
 
-inline bool battle::trainerBattle( trainer &player, trainer opponent )
+inline bool battle::trainerBattle( trainer &player )
 {
+    trainer opponent;
     int currOpponentBeast = 0;
+    int i, numBeasts = 0;
+    beast randBeast;
+
+    for ( i = 0; i < 5; i++ )
+    {
+        if ( player.party[i].base.ID != -1 )
+            numBeasts++;
+    }
+
+    for ( i = 0; i < numBeasts; i++ )
+    {
+        generateRandBeast( player, randBeast );
+        opponent.party[i] = randBeast;
+    }
     
-    player.currOpponent = opponent.party[currOpponentBeast];
+    player.currOpponent = opponent.party[0];
     
     while ( true )
     {
