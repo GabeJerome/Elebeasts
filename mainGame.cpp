@@ -43,6 +43,7 @@ int main( )
 
     if ( option == 1 )
         playerBattle( player );
+    //continue options from displayWorldOptions
     
     return 0;
 }
