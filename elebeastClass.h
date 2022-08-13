@@ -80,7 +80,7 @@ public:
     beast( baseStats newBeast );
     beast( int level, int ID );
     ~beast( );
-    bool attack( Move move, beast &opponent );
+    bool attack( Move move, beast &opponent, bool enemy = false );
     bool runAway( beast &opponent );
     void levelUp( );
     void changeMove( int move, Move replaceWith );
@@ -300,20 +300,29 @@ const double effectiveChart[18][18] =
     /*Fairy    17*/ { 1 ,.5 , 1 , 1 , 1 , 1 , 2 ,.5 , 1 , 1 , 1 , 1 , 1 , 1 , 2 , 2 ,.5 , 1 }
 };
 
-inline bool beast::attack( Move move, beast &opponent )
+
+
+inline bool beast::attack( Move move, beast &opponent, bool enemy )
 {
     random_device rand;
     int hit = ( rand( ) % 100 ) + 1;
+    string oppName = opponent.nickName, name = this->nickName;
+
+    if ( enemy )
+        name = "Foe " + name;
+    else
+        oppName = "Foe " + name;
 
     this_thread::sleep_for( chrono::seconds( 1 ) );
-    cout << nickName << " used " << move.name << '.' << endl;
+    cout << name << " used " << move.name << '.' << endl;
     this_thread::sleep_for( chrono::seconds( 2 ) );
 
     if ( hit > move.accuracy )
     {
-        cout << this->nickName << " missed." << endl << endl;
+        cout << name << " missed." << endl << endl;
         return false;
     }
+
     double randRoll = ( double( ( rand( ) % 15 ) + 1 ) / 100 ) + .85;
     int damage;
     int Def, Att;
@@ -329,7 +338,7 @@ inline bool beast::attack( Move move, beast &opponent )
 
     if ( effectiveness == 0 )
     {
-        cout << "It doesn't affect " << opponent.nickName << '.' << endl;
+        cout << "It doesn't affect " << oppName << '.' << endl;
         this_thread::sleep_for( chrono::seconds( 1 ) );
     }
     else if ( effectiveness == .5 )
@@ -365,7 +374,7 @@ inline bool beast::attack( Move move, beast &opponent )
 
     opponent.currentHealth -= damage;
 
-    cout << opponent.nickName << " took " << damage << " damage." << endl << endl;
+    cout << oppName << " took " << damage << " damage." << endl << endl;
     this_thread::sleep_for( chrono::seconds( 1 ) );
 
     return true;

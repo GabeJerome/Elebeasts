@@ -567,3 +567,24 @@ void playerBattle( trainer &player )
         currBattle.trainerBattle( player );
     //continue creating more battles and testing
 }
+
+
+
+void getRandName( trainer &player )
+{
+    random_device rand;
+    ifstream fin;
+    char randName[16];
+
+    fin.open( "names.bin", ios::in | ios::binary | ios::beg );
+    if ( !fin.is_open( ) )
+    {
+        cout << "Could not open names.bin" << endl;
+        return;
+    }
+
+    fin.seekg( (rand( ) % 18240) * sizeof( randName ), fin.beg );
+    fin.read( (char *)&randName, sizeof( randName ) );
+
+    strcpy_s( player.name, 16, randName );
+}

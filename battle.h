@@ -7,6 +7,8 @@ void generateRandBeast( trainer player, beast &randBeast );
 
 void findEvolution( beast &randBeast );
 
+void getRandName( trainer &player );
+
 #ifndef __BATTLE_H__
 #define __BATTLE_H__
 
@@ -82,6 +84,8 @@ inline bool battle::trainerBattle( trainer &player )
     int currOpponentBeast = 0;
     int i, numBeasts = 0;
     beast randBeast;
+    
+    getRandName( opponent );
 
     for ( i = 0; i < 5; i++ )
     {

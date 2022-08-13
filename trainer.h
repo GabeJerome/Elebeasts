@@ -247,7 +247,7 @@ inline bool trainer::fight( )
         while ( currOpponent.move[randMove].type == -1 )
             randMove = rand( ) % 4;
 
-        currOpponent.attack( currOpponent.move[randMove], party[currBeast] );
+        currOpponent.attack( currOpponent.move[randMove], party[currBeast], true );
 
         if ( checkLoss( *this ) )
             return false;
@@ -265,7 +265,7 @@ inline bool trainer::fight( )
             while ( currOpponent.move[randMove].type == -1 )
                 randMove = rand( ) % 4;
 
-            currOpponent.attack( currOpponent.move[randMove], party[currBeast] );
+            currOpponent.attack( currOpponent.move[randMove], party[currBeast], true );
         }
 
         return hit;
