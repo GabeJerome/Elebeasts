@@ -563,5 +563,7 @@ void playerBattle( trainer &player )
 
     if ( option == 1 )
         currBattle.wildBattle( player );
+    else if ( option == 2 )
+        currBattle.trainerBattle( player );
     //continue creating more battles and testing
 }
