@@ -518,7 +518,7 @@ TEST_CASE( "Trainer Battle" )
 
     REQUIRE( true );
 }
-*/
+
 
 
 TEST_CASE( "findEvolution" )
@@ -644,3 +644,4 @@ TEST_CASE( "generateRandBeast" )
         cout << endl;
     }
 }
+*/
