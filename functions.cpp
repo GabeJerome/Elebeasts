@@ -195,6 +195,7 @@ void healthBar( beast curr )
 
     cout << "lvl " << curr.getLevel( );
 
+    i = 0;
     while ( curr.nickName[i] != '\0' )
     {
         cout << ' ';
@@ -450,13 +451,53 @@ void printTitle( )
 
 
 
+void generateRandBeast( trainer player, beast &randBeast, bool boss )
+{
+    int maxExp = player.party[0].getExp( );
+    int lowExpBound, highExpBound;
+    int i;
+    random_device rand;
+    int randExp, randID;
+    int lowMultiplier = 3;
+    int highMultiplier = 4;
+
+    if ( boss )
+        highMultiplier = 8;
+
+    for ( i = 1; i < 5; i++ )
+    {
+        if ( maxExp < player.party[i].getExp( ) )
+        {
+            maxExp = player.party[i].getExp( );
+        }
+    }
+
+    lowExpBound = int( maxExp - ( maxExp * ( lowMultiplier / cbrt( maxExp ) ) ) );
+    highExpBound = int( maxExp + ( maxExp * ( highMultiplier / cbrt( maxExp ) ) ) );
+
+    randExp = ( rand( ) % ( highExpBound - lowExpBound ) + 1 ) + lowExpBound;
+
+    randID = ( rand( ) % TOTAL_BEASTS ) + 1;
+
+    randBeast.setExp( randExp );
+
+    getData( randBeast, randID );
+
+    findEvolution( randBeast );
+
+    randBeast.writeLearnSet( randBeast.base.moveSet );
+    randBeast.learnMoves( );
+}
+
+
+
 void findEvolution( beast &randBeast )
 {
     beast belowBeast;
 
     getData( randBeast, randBeast.base.ID );
 
-    if( randBeast.base.ID != 1 )
+    if ( randBeast.base.ID != 1 )
         getData( belowBeast, randBeast.base.ID - 1 );
     else
         getData( belowBeast, randBeast.base.ID );
@@ -477,32 +518,79 @@ void findEvolution( beast &randBeast )
 
 
 
-void generateRandBeast( trainer player, beast &randBeast )
+int displayWorldOptions( )
 {
-    int maxExp = player.party[0].getExp( );
-    int lowExpBound, highExpBound;
-    int i;
-    random_device rand;
-    int randExp, randID;
+    int option = -1;
 
-    for ( i = 1; i < 5; i++ )
+    while ( true )
     {
-        if ( maxExp < player.party[i].getExp( ) )
-        {
-            maxExp = player.party[i].getExp( );
-        }
+        cout << "What would you like to do?" << endl;
+        cout << "1: Battle" << endl;
+        cout << "2: Bag" << endl;
+        cout << "3: Shop" << endl;
+        cout << "4: Beasts" << endl;
+
+        cin >> option;
+
+        if ( option > 0 && option < 5 )
+            return option;
+        else
+            cout << "That is not a valid input." << endl << endl;
+    }
+}
+
+
+
+void playerBattle( trainer &player )
+{
+    int option = -1;
+    bool valid = false;
+    battle currBattle;
+
+    while ( !valid )
+    {
+        cout << "What kind of battle do you want to do?" << endl;
+        cout << "1: Wild Battle" << endl;
+        cout << "2: Trainer Battle" << endl;
+        cout << "3: Boss Battle" << endl;
+        cout << "4: Back" << endl;
+
+        cin >> option;
+
+        if ( option == 4 )
+            return;
+
+        if ( option > 0 && option < 4 )
+            valid = true;
+        else
+            cout << "That is not a valid input." << endl << endl;
     }
 
-    lowExpBound = int( maxExp - ( maxExp * ( 2 / cbrt( maxExp ) ) ) );
-    highExpBound = int( maxExp + ( maxExp * ( 5 / cbrt( maxExp ) ) ) );
+    if ( option == 1 )
+        currBattle.wildBattle( player );
+    else if ( option == 2 )
+        currBattle.trainerBattle( player );
+    else if ( option == 3 )
+        currBattle.trainerBattle( player, true );
+}
 
-    randExp = ( rand( ) % ( highExpBound - lowExpBound ) + 1 ) + lowExpBound;
 
-    randID = ( rand( ) % TOTAL_BEASTS ) + 1;
 
-    randBeast.setExp( randExp );
+void getRandName( trainer &player )
+{
+    random_device rand;
+    ifstream fin;
+    char randName[16];
 
-    getData( randBeast, randID );
+    fin.open( "names.bin", ios::in | ios::binary | ios::beg );
+    if ( !fin.is_open( ) )
+    {
+        cout << "Could not open names.bin" << endl;
+        return;
+    }
 
-    findEvolution( randBeast );
+    fin.seekg( ( rand( ) % 18240 ) * sizeof( randName ), ios::beg );
+    fin.read( (char *)&randName, sizeof( randName ) );
+
+    strcpy_s( player.name, 16, randName );
 }

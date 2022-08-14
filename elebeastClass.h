@@ -52,21 +52,7 @@ private:
     int experience;
     int currentStats[6];
     LearnSet learnSet[30];
-    void writeLearnSet( const short int moves[] );
-    int lvlProgression[100] =
-            /* 0       1       2       3       4       5       6       7       8       9*/
-        /*0*/ {        0,      8,      27,     64,     125,    216,    343,    512,    729,
-        /*1*/  1000,   1331,   1728,   2197,   2744,   3375,   4096,   4913,   5832,   6859,
-        /*2*/  8000,   9261,   10648,  12167,  13824,  15625,  17576,  19683,  21952,  24389,
-        /*3*/  27000,  29791,  32768,  35937,  39304,  42875,  46656,  50653,  54872,  59319,
-        /*4*/  64000,  68921,  74088,  79507,  85184,  91125,  97336,  103823, 110592, 117649,
-        /*5*/  125000, 132651, 140608, 148877, 157464, 166375, 175616, 185193, 195112, 205379,
-        /*6*/  216000, 226981, 238328, 250047, 262144, 274625, 287496, 300763, 314432, 328509,
-        /*7*/  343000, 357911, 373248, 389017, 405224, 421875, 438976, 456533, 474552, 493039,
-        /*8*/  512000, 531441, 551368, 571787, 592704, 614125, 636056, 658503, 681472, 704969,
-        /*9*/  729000, 753571, 778688, 804357, 830584, 857375, 884736, 912673, 941192, 970299,
-        /*10*/ 1000000
-              };
+    
 
 public:
     char nickName[16];
@@ -81,15 +67,16 @@ public:
     beast( baseStats newBeast );
     beast( int level, int ID );
     ~beast( );
-    bool attack( Move move, beast &opponent );
+    bool attack( Move move, beast &opponent, bool enemy = false );
     bool runAway( beast &opponent );
     void levelUp( );
     void changeMove( int move, Move replaceWith );
     void changeName( string newName );
-    void gainExp( beast &opponent );
+    void gainExp( beast &opponent, int yield = 1 );
     void evolve( );
     void changeBaseStats( beast &newBeast );
     void operator=( beast &newBeast );
+    void writeLearnSet( const short int moves[] );
     void learnMoves( );
     
 
@@ -108,6 +95,21 @@ public:
     void printLvlUpStats( );
     void printMoves( );
     void setExp( int exp );
+
+    int lvlProgression[100] =
+        /* 0       1       2       3       4       5       6       7       8       9*/
+        /*0*/ { 0,      8,      27,     64,     125,    216,    343,    512,    729,
+        /*1*/  1000,   1331,   1728,   2197,   2744,   3375,   4096,   4913,   5832,   6859,
+        /*2*/  8000,   9261,   10648,  12167,  13824,  15625,  17576,  19683,  21952,  24389,
+        /*3*/  27000,  29791,  32768,  35937,  39304,  42875,  46656,  50653,  54872,  59319,
+        /*4*/  64000,  68921,  74088,  79507,  85184,  91125,  97336,  103823, 110592, 117649,
+        /*5*/  125000, 132651, 140608, 148877, 157464, 166375, 175616, 185193, 195112, 205379,
+        /*6*/  216000, 226981, 238328, 250047, 262144, 274625, 287496, 300763, 314432, 328509,
+        /*7*/  343000, 357911, 373248, 389017, 405224, 421875, 438976, 456533, 474552, 493039,
+        /*8*/  512000, 531441, 551368, 571787, 592704, 614125, 636056, 658503, 681472, 704969,
+        /*9*/  729000, 753571, 778688, 804357, 830584, 857375, 884736, 912673, 941192, 970299,
+        /*10*/ 1000000
+    };
 };
 
 #endif
@@ -300,20 +302,30 @@ const double effectiveChart[18][18] =
     /*Fairy    17*/ { 1 ,.5 , 1 , 1 , 1 , 1 , 2 ,.5 , 1 , 1 , 1 , 1 , 1 , 1 , 2 , 2 ,.5 , 1 }
 };
 
-inline bool beast::attack( Move move, beast &opponent )
+
+
+inline bool beast::attack( Move move, beast &opponent, bool enemy )
 {
     random_device rand;
     int hit = ( rand( ) % 100 ) + 1;
+    string oppName = opponent.nickName, name = this->nickName;
+
+    if ( enemy )
+        name = "Foe " + name;
+    else
+        oppName = "Foe " + name;
 
     this_thread::sleep_for( chrono::seconds( 1 ) );
-    cout << nickName << " used " << move.name << '.' << endl;
+    cout << name << " used " << move.name << '.' << endl;
     this_thread::sleep_for( chrono::seconds( 2 ) );
 
     if ( hit > move.accuracy )
     {
-        cout << this->nickName << " missed." << endl << endl;
+        cout << name << " missed." << endl << endl;
+        this_thread::sleep_for( chrono::seconds( 1 ) );
         return false;
     }
+
     double randRoll = ( double( ( rand( ) % 15 ) + 1 ) / 100 ) + .85;
     int damage;
     int Def, Att;
@@ -329,7 +341,7 @@ inline bool beast::attack( Move move, beast &opponent )
 
     if ( effectiveness == 0 )
     {
-        cout << "It doesn't affect " << opponent.nickName << '.' << endl;
+        cout << "It doesn't affect " << oppName << '.' << endl;
         this_thread::sleep_for( chrono::seconds( 1 ) );
     }
     else if ( effectiveness == .5 )
@@ -365,7 +377,7 @@ inline bool beast::attack( Move move, beast &opponent )
 
     opponent.currentHealth -= damage;
 
-    cout << opponent.nickName << " took " << damage << " damage." << endl << endl;
+    cout << oppName << " took " << damage << " damage." << endl << endl;
     this_thread::sleep_for( chrono::seconds( 1 ) );
 
     return true;
@@ -421,6 +433,7 @@ inline void beast::evolve( )
     changeBaseStats( newBeast );
 
     cout << nickName << " evoloved into " << base.name << '!' << endl;
+    this_thread::sleep_for( chrono::seconds( 1 ) );
 
     /*if ( strcmp( nickName, base.name ) != 0 )
         strcpy_s( nickName, 15, base.name );*/
@@ -478,10 +491,12 @@ inline void beast::operator=( beast &newBeast )
         nickName[i] = newBeast.nickName[i];
 
     for ( i = 0; i < 4; i++ )
-        move[i] = newBeast.move[i];
+        move[i] = newBeast.move[i]; 
 
     currentHealth = newBeast.currentHealth;
 }
+
+
 
 inline void beast::learnMoves( )
 {
@@ -568,21 +583,28 @@ inline void beast::changeName( string newName )
     }
 }
 
-inline void beast::gainExp( beast &opponent )
+inline void beast::gainExp( beast &opponent, int yield )
 {
     int expYieldRange = 80;
     random_device rand;
     int level = getLevel( );
     int oppLevel = opponent.getLevel( );
     int expYield = ( 10 * ( getBaseStatTotal( ) - 200 ) ) / int( sqrt( getBaseStatTotal( ) ) / 3 );
+    int totalYield;
 
 
-    experience += ( ( expYield * oppLevel) / 5 ) *
-        ( ( 2 * oppLevel + 10 ) / ( oppLevel + getLevel( ) + 10 ) );
+    totalYield = ( ( ( expYield * oppLevel ) / 5 ) *
+        ( ( 2 * oppLevel + 10 ) / ( oppLevel + getLevel( ) + 10 ) ) ) * yield;
+
+    experience += totalYield;
+
+    cout << this->nickName << " gained " << totalYield << " experience." << endl;
+    this_thread::sleep_for( chrono::seconds( 1 ) );
 
     if ( getLevel( ) > level )
     {
         cout << nickName << " is now level " << getLevel( ) << '!' << endl;
+        this_thread::sleep_for( chrono::seconds( 1 ) );
 
         if ( getLevel() >= base.evolveLevel )
             evolve( );
