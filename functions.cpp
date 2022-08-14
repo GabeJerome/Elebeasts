@@ -451,13 +451,18 @@ void printTitle( )
 
 
 
-void generateRandBeast( trainer player, beast &randBeast )
+void generateRandBeast( trainer player, beast &randBeast, bool boss )
 {
     int maxExp = player.party[0].getExp( );
     int lowExpBound, highExpBound;
     int i;
     random_device rand;
     int randExp, randID;
+    int lowMultiplier = 3;
+    int highMultiplier = 4;
+
+    if ( boss )
+        highMultiplier = 8;
 
     for ( i = 1; i < 5; i++ )
     {
@@ -467,8 +472,8 @@ void generateRandBeast( trainer player, beast &randBeast )
         }
     }
 
-    lowExpBound = int( maxExp - ( maxExp * ( 2 / cbrt( maxExp ) ) ) );
-    highExpBound = int( maxExp + ( maxExp * ( 5 / cbrt( maxExp ) ) ) );
+    lowExpBound = int( maxExp - ( maxExp * ( lowMultiplier / cbrt( maxExp ) ) ) );
+    highExpBound = int( maxExp + ( maxExp * ( highMultiplier / cbrt( maxExp ) ) ) );
 
     randExp = ( rand( ) % ( highExpBound - lowExpBound ) + 1 ) + lowExpBound;
 
@@ -565,7 +570,8 @@ void playerBattle( trainer &player )
         currBattle.wildBattle( player );
     else if ( option == 2 )
         currBattle.trainerBattle( player );
-    //continue creating more battles and testing
+    else if ( option == 3 )
+        currBattle.trainerBattle( player, true );
 }
 
 
@@ -583,7 +589,7 @@ void getRandName( trainer &player )
         return;
     }
 
-    fin.seekg( (rand( ) % 18240) * sizeof( randName ), fin.beg );
+    fin.seekg( ( rand( ) % 18240 ) * sizeof( randName ), ios::beg );
     fin.read( (char *)&randName, sizeof( randName ) );
 
     strcpy_s( player.name, 16, randName );

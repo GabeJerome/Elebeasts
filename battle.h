@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void generateRandBeast( trainer player, beast &randBeast );
+void generateRandBeast( trainer player, beast &randBeast, bool boss = false );
 
 void findEvolution( beast &randBeast );
 
@@ -18,7 +18,7 @@ public:
     battle( );
     ~battle( );
     bool wildBattle( trainer &player );
-    bool trainerBattle( trainer &player );
+    bool trainerBattle( trainer &player, bool boss = false );
     void displayBattleMenu( trainer &player );
     bool displayCurrBeastSwap( trainer &player );
 
@@ -56,7 +56,11 @@ inline bool battle::wildBattle( trainer &player )
     player.currOpponent = randBeast;
 
     while ( !checkLoss( player ) && player.currOpponent.currentHealth != 0 )
+    {
+        printLine( );
+        cout << endl;
         displayBattleMenu( player );
+    }
 
     won = !checkLoss( player );
 
@@ -78,60 +82,96 @@ inline bool battle::wildBattle( trainer &player )
 
 
 
-inline bool battle::trainerBattle( trainer &player )
+inline bool battle::trainerBattle( trainer &player, bool boss )
 {
     trainer opponent;
     int currOpponentBeast = 0;
-    int i, numBeasts = 0;
+    int i, numBeasts;
     beast randBeast;
+    string oppName;
     
     getRandName( opponent );
 
-    for ( i = 0; i < 5; i++ )
+    numBeasts = player.getNumBeasts( );
+
+    oppName = opponent.name;
+
+    if ( boss )
     {
-        if ( player.party[i].base.ID != -1 )
+        //boss get another beast if not already maxed
+        if ( numBeasts < 5 )
             numBeasts++;
+
+        //add boss title to opponent
+        oppName = "Boss " + oppName;
     }
 
+    //generate random beasts for opponent
     for ( i = 0; i < numBeasts; i++ )
     {
         generateRandBeast( player, randBeast );
         opponent.party[i] = randBeast;
     }
     
+    //set player's current oppent
     player.currOpponent = opponent.party[0];
     
+    //infinite loop until battle is complete
     while ( true )
     {
+        //set opponent's current beast
         opponent.party[currOpponentBeast] = player.currOpponent;
 
         //loss
         if ( checkLoss( player ) )
         {
-            cout << "You lost to " << opponent.name << "." << endl;
+            cout << "You lost to " << oppName << "." << endl;
             return false;
         }
         //win
         if ( checkLoss( opponent ) )
         {
-            cout << "You beat " << opponent.name << "." << endl;
+            cout << "You beat " << oppName << "." << endl;
             return true;
         }
 
         if ( opponent.party[currOpponentBeast].currentHealth <= 0 )
         {
+            //display opponent fainted message to player
             this_thread::sleep_for( chrono::seconds( 1 ) );
             cout << player.currOpponent.nickName << " fainted." << endl;
             this_thread::sleep_for( chrono::seconds( 1 ) );
+
+            //gain exp
+            player.party[player.currBeast].gainExp( player.currOpponent );
+
+            //move to next opponent beast
             currOpponentBeast++;
             player.currOpponent = opponent.party[currOpponentBeast];
             cout << opponent.name << " sent out " << opponent.party[currOpponentBeast].nickName << "." << endl;
             this_thread::sleep_for( chrono::seconds( 1 ) );
         }
 
+        //swap fainted beast
         if ( player.party[player.currBeast].currentHealth == 0 )
             player.displayFaintedBeastSwap( );
 
+
+        printLine( );
+        cout << endl << oppName << "  ";
+
+        //display how many beasts opponent has
+        for ( i = 0; i < 5; i++ )
+        {
+            cout << char( 179 );
+            if ( i < opponent.getNumBeasts( ) )
+                cout << char( 219 );
+            else
+                cout << char( 176 );
+        }
+        cout << char(179) << endl;
+        
+        //battle menu
         displayBattleMenu( player );
     }
 
@@ -147,9 +187,6 @@ inline void battle::displayBattleMenu( trainer &player )
 
     while ( !valid )
     {
-        printLine( );
-        cout << endl;
-
         healthBar( player.currOpponent );
         cout << endl;
         healthBar( player.party[player.currBeast] );

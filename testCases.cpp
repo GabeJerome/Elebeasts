@@ -463,7 +463,7 @@ TEST_CASE( "wildBattle" )
 }
 
 
-
+*/
 TEST_CASE( "saveFile" )
 {
     trainer me, me2;
@@ -484,7 +484,7 @@ TEST_CASE( "saveFile" )
     }
     SECTION( "File 3" )
     {
-        beast myBeast1( 94, Volcorage ), myBeast2( 88, Reptide ), myBeast3( 34, Synthescor ), myBeast4( 4, Stropie );
+        beast myBeast1( 100, Volcorage ), myBeast2( 88, Reptide ), myBeast3( 34, Synthescor ), myBeast4( 4, Stropie );
 
         me.party[0] = myBeast1;
         me.party[1] = myBeast2;
@@ -498,7 +498,7 @@ TEST_CASE( "saveFile" )
         me2.printParty( );
     }
 }
-
+/*
 
 
 TEST_CASE( "Trainer Battle" )

@@ -48,6 +48,7 @@ public:
     void setCurrBeast( );
     void putInParty( beast &newBeast );
     void printParty( );
+    int getNumBeasts( );
     friend bool enterHeals( trainer &player );
     friend bool enterBalls( trainer &player );
     int giveHeals( int healer, int numHeals );
@@ -325,15 +326,41 @@ inline void trainer::putInParty( beast &newBeast )
 inline void trainer::printParty( )
 {
     int i;
-
+    int lowExpBound, highExpBound;
     for ( i = 0; i < 5; i++ )
     {
         if ( party[i].base.ID != -1 )
-            cout << setw(5) << i + 1 << ": " << party[i].nickName << " | Type: " << party[i].getType( ) <<
-            " | HP: " << party[i].currentHealth << '/' << party[i].getMaxHP( ) << endl;
+        {
+            lowExpBound = party[i].lvlProgression[party[i].getLevel( ) - 1];
+            if( party[i].getLevel() < 100 )
+                highExpBound = party[i].lvlProgression[party[i].getLevel( )];
+
+            cout << setw( 5 ) << i + 1 << ": " << party[i].nickName << " | Lvl: " << party[i].getLevel( ) << " | Type: " << party[i].getType( ) <<
+                " | HP: " << party[i].currentHealth << '/' << party[i].getMaxHP( ) << " | Exp: ";
+
+            if ( party[i].getLevel( ) == 100 )
+                cout << "MAX" << endl;
+            else
+                cout  << party[i].getExp() - lowExpBound << "/" << highExpBound - lowExpBound << endl;
+        }
         else
             cout << setw(5) << i + 1 << ": empty" << endl;
     }
+}
+
+
+
+inline int trainer::getNumBeasts( )
+{
+    int i, numBeasts = 0;
+
+    for ( i = 0; i < 5; i++ )
+    {
+        if ( party[i].base.ID != -1 && party[i].currentHealth > 0 )
+            numBeasts++;
+    }
+
+    return numBeasts;
 }
 
 
