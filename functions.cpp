@@ -399,15 +399,23 @@ void chooseFile( trainer &player )
         cout << endl;
     }
 
+    cout << "4: delete a file" << endl;
+
     while ( !valid )
     {
         cout << "Enter a file number: ";
         cin >> fileNum;
 
-        if ( fileNum < 1 || fileNum > 3 )
+        if ( fileNum < 1 || fileNum > 4 )
             cout << "That is not a valid input (choose 1, 2, or 3)" << endl;
         else
             valid = true;
+    }
+
+    if ( fileNum == 4 )
+    {
+        deleteFile( );
+        return chooseFile( player );
     }
 
     if ( loadFile( player, fileNum ) )
@@ -529,10 +537,11 @@ int displayWorldOptions( )
         cout << "2: Bag" << endl;
         cout << "3: Shop" << endl;
         cout << "4: Beasts" << endl;
+        cout << "5: Exit game" << endl;
 
         cin >> option;
 
-        if ( option > 0 && option < 5 )
+        if ( option > 0 && option < 6 )
             return option;
         else
             cout << "That is not a valid input." << endl << endl;

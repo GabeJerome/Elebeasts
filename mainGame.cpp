@@ -37,12 +37,15 @@ int main( )
 
     cout << endl << endl;
 
-    //Main menu complete, start game
-
     option = displayWorldOptions( );
 
     if ( option == 1 )
         playerBattle( player );
+    else if ( option == 2 )
+        player.enterBag( );
+    //enter shop
+    //add prize money to trainer battles
+
     //continue options from displayWorldOptions
     
     return 0;

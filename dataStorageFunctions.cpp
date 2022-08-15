@@ -209,3 +209,71 @@ bool loadFile( trainer &player, int num )
 
     return true;
 }
+
+
+
+void deleteFile( )
+{
+    int fileNum;
+    char saveNum;
+    string fileName = "Save";
+    ofstream fout;
+    bool valid = false, valid2 = false;
+    int i, option;
+    trainer testPlayer;
+
+    while ( !valid )
+    {
+        cout << endl << endl;
+        for ( i = 1; i < 4; i++ )
+        {
+            cout << "Save File " << i << ": " << endl;
+            if ( loadFile( testPlayer, i ) )
+            {
+                cout << testPlayer.name << endl;
+                testPlayer.printParty( );
+            }
+            else
+                cout << "New Game" << endl;
+            cout << endl;
+        }
+
+        cout << "4: back" << endl;
+
+        cout << "Enter the number of the file you want to delete." << endl;
+        cin >> fileNum;
+
+        if ( fileNum == 4 )
+            return;
+
+        if ( fileNum < 1 || fileNum > 3 )
+            cout << "That is not valid option." << endl;
+        else
+        {
+            while ( !valid2 )
+            {
+                cout << "Are you sure you want to delete Save File " << fileNum << endl;
+                cout << "1: Yes\n2: No" << endl;
+                cin >> option;
+
+                if ( option == 1 )
+                    valid = valid2 = true;
+                else if ( option == 2 )
+                    valid2 = true;
+                else
+                    cout << "That is not a valid option" << endl;
+            }
+        }
+        valid2 = false;
+    }
+
+    saveNum = fileNum + 48;
+
+    fileName = fileName + saveNum + ".bin";
+
+    fout.open( fileName, ios::binary | ios::trunc );
+    if ( !fout.is_open( ) )
+        cout << "Could not delete " << fileName << endl;
+
+    fout.close( );
+}

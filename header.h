@@ -28,3 +28,5 @@ void printTitle( );
 int displayWorldOptions( );
 
 void playerBattle( trainer &player );
+
+void deleteFile( );
