@@ -61,6 +61,8 @@ inline bool battle::wildBattle( trainer &player )
         printLine( );
         cout << endl;
         displayBattleMenu( player );
+        if ( !player.inWildBattle )
+            return false;
     }
 
     won = !checkLoss( player );
@@ -205,6 +207,8 @@ inline void battle::displayBattleMenu( trainer &player )
 {
     int option = -1;
     bool valid = false;
+    random_device rand;
+    int randMove = rand( ) % 4;
 
     while ( !valid )
     {
@@ -220,8 +224,6 @@ inline void battle::displayBattleMenu( trainer &player )
 
         cin >> option;
 
-        
-
         if ( option < 1 || option > 4 )
             cout << "Invalid option. Please choose 1 - 4." << endl;
         else if ( option == 2 && !player.inWildBattle )
@@ -236,11 +238,24 @@ inline void battle::displayBattleMenu( trainer &player )
 
         if ( option == 1 )
             player.fight( );
-        if ( option == 2 && player.inWildBattle )
-            player.party[player.currBeast].runAway( player.currOpponent );
-        if ( option == 3 )
+        else if ( option == 2 )
+        {
+            if ( player.party[player.currBeast].runAway( player.currOpponent ) )
+            {
+                player.inWildBattle = false;
+                return;
+            }
+            else
+            {
+                while ( player.currOpponent.move[randMove].type == -1 )
+                    randMove = rand( ) % 4;
+
+                player.currOpponent.attack( player.currOpponent.move[randMove], player.party[player.currBeast], true );
+            }
+        }
+        else if ( option == 3 )
             valid = player.enterBag( );
-        if ( option == 4 )
+        else if ( option == 4 )
             valid = displayCurrBeastSwap( player );
     }
 }

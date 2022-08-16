@@ -313,7 +313,7 @@ inline bool beast::attack( Move move, beast &opponent, bool enemy )
     if ( enemy )
         name = "Foe " + name;
     else
-        oppName = "Foe " + name;
+        oppName = "Foe " + oppName;
 
     this_thread::sleep_for( chrono::seconds( 1 ) );
     cout << name << " used " << move.name << '.' << endl;
@@ -435,14 +435,12 @@ inline void beast::evolve( )
     cout << nickName << " evoloved into " << base.name << '!' << endl;
     this_thread::sleep_for( chrono::seconds( 1 ) );
 
-    /*if ( strcmp( nickName, base.name ) != 0 )
-        strcpy_s( nickName, 15, base.name );*/
-
     if ( nickName != base.name )
     {
         for ( i = 0; i < 16; i++ )
             nickName[i] = base.name[i];
     }
+
     printLvlUpStats( );
 }
 
@@ -531,9 +529,11 @@ inline void beast::levelUp( )
         if ( learnSet[i].moveLevel != 0 && learnSet[i].moveLevel <= level && learnSet[i].learned == false )
         {
             cout << nickName << " can learn " << learnSet[i].move.name
-                << "! What move do you want to replace? Enter 5 to not learn the move." << endl;
+                << "! What move do you want to replace?" << endl;
 
             printMoves( );
+
+            cout << "5: Don't learn move" << endl;
 
             while ( option < 1 || option > 5 )
             {
@@ -583,6 +583,8 @@ inline void beast::changeName( string newName )
     }
 }
 
+
+
 inline void beast::gainExp( beast &opponent, int yield )
 {
     int expYieldRange = 80;
@@ -593,8 +595,8 @@ inline void beast::gainExp( beast &opponent, int yield )
     int totalYield;
 
 
-    totalYield = ( ( ( expYield * oppLevel ) / 5 ) *
-        ( ( 2 * oppLevel + 10 ) / ( oppLevel + getLevel( ) + 10 ) ) ) * yield;
+    totalYield = ( ( ( expYield * oppLevel ) / 6 ) *
+        ( ( 2 * oppLevel + 10 ) / exp( ( oppLevel + getLevel( ) + 10 ) ), 2 ) ) * yield;
 
     experience += totalYield;
 
@@ -611,7 +613,11 @@ inline void beast::gainExp( beast &opponent, int yield )
         else
             printLvlUpStats( );
 
+        this_thread::sleep_for( chrono::seconds( 2 ) );
+
         levelUp( );
+
+        this_thread::sleep_for( chrono::seconds( 2 ) );
     }
 
     currentStats[0] = getMaxHP( );

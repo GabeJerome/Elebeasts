@@ -26,7 +26,6 @@ int main( )
     beast starter;
     int fileNum;
 
-    
     printTitle( );
 
     do 
@@ -37,7 +36,6 @@ int main( )
     fileNum = chooseFile( player );
 
     cout << endl << endl;
-
 
     while ( true )
     {

@@ -25,7 +25,7 @@ int chooseFile( trainer &player );
 
 void printTitle( );
 
-int displayWorldOptions( trainer &player);
+int displayWorldOptions( trainer &player );
 
 void playerBattle( trainer &player );
 

@@ -818,4 +818,6 @@ void healAllBeasts( trainer &player, int cost )
         if ( player.party[i].base.ID != -1 )
             player.party[i].currentHealth = player.party[i].getMaxHP( );
     }
+
+    cout << "Your team has been successfully healed." << endl;
 }

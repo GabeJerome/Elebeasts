@@ -179,7 +179,7 @@ bool saveFile( trainer &player, int num )
     fout.seekp( ios::beg, 0 );
     fout.write( (char *)&player, sizeof( trainer ) );
 
-    cout << "Successfully saved to save " << num << '.' << endl;
+    cout << "Successfully saved to Save" << num << ".bin" << endl;
 
     return true;
 }
