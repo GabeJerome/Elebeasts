@@ -21,11 +21,11 @@ void giveNickname( trainer &player );
 
 void getPlayerName( trainer &player );
 
-void chooseFile( trainer &player );
+int chooseFile( trainer &player );
 
 void printTitle( );
 
-int displayWorldOptions( );
+int displayWorldOptions( trainer &player);
 
 void playerBattle( trainer &player );
 
@@ -36,3 +36,5 @@ void enterShop( trainer &player );
 void buyBalls( trainer &player );
 
 void buyHeals( trainer &player );
+
+void healAllBeasts( trainer &player, int cost );

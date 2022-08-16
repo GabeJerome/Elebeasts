@@ -48,6 +48,7 @@ inline bool battle::wildBattle( trainer &player )
     random_device oppMove;
     beast randBeast, nullBeast;
     bool won;
+    int prizeMoney;
 
     generateRandBeast( player, randBeast );
 
@@ -68,9 +69,19 @@ inline bool battle::wildBattle( trainer &player )
     {
         cout << player.currOpponent.nickName << " was defeated! Good job!" << endl;
         player.party[player.currBeast].gainExp( player.currOpponent );
+        prizeMoney = ( 20 * player.getAvgBeastLvl( ) );
+        cout << "You got " << prizeMoney << " coins for winning." << endl;
+        player.money += prizeMoney;
     }
     else
-        cout << "You lost to " << player.currOpponent.nickName << '.';
+    {
+        prizeMoney = ( 20 * player.getAvgBeastLvl( ) );
+        if ( prizeMoney > player.money )
+            prizeMoney = player.money;
+        cout << "You lost to " << player.currOpponent.nickName << '.' << endl;
+        cout << "You dropped " << prizeMoney << " coins while fleeing." << endl;
+        player.money -= prizeMoney;
+    }
 
     player.setCurrBeast( );
     player.currOpponent = nullBeast;
@@ -131,6 +142,8 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
         {
             cout << "You lost to " << oppName << "." << endl;
             prizeMoney = ( 100 * player.getAvgBeastLvl( ) );
+            if ( prizeMoney > player.money )
+                prizeMoney = player.money;
             cout << "You gave " << oppName << " " << prizeMoney << " coins." << endl;
             return false;
         }

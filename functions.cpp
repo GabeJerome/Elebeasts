@@ -277,6 +277,9 @@ void tutorial( trainer &player )
         else
             cout << "Please choose 1 or 2" << endl;
     }
+
+    player.party[0].writeLearnSet( player.party[0].base.moveSet );
+    player.party[0].learnMoves( );
     
     cout << "You and " << player.party[0].nickName << " will now begin your adventure!" << endl << endl;
 }
@@ -378,14 +381,14 @@ void getPlayerName( trainer &player )
 
 
 
-void chooseFile( trainer &player )
+int chooseFile( trainer &player )
 {
     int i;
     trainer testPlayer;
     int fileNum;
     bool valid = false;
 
-    cout << "Which file would you like to load?" << endl << endl;
+    cout << endl << "Which file would you like to load?" << endl << endl;
     for ( i = 1; i < 4; i++ )
     {
         cout << "Save File " << i << ": " << endl;
@@ -430,6 +433,9 @@ void chooseFile( trainer &player )
         tutorial( player );
         valid = true;
     }
+
+    saveFile( player, fileNum );
+    return fileNum;
 }
 
 
@@ -461,7 +467,7 @@ void printTitle( )
 
 void generateRandBeast( trainer player, beast &randBeast, bool boss )
 {
-    int maxExp = player.party[0].getExp( );
+    int maxExp = 1;
     int lowExpBound, highExpBound;
     int i;
     random_device rand;
@@ -472,7 +478,7 @@ void generateRandBeast( trainer player, beast &randBeast, bool boss )
     if ( boss )
         highMultiplier = 8;
 
-    for ( i = 1; i < 5; i++ )
+    for ( i = 0; i < 5; i++ )
     {
         if ( maxExp < player.party[i].getExp( ) )
         {
@@ -480,8 +486,8 @@ void generateRandBeast( trainer player, beast &randBeast, bool boss )
         }
     }
 
-    lowExpBound = int( maxExp - ( maxExp * ( lowMultiplier / cbrt( maxExp ) ) ) );
-    highExpBound = int( maxExp + ( maxExp * ( highMultiplier / cbrt( maxExp ) ) ) );
+    lowExpBound = int( floor( maxExp - ( maxExp * ( lowMultiplier / cbrt( maxExp ) ) ) ) );
+    highExpBound = int( floor( maxExp + ( maxExp * ( highMultiplier / cbrt( maxExp ) ) ) ) );
 
     randExp = ( rand( ) % ( highExpBound - lowExpBound ) + 1 ) + lowExpBound;
 
@@ -526,22 +532,24 @@ void findEvolution( beast &randBeast )
 
 
 
-int displayWorldOptions( )
+int displayWorldOptions( trainer &player )
 {
     int option = -1;
 
     while ( true )
     {
-        cout << "What would you like to do?" << endl;
+        cout << "What would you like to do?" << endl << endl;
+        cout << "Coins: " << player.money << endl;
         cout << "1: Battle" << endl;
         cout << "2: Bag" << endl;
         cout << "3: Shop" << endl;
         cout << "4: Beasts" << endl;
-        cout << "5: Exit game" << endl;
+        cout << "5: Heal Beasts (300 coins)" << endl;
+        cout << "6: Exit game (Auto saved)" << endl;
 
         cin >> option;
 
-        if ( option > 0 && option < 6 )
+        if ( option > 0 && option < 7 )
             return option;
         else
             cout << "That is not a valid input." << endl << endl;
@@ -789,4 +797,25 @@ void buyHeals( trainer &player )
     }
 
     return;
+}
+
+
+
+void healAllBeasts( trainer &player, int cost )
+{
+    int i;
+
+    if ( player.money < cost )
+    {
+        cout << "You don't have enough coins for that!" << endl;
+        return;
+    }
+
+    player.money -= cost;
+
+    for ( i = 0; i < 5; i++ )
+    {
+        if ( player.party[i].base.ID != -1 )
+            player.party[i].currentHealth = player.party[i].getMaxHP( );
+    }
 }

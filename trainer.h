@@ -75,7 +75,7 @@ inline trainer::trainer( )
         party[i] = null;
 
     currBeast = 0;
-    money = 0;
+    money = 600;
     inWildBattle = false;
 }
 

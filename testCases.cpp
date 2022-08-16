@@ -463,7 +463,7 @@ TEST_CASE( "wildBattle" )
 }
 
 
-*/
+
 TEST_CASE( "saveFile" )
 {
     trainer me, me2;
@@ -498,7 +498,7 @@ TEST_CASE( "saveFile" )
         me2.printParty( );
     }
 }
-/*
+
 
 
 TEST_CASE( "Trainer Battle" )
