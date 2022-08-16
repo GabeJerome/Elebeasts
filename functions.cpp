@@ -617,7 +617,7 @@ void enterShop( trainer &player )
     cout << "3: Exit Shop" << endl;
 
     cin >> option;
-    cin << endl;
+    cout << endl;
 
     if ( option == 1 )
         buyBalls( player );
