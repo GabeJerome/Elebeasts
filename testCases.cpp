@@ -644,7 +644,7 @@ TEST_CASE( "generateRandBeast" )
         cout << endl;
     }
 }
-*/
+
 
 
 
@@ -656,3 +656,4 @@ TEST_CASE( "Shop" )
 
     enterShop( player );
 }
+*/
