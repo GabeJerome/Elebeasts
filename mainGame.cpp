@@ -43,7 +43,8 @@ int main( )
         playerBattle( player );
     else if ( option == 2 )
         player.enterBag( );
-    //enter shop
+    else if ( option == 3 )
+        enterShop( player );
     //add prize money to trainer battles
 
     //continue options from displayWorldOptions

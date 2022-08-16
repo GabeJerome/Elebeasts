@@ -89,6 +89,7 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
     int i, numBeasts;
     beast randBeast;
     string oppName;
+    int prizeMoney, moneyMultiplier = 1;
     
     getRandName( opponent );
 
@@ -104,6 +105,9 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
 
         //add boss title to opponent
         oppName = "Boss " + oppName;
+
+        //double the prize money for boss
+        moneyMultiplier = 2;
     }
 
     //generate random beasts for opponent
@@ -126,12 +130,16 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
         if ( checkLoss( player ) )
         {
             cout << "You lost to " << oppName << "." << endl;
+            prizeMoney = ( 100 * player.getAvgBeastLvl( ) );
+            cout << "You gave " << oppName << " " << prizeMoney << " coins." << endl;
             return false;
         }
         //win
         if ( checkLoss( opponent ) )
         {
             cout << "You beat " << oppName << "." << endl;
+            prizeMoney = ( 100 * opponent.getAvgBeastLvl( ) ) * moneyMultiplier;
+            cout << oppName << " gave you " << prizeMoney << " coins." << endl;
             return true;
         }
 

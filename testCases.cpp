@@ -645,3 +645,14 @@ TEST_CASE( "generateRandBeast" )
     }
 }
 */
+
+
+
+TEST_CASE( "Shop" )
+{
+    trainer player;
+
+    player.money += 2000;
+
+    enterShop( player );
+}

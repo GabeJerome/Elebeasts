@@ -54,6 +54,7 @@ public:
     int giveHeals( int healer, int numHeals );
     int giveBalls( int ballType, int numBalls );
     void displayFaintedBeastSwap( );
+    int getAvgBeastLvl( );
 
 private:
     
@@ -431,6 +432,26 @@ inline void trainer::displayFaintedBeastSwap( )
     currBeast = option - 1;
 
     cout << "Swapped to " << party[currBeast].nickName << '!' << endl;
+}
+
+
+
+inline int trainer::getAvgBeastLvl( )
+{
+    int i;
+    int sum = 0;
+    int numBeasts = 0;
+
+    for ( i = 0; i < 5; i++ )
+    {
+        if ( party[i].base.ID != -1 )
+        {
+            sum += party[i].getLevel( );
+            numBeasts++;
+        }
+    }
+
+    return int( sum / numBeasts );
 }
 
 

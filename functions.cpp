@@ -603,3 +603,190 @@ void getRandName( trainer &player )
 
     strcpy_s( player.name, 16, randName );
 }
+
+
+
+void enterShop( trainer &player )
+{
+    int option;
+    bool valid = false;
+
+    cout << "What would you like to buy? You have " << player.money << " coins." << endl;
+    cout << "1: Balls" << endl;
+    cout << "2: Heals" << endl;
+    cout << "3: Exit Shop" << endl;
+
+    cin >> option;
+    cin << endl;
+
+    if ( option == 1 )
+        buyBalls( player );
+    else if ( option == 2 )
+        buyHeals( player );
+    else if ( option == 3 )
+        return;
+    else
+        cout << "That is not a valid input." << endl;
+
+    return enterShop( player );
+}
+
+
+
+void buyBalls( trainer &player )
+{
+    int ballType, numBalls;
+    bool valid = false, valid2 = false;
+    int priceEach;
+    int option;
+
+    cout << "What kind of ball do you want to buy? You have " << player.money << " coins." << endl;
+    cout << "1: Decent Ball 200 coins" << endl;
+    cout << "2: Good Ball   400 coins" << endl;
+    cout << "3: Great Ball  600 coins" << endl;
+    cout << "4: Back" << endl;
+
+    cin >> ballType;
+
+    cout << endl;
+
+    if ( ballType == 4 )
+        return;
+    else if ( ballType < 1 || ballType > 3 )
+    {
+        cout << "That is not a valid input." << endl;
+        return buyBalls( player );
+    }
+    else
+    {
+        priceEach = ballType * 200;
+
+        while ( !valid )
+        {
+            cout << "How many would you like to buy?" << endl;
+            cout << "0: Back" << endl;
+
+            cin >> numBalls;
+
+            if ( numBalls == 0 )
+                return buyBalls( player );
+
+            if ( numBalls < 1 )
+                cout << "Invalid input." << endl;
+            else
+            {
+                while ( !valid2 )
+                {
+                    cout << numBalls << " will cost you " << priceEach * numBalls << " coins. Is that okay?" << endl;
+                    cout << "1: Yes\n2: No" << endl;
+                    cin >> option;
+
+                    cout << endl;                    
+
+                    if ( option == 1 )
+                    {
+                        if ( priceEach * numBalls > player.money )
+                        {
+                            cout << "You don't have enough coins for that!" << endl;
+                            valid2 = true;
+                        }
+                        else
+                        {
+                            player.money -= priceEach * numBalls;
+                            player.giveBalls( ballType, numBalls );
+                            return;
+                        }
+                    }
+                    else if ( option == 2 )
+                        valid2 = true;
+                    else
+                        cout << "That is not a valid input." << endl;
+                }
+
+                valid2 = false;
+            }
+        }
+    }
+
+    return;
+}
+
+
+
+void buyHeals( trainer &player )
+{
+    int healType, numHeals;
+    bool valid = false, valid2 = false;
+    int priceEach;
+    int option;
+
+    cout << "What kind of heal do you want to buy? You have " << player.money << " coins." << endl;
+    cout << "1: Small Heal  100 coins" << endl;
+    cout << "2: Medium Heal 200 coins" << endl;
+    cout << "3: Large Heal  300 coins" << endl;
+    cout << "4: Back" << endl;
+
+    cin >> healType;
+    cout << endl;
+
+    if ( healType == 4 )
+        return;
+    else if ( healType < 1 || healType > 3 )
+    {
+        cout << "That is not a valid input." << endl;
+        return buyHeals( player );
+    }
+    else
+    {
+        priceEach = healType * 100;
+
+        while ( !valid )
+        {
+            cout << "How many would you like to buy?" << endl;
+            cout << "0: Back" << endl;
+
+            cin >> numHeals;
+            cout << endl;
+
+            if ( numHeals == 0 )
+                return buyHeals( player );
+
+            if ( numHeals < 1 )
+                cout << "Invalid input." << endl;
+            else
+            {
+                while ( !valid2 )
+                {
+                    cout << numHeals << " will cost you " << priceEach * numHeals << " coins. Is that okay?" << endl;
+                    cout << "1: Yes\n2: No" << endl;
+                    cin >> option;
+
+
+
+                    if ( option == 1 )
+                    {
+                        if ( priceEach * numHeals > player.money )
+                        {
+                            cout << "You don't have enough coins for that!" << endl;
+                            valid2 = true;
+                        }
+                        else
+                        {
+                            player.money -= priceEach * numHeals;
+                            player.giveHeals( healType, numHeals );
+                            return;
+                        }
+                    }
+                    else if ( option == 2 )
+                        valid2 = true;
+                    else
+                        cout << "That is not a valid input." << endl;
+                }
+
+                valid2 = false;
+            }
+        }
+    }
+
+    return;
+}

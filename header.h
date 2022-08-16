@@ -30,3 +30,9 @@ int displayWorldOptions( );
 void playerBattle( trainer &player );
 
 void deleteFile( );
+
+void enterShop( trainer &player );
+
+void buyBalls( trainer &player );
+
+void buyHeals( trainer &player );
