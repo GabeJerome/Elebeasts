@@ -15,6 +15,8 @@ bool checkLoss( trainer &player );
 
 void giveNickname( beast &playerBeast );
 
+void enemyAttack( trainer &player );
+
 enum healer { small, medium, large };
 enum ball { decent = 1, good, great };
 
@@ -52,7 +54,7 @@ public:
     void printParty( );
     int getNumBeasts( );
     friend bool enterHeals( trainer &player );
-    friend bool enterBalls( trainer &player );
+    friend int enterBalls( trainer &player );
     int giveHeals( int healer, int numHeals );
     int giveBalls( int ballType, int numBalls );
     void displayFaintedBeastSwap( );
@@ -94,8 +96,8 @@ inline bool trainer::enterBag( )
 {
     int option;
     int totalBalls = 0;
+    int catchResult;
     bool redo = false;
-    bool caught;
 
     while ( !redo )
     {
@@ -122,9 +124,17 @@ inline bool trainer::enterBag( )
 
         if ( option == 2 )
         {
-            redo = enterBalls( *this );
-            if ( !redo )
+            catchResult = enterBalls( *this );
+
+            //catch attempt succeeded
+            if ( catchResult == 1 )
                 return true;
+
+            //catch attempt failed
+            else if ( catchResult == 2 )
+                return false;
+
+            //else no catch attempt, loop again
         }
     }
 
@@ -177,7 +187,6 @@ inline bool trainer::captureBeast( int ball )
     int catchRate = int(( 6000 / cbrt( newBeast.getBaseStatTotal( ) ) ) - 700);
     float ballCatchRate = 1;
     bool valid = false;
-    int option;
 
     cout << endl;
 
@@ -254,10 +263,7 @@ inline bool trainer::fight( )
 
     if ( party[currBeast].getSpeed( ) < currOpponent.getSpeed( ) )
     {
-        while ( currOpponent.move[randMove].type == -1 )
-            randMove = rand( ) % 4;
-
-        currOpponent.attack( currOpponent.move[randMove], party[currBeast], true );
+        enemyAttack( *this );
 
         if ( checkLoss( *this ) )
             return false;
@@ -271,12 +277,7 @@ inline bool trainer::fight( )
         hit = party[currBeast].attack( party[currBeast].move[input - 1], currOpponent );
 
         if ( currOpponent.currentHealth != 0 )
-        {
-            while ( currOpponent.move[randMove].type == -1 )
-                randMove = rand( ) % 4;
-
-            currOpponent.attack( currOpponent.move[randMove], party[currBeast], true );
-        }
+            enemyAttack( *this );
 
         return hit;
     }
@@ -330,7 +331,7 @@ inline void trainer::putInParty( beast &newBeast )
 
     while ( (partySlot < 1 || partySlot > 5) )
     {
-        cout << "What empty party slot would you like to put " << newBeast.base.name << " in?" << endl;
+        cout << "What empty party slot would you like to put " << newBeast.nickName << " in?" << endl;
         printParty( );
 
         cin >> partySlot;

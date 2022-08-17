@@ -48,7 +48,7 @@ int main( )
         else if ( option == 3 )
             enterShop( player );
         else if ( option == 4 )
-            player.printParty( );
+            enterParty( player );
         else if ( option == 5 )
             healAllBeasts( player, 300 );
         else if ( option == 6 )
@@ -68,6 +68,3 @@ int main( )
 
     return 0;
 }
-
-//need to fix battle actions after trying to capture a beast
-//get rid of ball after using

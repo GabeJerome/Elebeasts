@@ -36,3 +36,5 @@ void buyBalls( trainer &player );
 void buyHeals( trainer &player );
 
 void healAllBeasts( trainer &player, int cost );
+
+void enterParty( trainer &player, int firstBeast = -1 );

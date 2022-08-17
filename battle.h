@@ -3,13 +3,11 @@
 
 using namespace std;
 
-void generateRandBeast( trainer player, beast &randBeast, bool boss = false );
+void generateRandBeast( trainer player, beast &randBeast, int type = 0 );
 
 void findEvolution( beast &randBeast );
 
 void getRandName( trainer &player );
-
-void enemyAttack( trainer &player );
 
 #ifndef __BATTLE_H__
 #define __BATTLE_H__
@@ -114,7 +112,7 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
 
     if ( boss )
     {
-        //boss get another beast if not already maxed
+        //boss gets another beast if not already maxed
         if ( numBeasts < 5 )
             numBeasts++;
 
@@ -128,7 +126,10 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
     //generate random beasts for opponent
     for ( i = 0; i < numBeasts; i++ )
     {
-        generateRandBeast( player, randBeast );
+        if ( boss )
+            generateRandBeast( player, randBeast, 2 );
+        else
+            generateRandBeast( player, randBeast, 1 );
         opponent.party[i] = randBeast;
     }
     
@@ -141,25 +142,7 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
         //set opponent's current beast
         opponent.party[currOpponentBeast] = player.currOpponent;
 
-        //loss
-        if ( checkLoss( player ) )
-        {
-            cout << "You lost to " << oppName << "." << endl;
-            prizeMoney = ( 100 * player.getAvgBeastLvl( ) );
-            if ( prizeMoney > player.money )
-                prizeMoney = player.money;
-            cout << "You gave " << oppName << " " << prizeMoney << " coins." << endl;
-            return false;
-        }
-        //win
-        if ( checkLoss( opponent ) )
-        {
-            cout << "You beat " << oppName << "." << endl;
-            prizeMoney = ( 100 * opponent.getAvgBeastLvl( ) ) * moneyMultiplier;
-            cout << oppName << " gave you " << prizeMoney << " coins." << endl;
-            return true;
-        }
-
+        //if currOpponentBeast is fainted
         if ( opponent.party[currOpponentBeast].currentHealth <= 0 )
         {
             //display opponent fainted message to player
@@ -175,6 +158,27 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
             player.currOpponent = opponent.party[currOpponentBeast];
             cout << opponent.name << " sent out " << opponent.party[currOpponentBeast].nickName << "." << endl;
             this_thread::sleep_for( chrono::seconds( 1 ) );
+        }
+
+        //loss
+        if ( checkLoss( player ) )
+        {
+            cout << "You lost to " << oppName << "." << endl;
+            prizeMoney = ( 100 * player.getAvgBeastLvl( ) );
+            if ( prizeMoney > player.money )
+                prizeMoney = player.money;
+            cout << "You gave " << oppName << " " << prizeMoney << " coins." << endl;
+            player.money -= prizeMoney;
+            return false;
+        }
+        //win
+        if ( checkLoss( opponent ) )
+        {
+            cout << "You beat " << oppName << "." << endl;
+            prizeMoney = ( 100 * opponent.getAvgBeastLvl( ) ) * moneyMultiplier;
+            cout << oppName << " gave you " << prizeMoney << " coins." << endl;
+            player.money += prizeMoney;
+            return true;
         }
 
         //swap fainted beast
@@ -252,7 +256,8 @@ inline void battle::displayBattleMenu( trainer &player )
         }
         else if ( option == 3 )
         {
-            valid = player.enterBag( );
+            if ( player.enterBag( ) )
+                return;
         }
         else if ( option == 4 )
         {

@@ -94,6 +94,7 @@ public:
     void printStats( );
     void printLvlUpStats( );
     void printMoves( );
+    void printOverview( );
     void setExp( int exp );
 
     int lvlProgression[100] =
@@ -644,6 +645,28 @@ inline void beast::printMoves( )
 
     }
 }
+
+
+
+inline void beast::printOverview( )
+{
+    int lowExpBound;
+    int highExpBound;
+
+    lowExpBound = lvlProgression[getLevel( ) - 1];
+    if ( getLevel( ) < 100 )
+        highExpBound = lvlProgression[getLevel( )];
+
+    cout << nickName << " | Lvl: " << getLevel( ) << " | Type: " << getType( ) <<
+        " | HP: " << currentHealth << '/' << getMaxHP( ) << " | Exp: ";
+
+    if ( getLevel( ) == 100 )
+        cout << "MAX" << endl;
+    else
+        cout << getExp( ) - lowExpBound << "/" << highExpBound - lowExpBound << endl;
+}
+
+
 
 inline int beast::getLevel( )
 {

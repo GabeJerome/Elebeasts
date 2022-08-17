@@ -87,26 +87,28 @@ bool enterHeals( trainer &player )
 
     cout << endl;
 
-    player.printParty( );
+    player.party[beastInput - 1].printOverview( );
 
     cout << endl;
+
+    enemyAttack( player );
         
     return true;
 }
 
 
 
-bool enterBalls( trainer &player )
+int enterBalls( trainer &player )
 {
     int i, j;
     int totalBalls = 0;
     bool valid = false;
     int input = -1;
     string balls[3] = { "Decent Balls", "Good Balls", "Great Balls" };
-    bool caught;
 
     cout << endl;
 
+    //display ball options and number for each
     for ( i = 0; i < 3; i++ )
     {
         for ( j = 0; j < 30; j++ )
@@ -126,8 +128,9 @@ bool enterBalls( trainer &player )
     {
         cin >> input;
 
+        //if no catch attempt is desired
         if ( input == i + 1 )
-            return false;
+            return 0;
 
         if ( input < 1 || input > 3 )
             cout << "Invalid option. Please choose 1 - 4." << endl;
@@ -143,16 +146,20 @@ bool enterBalls( trainer &player )
 
     cout << endl;
 
-    caught = player.captureBeast( input - 1 );
-
-    if ( !caught )
+    //if not caught
+    if ( !player.captureBeast( input - 1 ) )
+    {
         enemyAttack( player );
-    else
-        player.inWildBattle = false;
+        return 2;
+    }
+
+    //end battle
+    player.inWildBattle = false;
 
     cout << endl;
 
-    return caught;
+    //if caught
+    return 1;
 }
 
 
@@ -471,7 +478,7 @@ void printTitle( )
 
 
 
-void generateRandBeast( trainer player, beast &randBeast, bool boss )
+void generateRandBeast( trainer player, beast &randBeast, int type )
 {
     int maxExp = 1;
     int lowExpBound, highExpBound;
@@ -481,30 +488,45 @@ void generateRandBeast( trainer player, beast &randBeast, bool boss )
     int lowMultiplier = 3;
     int highMultiplier = 4;
 
-    if ( boss )
+    //if boss battle
+    if ( type == 2 )
         highMultiplier = 8;
 
-    for ( i = 0; i < 5; i++ )
+    //if trainer battle
+    if ( type == 1 )
     {
-        if ( maxExp < player.party[i].getExp( ) )
+        for ( i = 0; i < 5; i++ )
         {
-            maxExp = player.party[i].getExp( );
+            if ( maxExp < player.party[i].getExp( ) )
+            {
+                maxExp = player.party[i].getExp( );
+            }
         }
     }
+    //(type == 1) if wild battle
+    else
+        maxExp = player.party[player.currBeast].getExp( );
 
+    //calc upper and lower bounds for random experience
     lowExpBound = int( floor( maxExp - ( maxExp * ( lowMultiplier / cbrt( maxExp ) ) ) ) );
     highExpBound = int( floor( maxExp + ( maxExp * ( highMultiplier / cbrt( maxExp ) ) ) ) );
 
+    //calc random experience
     randExp = ( rand( ) % ( highExpBound - lowExpBound ) + 1 ) + lowExpBound;
 
+    //get random ID
     randID = ( rand( ) % TOTAL_BEASTS ) + 1;
 
+    //set to random experience
     randBeast.setExp( randExp );
 
+    //retrieve data for beast from file
     getData( randBeast, randID );
 
+    //find correct evolution for level
     findEvolution( randBeast );
 
+    //get the right moves for the random beast
     randBeast.writeLearnSet( randBeast.base.moveSet );
     randBeast.learnMoves( );
 }
@@ -554,6 +576,7 @@ int displayWorldOptions( trainer &player )
         cout << "6: Exit game (Auto saved)" << endl;
 
         cin >> option;
+        cout << endl;
 
         if ( option > 0 && option < 7 )
             return option;
@@ -825,7 +848,70 @@ void healAllBeasts( trainer &player, int cost )
             player.party[i].currentHealth = player.party[i].getMaxHP( );
     }
 
-    cout << "Your team has been successfully healed." << endl;
+    cout << "Your team has been fully healed." << endl;
+}
+
+
+
+void enterParty( trainer &player, int firstBeast )
+{
+    int secondBeast = -1;
+    string num;
+
+    if ( firstBeast == -1 )
+        num = "first";
+    else
+        num = "second";
+
+    player.printParty( );
+    cout << endl << "To exit, enter 0." << endl << endl;
+
+    cout << "Enter the number of the " << num << " beast to swap." << endl;
+
+    if ( firstBeast == -1 )
+    {
+        cin >> firstBeast;
+        cout << endl;
+
+        if ( firstBeast == 0 )
+            return;
+
+        if ( firstBeast < 1 || firstBeast > 5 )
+        {
+            cout << "That is not a valid option." << endl;
+            return enterParty( player );
+        }
+        else if ( player.party[firstBeast - 1].base.ID == -1 )
+        {
+            cout << "There is no beast there!" << endl;
+            return enterParty( player );
+        }
+
+        return enterParty( player, firstBeast );
+    }
+
+    cin >> secondBeast;
+    cout << endl;
+
+    if ( secondBeast == 0 )
+        return;
+
+    if ( secondBeast < 1 || secondBeast > 5 )
+    {
+        cout << "That is not a valid option." << endl;
+        return enterParty( player, firstBeast );
+    }
+    else if ( player.party[secondBeast - 1].base.ID == -1 )
+    {
+        cout << "There is no beast there!" << endl;
+        return enterParty( player, firstBeast );
+    }
+
+    player.swapParty( firstBeast - 1, secondBeast - 1 );
+
+    player.printParty( );
+
+    cout << endl;
 }
 
 
