@@ -9,6 +9,8 @@ void findEvolution( beast &randBeast );
 
 void getRandName( trainer &player );
 
+void enemyAttack( trainer &player );
+
 #ifndef __BATTLE_H__
 #define __BATTLE_H__
 
@@ -246,17 +248,18 @@ inline void battle::displayBattleMenu( trainer &player )
                 return;
             }
             else
-            {
-                while ( player.currOpponent.move[randMove].type == -1 )
-                    randMove = rand( ) % 4;
-
-                player.currOpponent.attack( player.currOpponent.move[randMove], player.party[player.currBeast], true );
-            }
+                enemyAttack( player );
         }
         else if ( option == 3 )
+        {
             valid = player.enterBag( );
+        }
         else if ( option == 4 )
+        {
             valid = displayCurrBeastSwap( player );
+            if ( valid )
+                enemyAttack( player );
+        }
     }
 }
 
@@ -266,8 +269,6 @@ inline bool battle::displayCurrBeastSwap( trainer &player )
 {
     int option = -1;
     bool valid = false;
-    random_device rand;
-    int randMove = rand( ) % 4;
 
     cout << "Choose a beast to swap." << endl;
 
@@ -296,11 +297,6 @@ inline bool battle::displayCurrBeastSwap( trainer &player )
     player.currBeast = option - 1;
 
     cout << "Swapped to " << player.party[player.currBeast].nickName << '!' << endl << endl;
-
-    while ( player.currOpponent.move[randMove].type == -1 )
-        randMove = rand( ) % 4;
-
-    player.currOpponent.attack( player.currOpponent.move[randMove], player.party[player.currBeast] );
 
     return true;
 }

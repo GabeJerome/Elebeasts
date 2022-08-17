@@ -103,6 +103,7 @@ bool enterBalls( trainer &player )
     bool valid = false;
     int input = -1;
     string balls[3] = { "Decent Balls", "Good Balls", "Great Balls" };
+    bool caught;
 
     cout << endl;
 
@@ -128,8 +129,6 @@ bool enterBalls( trainer &player )
         if ( input == i + 1 )
             return false;
 
-        
-
         if ( input < 1 || input > 3 )
             cout << "Invalid option. Please choose 1 - 4." << endl;
         else if ( player.currOpponent.base.ID == -1 )
@@ -144,11 +143,16 @@ bool enterBalls( trainer &player )
 
     cout << endl;
 
-    player.captureBeast( input - 1 );
+    caught = player.captureBeast( input - 1 );
+
+    if ( !caught )
+        enemyAttack( player );
+    else
+        player.inWildBattle = false;
 
     cout << endl;
 
-    return true;
+    return caught;
 }
 
 
@@ -269,7 +273,7 @@ void tutorial( trainer &player )
 
         if ( option == 1 )
         {
-            giveNickname( player );
+            giveNickname( player.party[0] );
             valid = true;
         }
         else if ( option == 2 )
@@ -286,7 +290,7 @@ void tutorial( trainer &player )
 
 
 
-void giveNickname( trainer &player )
+void giveNickname( beast &playerBeast )
 {
     bool valid = false, valid2 = false;
     int option = -1;
@@ -322,15 +326,17 @@ void giveNickname( trainer &player )
 
     for ( i = 0; i < name.size( ); i++ )
     {
-        player.party[0].nickName[i] = name[i];
+        playerBeast.nickName[i] = name[i];
     }
 
     while ( i < 16 )
     {
-        player.party[0].nickName[i] = '\0';
+        playerBeast.nickName[i] = '\0';
         i++;
     }
 }
+
+
 
 void getPlayerName( trainer &player )
 {
@@ -700,8 +706,8 @@ void buyBalls( trainer &player )
                         }
                         else
                         {
+                            numBalls = player.giveBalls( ballType - 1, numBalls );
                             player.money -= priceEach * numBalls;
-                            player.giveBalls( ballType, numBalls );
                             return;
                         }
                     }
@@ -780,8 +786,8 @@ void buyHeals( trainer &player )
                         }
                         else
                         {
+                            numHeals = player.giveHeals( healType - 1, numHeals );
                             player.money -= priceEach * numHeals;
-                            player.giveHeals( healType, numHeals );
                             return;
                         }
                     }
@@ -820,4 +826,17 @@ void healAllBeasts( trainer &player, int cost )
     }
 
     cout << "Your team has been successfully healed." << endl;
+}
+
+
+
+void enemyAttack( trainer &player )
+{
+    random_device rand;
+    int randMove = rand( ) % 4;
+
+    while ( player.currOpponent.move[randMove].type == -1 )
+        randMove = rand( ) % 4;
+
+    player.currOpponent.attack( player.currOpponent.move[randMove], player.party[player.currBeast], true );
 }

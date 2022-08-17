@@ -68,3 +68,6 @@ int main( )
 
     return 0;
 }
+
+//need to fix battle actions after trying to capture a beast
+//get rid of ball after using

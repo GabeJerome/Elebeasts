@@ -13,6 +13,8 @@ int find( int arr[], int tgt, int n );
 
 bool checkLoss( trainer &player );
 
+void giveNickname( beast &playerBeast );
+
 enum healer { small, medium, large };
 enum ball { decent = 1, good, great };
 
@@ -93,7 +95,7 @@ inline bool trainer::enterBag( )
     int option;
     int totalBalls = 0;
     bool redo = false;
-    
+    bool caught;
 
     while ( !redo )
     {
@@ -119,7 +121,11 @@ inline bool trainer::enterBag( )
             redo = enterHeals( *this );
 
         if ( option == 2 )
+        {
             redo = enterBalls( *this );
+            if ( !redo )
+                return true;
+        }
     }
 
     return true;
@@ -170,6 +176,8 @@ inline bool trainer::captureBeast( int ball )
     unsigned int shakeProb;
     int catchRate = int(( 6000 / cbrt( newBeast.getBaseStatTotal( ) ) ) - 700);
     float ballCatchRate = 1;
+    bool valid = false;
+    int option;
 
     cout << endl;
 
@@ -299,6 +307,26 @@ inline void trainer::setCurrBeast( )
 inline void trainer::putInParty( beast &newBeast )
 {
     int partySlot = -1;
+    bool valid = false;
+    int option;
+
+    while ( !valid )
+    {
+        cout << "Would you like to give " << newBeast.base.name << " a nickname?" << endl;
+        cout << "1: Yes\n2: No" << endl;
+
+        cin >> option;
+
+        if ( option == 1 )
+        {
+            giveNickname( newBeast );
+            valid = true;
+        }
+        else if ( option == 2 )
+            valid = true;
+        else
+            cout << "Please choose 1 or 2" << endl;
+    }
 
     while ( (partySlot < 1 || partySlot > 5) )
     {
@@ -377,6 +405,8 @@ inline int trainer::giveHeals( int healer, int numHeals )
     for ( i = 0; i < numHeals; i++ )
     {
         location = find( bag.heals[healer], 0, 20 );
+        if ( location == -1 )
+            return i;
         bag.heals[healer][location] = 1;
     }
 
@@ -387,7 +417,7 @@ inline int trainer::giveHeals( int healer, int numHeals )
 
 inline int trainer::giveBalls( int ballType, int numBalls )
 {
-    int location = find( bag.balls[ballType], 0, 20 );
+    int location = find( bag.balls[ballType], 0, 30 );
     int i;
 
     if ( location == -1 )
@@ -396,6 +426,8 @@ inline int trainer::giveBalls( int ballType, int numBalls )
     for ( i = 0; i < numBalls; i++ )
     {
         location = find( bag.balls[ballType], 0, 30 );
+        if ( location == -1 )
+            return i;
         bag.balls[ballType][location] = 1;
     }
 

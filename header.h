@@ -17,8 +17,6 @@ bool loadFile( trainer &player, int num );
 
 void tutorial( trainer &player );
 
-void giveNickname( trainer &player );
-
 void getPlayerName( trainer &player );
 
 int chooseFile( trainer &player );
