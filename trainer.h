@@ -187,22 +187,45 @@ inline bool trainer::captureBeast( int ball )
     int catchRate = int(( 6000 / cbrt( newBeast.getBaseStatTotal( ) ) ) - 700);
     float ballCatchRate = 1;
     bool valid = false;
+    int locationInBag;
+
+    //make sure function call is valid
+    if ( ball < 0 || ball > 2 )
+    {
+        cout << "There was an issue with captureBeast function call." << endl;
+        return false;
+    }
 
     cout << endl;
 
+    //set catch rate for better balls
     if ( ball == 2 )
         ballCatchRate = 1.5;
     else if ( ball == 3 )
         ballCatchRate = 2;
 
+    //remove ball from inventory
+    locationInBag = find( bag.balls[ball], 1, 30 );
+    if ( locationInBag < 0 || locationInBag > 29 )
+    {
+        cout << "You don't have any of those!" << endl;
+        return false;
+    }
+    bag.balls[ball][locationInBag] = 0;
+
+    //calculate the catch rate
     finalCatchRate = int( ( 3 * newBeast.getMaxHP( ) - 2 * newBeast.currentHealth )
         * ( catchRate * ballCatchRate ) ) / ( 3 * newBeast.getMaxHP( ) );
 
+    //get the success rate for each shake
     shakeProb = int( 1048560 / ( sqrt( sqrt( 16711680 / finalCatchRate ) ) ) );
 
+    //shake three time and check if each passed
     for ( i = 1; i < 4; i++ )
     {
         this_thread::sleep_for( chrono::seconds( 1 ) );
+
+        //if a shake fails, return (not caught)
         if ( ( shakeCheck( ) % 65536 ) >= shakeProb )
         {
             cout << "The wild " << newBeast.base.name << " broke free!" << endl;
@@ -213,8 +236,11 @@ inline bool trainer::captureBeast( int ball )
     }
 
     this_thread::sleep_for( chrono::seconds( 1 ) );
+
+    //caught
     cout << newBeast.base.name << " was captured!" << endl;
 
+    //put it in party
     putInParty( newBeast );
     
     cout << endl;
@@ -295,7 +321,7 @@ inline void trainer::setCurrBeast( )
 
     for ( i = 0; i < 5; i++ )
     {
-        if ( party[i].currentHealth != 0 )
+        if ( party[i].base.ID != -1 && party[i].currentHealth != 0 )
         {
             currBeast = i;
             return;

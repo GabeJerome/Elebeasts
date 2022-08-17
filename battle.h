@@ -50,21 +50,31 @@ inline bool battle::wildBattle( trainer &player )
     bool won;
     int prizeMoney;
 
+    //set the the first, healthy beast in party to current beast
+    player.setCurrBeast( );
+
+    //get a random beast based on currBeast's level
     generateRandBeast( player, randBeast );
 
+    //Enter wild battle
     player.inWildBattle = true;
 
+    //set currOpponent
     player.currOpponent = randBeast;
 
+    //begin battle loop until someone loses
     while ( !checkLoss( player ) && player.currOpponent.currentHealth != 0 )
     {
         printLine( );
         cout << endl;
         displayBattleMenu( player );
+
+        //If the beast is captured
         if ( !player.inWildBattle )
             return false;
     }
 
+    //set to display correct messages and return boolean value
     won = !checkLoss( player );
 
     if ( won )
@@ -85,9 +95,13 @@ inline bool battle::wildBattle( trainer &player )
         player.money -= prizeMoney;
     }
 
+    //set the the first, healthy beast in party to current beast
     player.setCurrBeast( );
+
+    //erase current opponent
     player.currOpponent = nullBeast;
 
+    //exit wild battle
     player.inWildBattle = false;
 
     return won;
@@ -103,11 +117,17 @@ inline bool battle::trainerBattle( trainer &player, bool boss )
     beast randBeast;
     string oppName;
     int prizeMoney, moneyMultiplier = 1;
+
+    //set the the first, healthy beast in party to current beast
+    player.setCurrBeast( );
     
+    //get a name for the opponent
     getRandName( opponent );
 
+    //find the number of beasts for the opponent
     numBeasts = player.getNumBeasts( );
 
+    //give the random name to the opponent
     oppName = opponent.name;
 
     if ( boss )

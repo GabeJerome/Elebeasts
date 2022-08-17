@@ -308,7 +308,8 @@ void giveNickname( beast &playerBeast )
     {
         cout << "Enter a nick name. (max 15 characters)" << endl;
 
-        cin >> name;
+        cin.ignore( );
+        getline( cin, name );
 
         if ( name.size( ) > 15 )
             cout << "That name is too long." << endl;
@@ -356,7 +357,8 @@ void getPlayerName( trainer &player )
     {
         cout << "Enter your name. (max 15 characters)" << endl;
 
-        cin >> name;
+        cin.ignore( );
+        getline( cin, name );
 
         if ( name.size( ) > 15 )
             cout << "That name is too long." << endl;
@@ -506,6 +508,10 @@ void generateRandBeast( trainer player, beast &randBeast, int type )
     //(type == 1) if wild battle
     else
         maxExp = player.party[player.currBeast].getExp( );
+
+    //ensure equation below does not divide by 0
+    if ( maxExp <= 0 )
+        maxExp++;
 
     //calc upper and lower bounds for random experience
     lowExpBound = int( floor( maxExp - ( maxExp * ( lowMultiplier / cbrt( maxExp ) ) ) ) );
@@ -881,11 +887,11 @@ void enterParty( trainer &player, int firstBeast )
             cout << "That is not a valid option." << endl;
             return enterParty( player );
         }
-        else if ( player.party[firstBeast - 1].base.ID == -1 )
+        /*else if ( player.party[firstBeast - 1].base.ID == -1 )
         {
             cout << "There is no beast there!" << endl;
             return enterParty( player );
-        }
+        }*/
 
         return enterParty( player, firstBeast );
     }
