@@ -1,6 +1,9 @@
+/** ***************************************************************************
+* @file
+*
+* @brief All non-member functions and non-data-storage functions
+** ****************************************************************************/
 #include "header.h"
-
-
 
 int find( int arr[], int tgt, int n )
 {

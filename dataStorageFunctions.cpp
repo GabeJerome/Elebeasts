@@ -1,9 +1,12 @@
+/** ***************************************************************************
+* @file
+*
+* @brief All functions that deal with data storage
+** ****************************************************************************/
 #include "trainer.h"
 #include "header.h"
 
 using namespace std;
-
-
 
 bool storeBeastDataBinary( )
 {

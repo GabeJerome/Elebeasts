@@ -1,3 +1,9 @@
+/** **************************************************************************
+* @file
+*
+* @brief Beast class
+** ****************************************************************************/
+
 #pragma once
 #include <string>
 #include <iostream>
@@ -20,39 +26,46 @@ bool getData( beast &newBeast, int beastID );
 #ifndef __ELEBEAST_H__
 #define __ELEBEAST_H__
 
+/**
+* @brief Holds data for a single move in a beast's learn set.
+*/
 struct LearnSet
 {
-    Move move;
-    int moveLevel = 0;
-    bool learned = false;
+    Move move;              /**< The move that the beast will learn. */
+    int moveLevel = 0;      /**< The level that the beast will learn the move. */
+    bool learned = false;   /**< Boolean indicating if the move has been learned. */
 };
 
+/**
+* @brief Holds the beast's base stats.
+*/
 struct baseStats
 {
-    int ID;
-    char name[16];
-    int health;
-    int defense;
-    int spdefense;
-    int attack;
-    int spattack;
-    int speed;
-    int eleType1;
-    int eleType2;
-    short int evolveLevel;
-    short int moveSet[30] = { 0 };
+    int ID;                         /**< The beast's ID to locate in data storage. */
+    char name[16];                  /**< The beast's original name. */
+    int health;                     /**< base health. */
+    int defense;                    /**< base defense. */
+    int spdefense;                  /**< base special defense. */
+    int attack;                     /**< base attack. */
+    int spattack;                   /**< base special attack. */
+    int speed;                      /**< base speed. */
+    int eleType1;                   /**< The beast's first elemental type. */
+    int eleType2;                   /**< The beast's second elemental type. (-1 = no type) */
+    short int evolveLevel;          /**< The level that the beast evolves at. (101 if the beast doesn't evolve) */
+    short int moveSet[30] = { 0 };  /**< An array of the moves that the beast will learn as it levels up. */
 };
 
 
+/**
+* @brief Beast class used in the trainer class. 
+*/
 class beast
 {
     //could add EXP yield (reference)-> https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield
 private:
-    
     int experience;
     int currentStats[6];
     LearnSet learnSet[30];
-    
 
 public:
     char nickName[16];
@@ -62,7 +75,7 @@ public:
 
     beast( );
     beast( string name, int exp, int maxHP, int currHP, int def,
-        int spdef, int att, int spatt, int spd, int type1, int type2, 
+        int spdef, int att, int spatt, int spd, int type1, int type2,
         short int evolveLvl, const short int moves[] );
     beast( baseStats newBeast );
     beast( int level, int ID );
@@ -78,7 +91,7 @@ public:
     void operator=( beast &newBeast );
     void writeLearnSet( const short int moves[] );
     void learnMoves( );
-    
+
 
     int getLevel( );
     int getExp( );
@@ -98,8 +111,9 @@ public:
     void setExp( int exp );
 
     int lvlProgression[100] =
+    {
         /* 0       1       2       3       4       5       6       7       8       9*/
-        /*0*/ { 0,      8,      27,     64,     125,    216,    343,    512,    729,
+        /*0*/   0,      8,      27,     64,     125,    216,    343,    512,    729,
         /*1*/  1000,   1331,   1728,   2197,   2744,   3375,   4096,   4913,   5832,   6859,
         /*2*/  8000,   9261,   10648,  12167,  13824,  15625,  17576,  19683,  21952,  24389,
         /*3*/  27000,  29791,  32768,  35937,  39304,  42875,  46656,  50653,  54872,  59319,
@@ -181,6 +195,21 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+*
+* @param[in]
+* @param[out]
+*
+* @returns 0
+*
+* @par Example
+* @verbatim
+*
+* @endverbatim
+******************************************************************************/
 inline beast::beast( baseStats newBeast )
 {
     int i;

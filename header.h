@@ -1,3 +1,8 @@
+/** ***************************************************************************
+* @file
+*
+* @brief header file including all function libraries and function declarations
+** ****************************************************************************/
 #pragma once
 #include <stdlib.h>
 #include <algorithm>

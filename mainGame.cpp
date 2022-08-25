@@ -1,9 +1,32 @@
+/** ***************************************************************************
+* @file
+*
+* @brief File including main
+** ****************************************************************************/
 #define CATCH_CONFIG_RUNNER
 #include "catch.hpp"
 #include "header.h"
 
 const bool RUNCATCH = false;
 
+
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This is the main function. It takes no arguments. This is where the world
+* options are displayed and the functions are called to execute the player's
+* selection. It will loop until the player selects to exit.
+* 
+* @param[in]    none
+* 
+* @returns 0
+* 
+* @par Example
+* @verbatim
+    ./Elebeasts.exe
+  @endverbatim
+* ****************************************************************************/
 int main( )
 {
     Catch::Session session;
@@ -18,7 +41,6 @@ int main( )
             return result;
         }
     }
-
 
     int option = 0;
     trainer player;

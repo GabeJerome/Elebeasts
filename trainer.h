@@ -1,3 +1,8 @@
+/** ***************************************************************************
+* @file
+*
+* @brief Trainer class
+** ****************************************************************************/
 #pragma once
 #include "elebeastClass.h"
 
@@ -24,12 +29,22 @@ enum ball { decent = 1, good, great };
 #ifndef __TRAINER_H__
 #define __TRAINER_H__
 
+/**
+* @brief Holds data for the player's inventory
+*/
 struct Bag
 {
-    int heals[3][20] = { 0 };
-    int balls[3][30] = { 0 };
+    int heals[3][20] = { 0 };   /**< The player's heals. A player can have up to
+                                    20 of each of 3 different kinds of heals.*/
+    int balls[3][30] = { 0 };   /**< The player's balls. A player can have up to
+                                    30 of each of 3 different kinds of balls.*/
 };
 
+
+
+/**
+* @brief Trainer class that holds data and functions for a beast master
+*/
 class trainer
 {
 public:
