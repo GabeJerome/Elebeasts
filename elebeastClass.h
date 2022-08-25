@@ -61,7 +61,6 @@ struct baseStats
 */
 class beast
 {
-    //could add EXP yield (reference)-> https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_effort_value_yield
 private:
     int experience;
     int currentStats[6];
@@ -131,6 +130,23 @@ public:
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This is the default constructor for the beast class. It sets all of the
+* beast's base values to zero. It is used to create null beasts that are
+* meant to be used as place holders.
+*
+* @param[in] none
+*
+* @returns nothing
+*
+* @par Example
+* @verbatim
+    beast testBeast;
+  @endverbatim
+* ****************************************************************************/
 inline beast::beast( )
 {
     int i;
@@ -160,6 +176,36 @@ inline beast::beast( )
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This is the custom constructor for the beast class. It has many parameters
+* that set the base values of the beast. It is meant for creating beasts with
+* custom stats for testing.
+*
+* @param[in] name The name of the beast.
+* @param[in] exp The experience that the beast will have.
+* @param[in] maxHP The max health that the beast will have.
+* @param[in] currHP The current health that the beast will have.
+* @param[in] def The base defense that the beast will have.
+* @param[in] spdef The base special defense that the beast will have.
+* @param[in] att The base attack that the beast will have.
+* @param[in] spatt The base special attack that the beast will have.
+* @param[in] spd The base speed that the beast will have.
+* @param[in] type1 The beast's first element.
+* @param[in] type2 The beast's second element. This may be empty.
+* @param[in] evolveLvl The levle that the beast will evolve.
+* @param[in] moves A set of numbers representing the moves that the beast
+*               can learn.
+*
+* @returns nothing
+*
+* @par Example
+* @verbatim
+    beast testBeast( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, flacoraLearnSet );
+  @endverbatim
+* ****************************************************************************/
 inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     int spdef, int att, int spatt, int spd, int type1, int type2,
     short int evolveLvl, const short int moves[] )
@@ -199,15 +245,17 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 * @author Gabe Jerome
 *
 * @par Description
+* This is a constructor that copies the inputted beast. It is meant for
+* creating copies of beasts when generating random ones.
 *
-* @param[in]
-* @param[out]
+* @param[in] newBeast Beast that will be copied.
 *
-* @returns 0
+* @returns nothing
 *
 * @par Example
 * @verbatim
-*
+    beast testBeast1( "Flacora", 111, 40, 40, 45, 48, 53, 60, 65, fire, none, 101, flacoraLearnSet );
+    beast testBeast2( testBeast1 );
 * @endverbatim
 ******************************************************************************/
 inline beast::beast( baseStats newBeast )
