@@ -280,13 +280,13 @@ inline bool trainer::fight( )
     cout << endl;
     healthBar( party[currBeast] );
 
-    cout << endl << "Choose a move" << endl;
-
-    party[currBeast].printMoves( );
-    cout << "5: Back" << endl;
-
     while ( !valid )
     {
+        cout << endl << "Choose a move" << endl;
+
+        party[currBeast].printMoves( );
+        cout << "5: Back" << endl;
+
         cin >> input;
 
         if ( input == 5 )

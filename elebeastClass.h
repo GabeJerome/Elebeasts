@@ -291,6 +291,24 @@ inline beast::beast( baseStats newBeast )
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This is a test constructor. It will retrieve data for a beast and set it to
+* a desired level.
+*
+* @param[in] level The desired level of the new beast.
+* @param[in] ID The ID number of the desired beast.
+*
+* @returns nothing
+*
+* @par Example
+* @verbatim
+    beast testBeast( 23, 2 );
+    //testBeast is a level 23 Firectric
+* @endverbatim
+******************************************************************************/
 inline beast::beast(int level, int ID )
 {
     getData( *this, ID );
@@ -312,6 +330,26 @@ inline beast::beast(int level, int ID )
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This is the deconstructor for the beast class. There is no dynamic memory
+* in this class that needs to be cleared.
+*
+* @param[in] none
+*
+* @returns nothing
+*
+* @par Example
+* @verbatim
+* int main( )
+* {
+      beast sampleBeast;
+  }
+  //The deconstructor is called when the instance goes out of scope
+  @endverbatim
+* ****************************************************************************/
 inline beast::~beast( )
 {
 
@@ -319,6 +357,42 @@ inline beast::~beast( )
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This function writes the learn set for the beast. It takes in an array of
+* short integers that represent the moves. The first 7 bits are the level that
+* the beast learns the move. The remaining bits are the ID of the move. It
+* stores these values and populates the array of learnest structs for the
+* beast. This function is called in the constructors for the class.
+*
+* @param[in] moves The array of short integers that hold move data
+*
+* @returns nothing
+*
+* @par Example
+* @verbatim
+inline beast::beast(int level, int ID )
+{
+    getData( *this, ID );
+    
+    experience = level * level * level;
+    currentHealth = getMaxHP( );
+    
+    currentStats[0] = getMaxHP( );
+    currentStats[1] = getDef( );
+    currentStats[2] = getSpDef( );
+    currentStats[3] = getAtt( );
+    currentStats[4] = getSpAtt( );
+    currentStats[5] = getSpeed( );
+
+    writeLearnSet( base.moveSet );
+    
+    learnMoves( );
+}
+* @endverbatim
+******************************************************************************/
 inline void beast::writeLearnSet( const short int moves[] )
 {
     int i, num;
@@ -358,6 +432,9 @@ inline void beast::writeLearnSet( const short int moves[] )
 
 
 
+/**
+* @brief Effectiveness chart for reference in the attack function
+*/
 const double effectiveChart[18][18] =
 {                  /* 0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17*/
     /*Normal   0*/  { 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,.5 , 0 , 1 , 1 ,.5 , 1 },
@@ -382,6 +459,30 @@ const double effectiveChart[18][18] =
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This is the attack function that is called in battle. It determines if a move
+* hits and if it is a critical hit. If it hits, it calculates the elemental
+* effectiveness of the move and the damage it does based on the active defense
+* and attack (physical or special).
+*
+* @param[in] move The move that the attacking beast is using.
+* @param[in, out] opponent The beast that is being attacked.
+* @param[in] enemy Tells whether the attacker is the player or the enemy.
+*                   used for printing names to the screen.
+*
+* @returns True if the attack hits. False if the attack misses.
+*
+* @par Example
+* @verbatim
+    trainer player;
+    cin >> input;
+
+    player.party[currBeast].attack( player.party[currBeast].move[input - 1], player.currOpponent );
+* @endverbatim
+******************************************************************************/
 inline bool beast::attack( Move move, beast &opponent, bool enemy )
 {
     random_device rand;
