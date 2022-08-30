@@ -564,6 +564,41 @@ inline bool beast::attack( Move move, beast &opponent, bool enemy )
 
 
 
+/** ***************************************************************************
+* @author Gabe Jerome
+*
+* @par Description
+* This is the run away function. A beast can only run from a wild battle. If
+* the beast that is trying to run is faster than its opponent, it will
+* successfully run every time. If the running beast is slower, then its odds of
+* success are calculate using each beast's speed and the number of times that
+* the beast has attempted to run.
+*
+* @param[in, out] opponent The opposing beast.
+*
+* @returns True if the run attempt is successful. Else, false.
+*
+* @par Example
+* @verbatim
+    trainer player;
+    int option;
+
+    cin >> option;
+
+    if ( option == 2 )
+       {
+           //if run away succeeds, exit battle
+           if ( player.party[player.currBeast].runAway( player.currOpponent ) )
+           {
+               player.inWildBattle = false;
+               return;
+           }
+           //if run away fails, enemy attacks and move to next turn
+           else
+               enemyAttack( player );
+       }
+* @endverbatim
+******************************************************************************/
 inline bool beast::runAway( beast &opponent )
 {
     int odds, run;

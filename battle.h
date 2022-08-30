@@ -73,8 +73,8 @@ inline battle::battle( )
 *
 * @par Example
 * @verbatim
-* int main( )
-* {
+  int main( )
+  {
       battle sampleBattle;
   }
   //The deconstructor is called when the instance goes out of scope
