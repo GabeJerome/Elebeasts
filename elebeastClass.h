@@ -152,8 +152,12 @@ inline beast::beast( )
     int i;
 
     base.ID = -1;
+    
+    //copy nickname
     for ( i = 0; i < 16; i++ )
         nickName[i] = base.name[i];
+
+    //set base stats
     experience = 0;
     base.health = currentHealth = 0;
     currentHealth = base.health;
@@ -166,6 +170,7 @@ inline beast::beast( )
     base.eleType2 = -1;
     base.evolveLevel = 101;
 
+    //set current stats for printing
     currentStats[0] = getMaxHP( );
     currentStats[1] = getDef( );
     currentStats[2] = getSpDef( );
@@ -212,10 +217,12 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
 {
     int i;
 
+    //copy nickname
     for ( i = 0; i < 16; i++ )
         nickName[i] = base.name[i];
     experience = exp;
 
+    //set base stats
     base.health = maxHP;
     base.defense = def;
     base.spdefense = spdef;
@@ -225,17 +232,20 @@ inline beast::beast( string name, int exp, int maxHP, int currHP, int def,
     base.eleType1 = type1;
     base.eleType2 = type2;
 
+    //set current stats for printing
     currentStats[0] = getMaxHP( );
     currentStats[1] = getDef( );
     currentStats[2] = getSpDef( );
     currentStats[3] = getAtt( );
     currentStats[4] = getSpAtt( );
     currentStats[5] = getSpeed( );
-
     currentHealth = getMaxHP( );
     base.evolveLevel = evolveLvl;
+
+    //write learnset from moves
     writeLearnSet( moves );
 
+    //learn appropriate moves at given level
     learnMoves( );
 }
 
@@ -262,10 +272,12 @@ inline beast::beast( baseStats newBeast )
 {
     int i;
 
+    //copy nickname
     for ( i = 0; i < 16; i++ )
         nickName[i] = base.name[i];
     experience = 0;
 
+    //set base stats
     base.health = newBeast.health;
     base.defense = newBeast.defense;
     base.spdefense = newBeast.spdefense;
@@ -275,6 +287,7 @@ inline beast::beast( baseStats newBeast )
     base.eleType1 = newBeast.eleType1;
     base.eleType2 = newBeast.eleType2;
 
+    //set current stats for printing
     currentStats[0] = getMaxHP( );
     currentStats[1] = getDef( );
     currentStats[2] = getSpDef( );
@@ -282,10 +295,12 @@ inline beast::beast( baseStats newBeast )
     currentStats[4] = getSpAtt( );
     currentStats[5] = getSpeed( );
     currentHealth = getMaxHP( );
-
     base.evolveLevel = newBeast.evolveLevel;
+
+    //write learnset from moves
     writeLearnSet( newBeast.moveSet );
 
+    //learn appropriate moves at given level
     learnMoves( );
 }
 
@@ -311,11 +326,14 @@ inline beast::beast( baseStats newBeast )
 ******************************************************************************/
 inline beast::beast(int level, int ID )
 {
+    //retrieve beast data from file
     getData( *this, ID );
     
+    //set experience using level
     experience = level * level * level;
     currentHealth = getMaxHP( );
     
+    //set current stats for printing
     currentStats[0] = getMaxHP( );
     currentStats[1] = getDef( );
     currentStats[2] = getSpDef( );
@@ -323,8 +341,10 @@ inline beast::beast(int level, int ID )
     currentStats[4] = getSpAtt( );
     currentStats[5] = getSpeed( );
 
+    //write learnset from moves
     writeLearnSet( base.moveSet );
     
+    //learn appropriate moves at given level
     learnMoves( );
 }
 
@@ -352,7 +372,7 @@ inline beast::beast(int level, int ID )
 * ****************************************************************************/
 inline beast::~beast( )
 {
-
+    //no dynamic memory
 }
 
 
@@ -363,7 +383,7 @@ inline beast::~beast( )
 * @par Description
 * This function writes the learn set for the beast. It takes in an array of
 * short integers that represent the moves. The first 7 bits are the level that
-* the beast learns the move. The remaining bits are the ID of the move. It
+* the beast learns the move. The remaining 9 bits are the ID of the move. It
 * stores these values and populates the array of learnest structs for the
 * beast. This function is called in the constructors for the class.
 *
@@ -400,15 +420,22 @@ inline void beast::writeLearnSet( const short int moves[] )
     LearnSet temp;
     Move newMove;
 
-
+    //loop for each move until move is empty
     for ( i = 0; i < 30 && moves[i] != 0; i++ )
     {
+        //set number to be unpacked
         num = moves[i];
 
+        //get move level from the first 7 bits
         moveLevel = num & 127;
+
+        //shift packed number down
         num >>= 7;
 
+        //get moveID from remaining 9 bits
         moveID = num & 511;
+
+        //check to see if the move exists
         if ( moveID < 0 || moveID > 5 )
         {
             cout << "Invalid move number for " << nickName << endl;
@@ -416,16 +443,22 @@ inline void beast::writeLearnSet( const short int moves[] )
             return;
         }
 
+        //set level 0 moves to learned
         if ( moveLevel == 0 )
             temp.learned = true;
         else
             temp.learned = false;
+
+        //record move level in temporary learnset
         temp.moveLevel = moveLevel;
 
+        //get the data from the move using the move ID
         getData( newMove, moveID );
 
+        //store the move stats in temporary learnset
         temp.move = newMove;
 
+        //put the temporary move into the beast's learnset
         learnSet[i] = temp;
     }
 }
@@ -486,57 +519,65 @@ const double effectiveChart[18][18] =
 inline bool beast::attack( Move move, beast &opponent, bool enemy )
 {
     random_device rand;
-    int hit = ( rand( ) % 100 ) + 1;
+    int hit;
     string oppName = opponent.nickName, name = this->nickName;
-
-    if ( enemy )
-        name = "Foe " + name;
-    else
-        oppName = "Foe " + oppName;
-
-    this_thread::sleep_for( chrono::seconds( 1 ) );
-    cout << name << " used " << move.name << '.' << endl;
-    this_thread::sleep_for( chrono::seconds( 2 ) );
-
-    if ( hit > move.accuracy )
-    {
-        cout << name << " missed." << endl << endl;
-        this_thread::sleep_for( chrono::seconds( 1 ) );
-        return false;
-    }
-
-    double randRoll = ( double( ( rand( ) % 15 ) + 1 ) / 100 ) + .85;
+    double randRoll;
     int damage;
     int Def, Att;
     double critical = 1;
     double effectiveness;
 
-    //calculate effectiveness
+    //generate a random number between 0 and 100
+    hit = ( rand( ) % 100 ) + 1;
+
+    //set foe prefix to appropriate name
+    if ( enemy )
+        name = "Foe " + name;
+    else
+        oppName = "Foe " + oppName;
+
+    //print usage statement with time buffer around it.
+    this_thread::sleep_for( chrono::seconds( 1 ) );
+    cout << name << " used " << move.name << '.' << endl;
+    this_thread::sleep_for( chrono::seconds( 2 ) );
+
+    //if hit is strictly greater than the move, then the move misses and return
+    if ( hit > move.accuracy )
+    {
+        //display miss message and exit function
+        cout << name << " missed." << endl << endl;
+        this_thread::sleep_for( chrono::seconds( 1 ) );
+        return false;
+    }
+
+    //calculate the random role damage multiplier (between .85 and 1)
+    randRoll = ( double( ( rand( ) % 15 ) + 1 ) / 100 ) + .85;
+    
+    //calculate elemental effectiveness with one type or two types
     if ( opponent.base.eleType2 == -1 )
         effectiveness = effectiveChart[move.element][opponent.base.eleType1];
     else
         effectiveness = effectiveChart[move.element][opponent.base.eleType1]
         * effectiveChart[move.element][opponent.base.eleType2];
 
+    //display messages for no effect, half damage, or double damage
+    //no message is needed for normal damage
     if ( effectiveness == 0 )
-    {
         cout << "It doesn't affect " << oppName << '.' << endl;
-        this_thread::sleep_for( chrono::seconds( 1 ) );
-    }
     else if ( effectiveness == .5 )
-    {
         cout << "It's not very effective." << endl;
-        this_thread::sleep_for( chrono::seconds( 1 ) );
-    }
     else if ( effectiveness == 2 )
-    {
         cout << "It's super effective!" << endl;
-        this_thread::sleep_for( chrono::seconds( 1 ) );
-    }
 
+    //pause if message is displayed
+    if(effectiveness != 1 )
+        this_thread::sleep_for( chrono::seconds( 1 ) );
+
+    //determine if hit is critical
     if ( hit < 5 )
         critical = 1.5;
 
+    //set used defense and attack stats based on physical or special move
     if ( move.type == 0 )
     {
         Def = opponent.getSpDef( );
@@ -548,17 +589,23 @@ inline bool beast::attack( Move move, beast &opponent, bool enemy )
         Att = getAtt( );
     }
 
-    damage = int( ( ( ( ( ( ( static_cast<double>( 2 ) * getLevel( ) ) / 5 ) + 2 ) * move.power
+    //calculate damage using all previous variables
+    damage = int( ( ( ( ( ( ( static_cast<double>( 2 ) * 
+        getLevel( ) ) / 5 ) + 2 ) * move.power
         * Att / Def ) / 50 ) + 2 ) * randRoll * critical * effectiveness );
 
+    //if more damage is done to opponent than the opponent has reset damage
     if ( damage > opponent.currentHealth )
         damage = opponent.currentHealth;
 
+    //take opponent's health based on calculated damage
     opponent.currentHealth -= damage;
 
+    //print how much damage the attacker did
     cout << oppName << " took " << damage << " damage." << endl << endl;
     this_thread::sleep_for( chrono::seconds( 1 ) );
 
+    //return true for hit
     return true;
 }
 
@@ -607,6 +654,7 @@ inline bool beast::runAway( beast &opponent )
     int mySpeed = getSpeed( );
     int oppSpeed = opponent.getSpeed( );
 
+    //run is always successful if runner's speed is greater than opponent
     if ( mySpeed >= oppSpeed )
     {
         attemptNum = 1;
@@ -614,10 +662,15 @@ inline bool beast::runAway( beast &opponent )
         return true;
     }
 
-    odds = ( ( ( mySpeed * 32 ) / ( ( oppSpeed / 4 ) % 256 ) ) + 30 * attemptNum );
+    //determine odds of success using each beast's speed and the attempt number
+    odds = ( ( ( mySpeed * 32 ) / ( ( oppSpeed / 4 ) % 256 ) ) + 30 *
+        attemptNum );
 
+    //generate a random number for run
     run = rand( ) % 256;
 
+    //if odds is greater than 255, always succeed
+    //if odds is greater than random run value, success - return true
     if ( odds > 255 || run < odds )
     {
         attemptNum = 1;
@@ -625,8 +678,10 @@ inline bool beast::runAway( beast &opponent )
         return true;
     }
 
+    //upon failure, increase static variable attempt number
     attemptNum++;
 
+    //print failure message
     cout << "Didn't escape!" << endl;
     return false;
 }
@@ -638,32 +693,42 @@ inline void beast::evolve( )
     int i;
     beast newBeast;
 
-
+    //set ID to next beast
     base.ID++;
 
+    //exit function if getData fails
     if ( !getData( newBeast, base.ID ) )
         return;
 
+    //change all the base stats to the new beast
     changeBaseStats( newBeast );
 
+    //print evolve message
     cout << nickName << " evoloved into " << base.name << '!' << endl;
     this_thread::sleep_for( chrono::seconds( 1 ) );
 
+    //if the beast has no nickname, change it to the new beast's name
     if ( nickName != base.name )
     {
         for ( i = 0; i < 16; i++ )
             nickName[i] = base.name[i];
     }
 
+    //print the change in stats after evolution
     printLvlUpStats( );
 }
+
+
 
 inline void beast::changeBaseStats( beast &newBeast )
 {
     int i;
 
+    //copy beast's base name
     for ( i = 0; i < 16; i++ )
         base.name[i] = newBeast.base.name[i];
+
+    //change all of the base stats to the new beast's stats
     base.health = newBeast.base.health;
     base.defense = newBeast.base.defense;
     base.spdefense = newBeast.base.spdefense;
@@ -681,30 +746,40 @@ inline void beast::operator=( beast &newBeast )
 {
     int i;
      
+    //set ID
     base.ID = newBeast.base.ID;
 
+    //change name
     for ( i = 0; i < 16; i++ )
         base.name[i] = newBeast.base.name[i];
 
+    //set all base stats
     changeBaseStats( newBeast );
 
+    //copy move set
     for ( i = 0; i < 30; i++ )
         base.moveSet[i] = newBeast.base.moveSet[i];
 
+    //set experience
     experience = newBeast.experience;
     
+    //change current stats
     for ( i = 0; i < 6; i++ )
         currentStats[i] = newBeast.currentStats[i];
 
+    //change learnSet
     for ( i = 0; i < 30; i++ )
         learnSet[i] = newBeast.learnSet[i];
 
+    //change nickname
     for ( i = 0; i < 16; i++ )
         nickName[i] = newBeast.nickName[i];
 
+    //copy learned moves
     for ( i = 0; i < 4; i++ )
         move[i] = newBeast.move[i]; 
 
+    //copy health
     currentHealth = newBeast.currentHealth;
 }
 
@@ -717,13 +792,17 @@ inline void beast::learnMoves( )
 
     for ( i = 0; i < 30; i++ )
     {
+        //if the move has been learned or there are no more moves
         if ( learnSet[i].moveLevel > getLevel( ) || learnSet[i].move.type == -1 )
             return;
 
+        //insert move into next learn spot
         changeMove( lastLearned, learnSet[i].move );
 
+        //recalculate next learn spot
         lastLearned = ( lastLearned + 1 ) % 4;
 
+        //set learned bool to true
         learnSet[i].learned = true;
     }
 }
@@ -738,17 +817,25 @@ inline void beast::levelUp( )
 
     cout << endl;
 
+    //for i in range of max number of potential moves
     for ( i = 0; i < 30; i++ )
     {
-        if ( learnSet[i].moveLevel != 0 && learnSet[i].moveLevel <= level && learnSet[i].learned == false )
+        //if move is in the spot, the beast is high enough level, and the beast
+        //is high a enough level
+        if ( learnSet[i].moveLevel != 0 && learnSet[i].moveLevel <= level && 
+            learnSet[i].learned == false )
         {
+            //prompt user with new move message and ask what move to replace
             cout << nickName << " can learn " << learnSet[i].move.name
                 << "! What move do you want to replace?" << endl;
 
+            //print learned moves
             printMoves( );
 
+            //option to not learn move and exit
             cout << "5: Don't learn move" << endl;
 
+            //get input from user and check for validity
             while ( option < 1 || option > 5 )
             {
                 cin >> option;
@@ -756,17 +843,21 @@ inline void beast::levelUp( )
                     cout << "Invalid input. Choose a move 1 - 5" << endl;
             }
 
+            //exit if user prompted
             if ( option == 5 )
             {
                 cout << learnSet[i].move.name << " was not learned." << endl;
                 return;
             }
 
+            //replace selected move
             changeMove( option - 1, learnSet[i].move );
 
+            //print success message and the beast's move set
             cout << endl << nickName << " has learned " << learnSet[i].move.name << '!' << endl;
             printMoves( );
 
+            //set learned variable to true
             learnSet[i].learned = true;
         }
     }
