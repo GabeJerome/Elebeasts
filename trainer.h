@@ -214,9 +214,9 @@ inline bool trainer::captureBeast( int ball )
     cout << endl;
 
     //set catch rate for better balls
-    if ( ball == 2 )
+    if ( ball == 1 )
         ballCatchRate = 1.5;
-    else if ( ball == 3 )
+    else if ( ball == 2 )
         ballCatchRate = 2;
 
     //remove ball from inventory

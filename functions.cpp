@@ -304,7 +304,6 @@ void giveNickname( beast &playerBeast )
 {
     bool valid = false, valid2 = false;
     int option = -1;
-    int i;
     string name;
 
     while ( !valid )
@@ -335,16 +334,7 @@ void giveNickname( beast &playerBeast )
         }
     }
 
-    for ( i = 0; i < name.size( ); i++ )
-    {
-        playerBeast.nickName[i] = name[i];
-    }
-
-    while ( i < 16 )
-    {
-        playerBeast.nickName[i] = '\0';
-        i++;
-    }
+    playerBeast.changeName( name );
 }
 
 

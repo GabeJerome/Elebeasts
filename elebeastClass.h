@@ -713,9 +713,6 @@ inline void beast::evolve( )
         for ( i = 0; i < 16; i++ )
             nickName[i] = base.name[i];
     }
-
-    //print the change in stats after evolution
-    printLvlUpStats( );
 }
 
 
@@ -867,6 +864,7 @@ inline void beast::levelUp( )
 
 inline void beast::changeMove( int moveNum, Move replaceWith )
 {
+    //replace learned move array index with new move
     move[moveNum] = replaceWith;
 }
 
@@ -875,12 +873,14 @@ inline void beast::changeMove( int moveNum, Move replaceWith )
 inline void beast::changeName( string newName )
 {
     int i;
-    for ( i = 0; i < 16; i++ )
-        nickName[i] = '\0';
 
-    for ( i = 0; i < 16 && i < newName.size( ); i++ )
+    //copy new name into current name
+    for ( i = 0; i < newName.size( ) && i < 16; i++ )
+    {
         nickName[i] = newName[i];
+    }
 
+    //fill the remaining part of the name with null terminator
     while ( i < 16 )
     {
         nickName[i] = '\0';
@@ -896,35 +896,47 @@ inline void beast::gainExp( beast &opponent, int yield )
     random_device rand;
     int level = getLevel( );
     int oppLevel = opponent.getLevel( );
-    int expYield = ( 10 * ( getBaseStatTotal( ) - 200 ) ) / int( sqrt( getBaseStatTotal( ) ) / 3 );
+    int expYield;
     int totalYield;
 
+    //calculate exp yield from the opponent using its base stats
+    expYield = ( 10 * ( opponent.getBaseStatTotal( ) - 200 ) ) /
+        int( sqrt( opponent.getBaseStatTotal( ) ) / 3 );
 
-    totalYield = ( ( ( expYield * oppLevel ) / 6 ) *
-        ( ( 2 * oppLevel + 10 ) / exp( ( oppLevel + getLevel( ) + 10 ) ), 2 ) ) * yield;
+    //calculate the total gained exp using the exp yield and the difference in level
+    totalYield = ( ( ( expYield * oppLevel ) / 6 ) *( ( 2 * oppLevel + 10 ) / 
+        int(pow( ( oppLevel + getLevel( ) + 10 ), 2 ) ) ) ) * yield;
 
+    //add the experience to the beast's total experience
     experience += totalYield;
 
+    //print message to user
     cout << this->nickName << " gained " << totalYield << " experience." << endl;
     this_thread::sleep_for( chrono::seconds( 1 ) );
 
+    //if the beast leveled up
     if ( getLevel( ) > level )
     {
+        //print level up message
         cout << nickName << " is now level " << getLevel( ) << '!' << endl;
         this_thread::sleep_for( chrono::seconds( 1 ) );
 
+        //if the beast evolved
         if ( getLevel() >= base.evolveLevel )
             evolve( );
-        else
-            printLvlUpStats( );
+
+        //print change in stats after level up
+        printLvlUpStats( );
 
         this_thread::sleep_for( chrono::seconds( 2 ) );
 
+        //check for new moves
         levelUp( );
 
         this_thread::sleep_for( chrono::seconds( 2 ) );
     }
 
+    //set all current stats
     currentStats[0] = getMaxHP( );
     currentStats[1] = getDef( );
     currentStats[2] = getSpDef( );
@@ -939,14 +951,15 @@ inline void beast::printMoves( )
 {
     int i;
 
+    //loop through moves array
     for ( i = 0; i < 4; i++ )
     {
+        //if there is a move in the current spot, print the move stats
         if ( move[i].element != -1 )
             cout << "Move " << i + 1 << ": " << move[i].name << " | " <<
             eleType[move[i].element] << endl;
         else 
             cout << "Move " << i + 1 << ": empty" << endl;
-
     }
 }
 
@@ -955,15 +968,20 @@ inline void beast::printMoves( )
 inline void beast::printOverview( )
 {
     int lowExpBound;
-    int highExpBound;
+    int highExpBound = 1000000;
 
+    //calculate the bottom boundary of the beast's current level
     lowExpBound = lvlProgression[getLevel( ) - 1];
+
+    //calculate the upper boundary of the beast's current level
     if ( getLevel( ) < 100 )
         highExpBound = lvlProgression[getLevel( )];
 
+    //print beast's stats
     cout << nickName << " | Lvl: " << getLevel( ) << " | Type: " << getType( ) <<
         " | HP: " << currentHealth << '/' << getMaxHP( ) << " | Exp: ";
 
+    //if the beast is max level, print MAX else print current progress to next level
     if ( getLevel( ) == 100 )
         cout << "MAX" << endl;
     else
@@ -974,11 +992,15 @@ inline void beast::printOverview( )
 
 inline int beast::getLevel( )
 {
+    //if experience is less than 8, return level 1
     if ( experience < 8 )
         return 1;
+
+    //if experience is greater than 1000000, return level 100
     if ( experience > 1000000 )
         return 100;
 
+    //level is equal to the cube root of the beast's experience
     return int( cbrt( experience ) );
 }
 
