@@ -123,6 +123,8 @@ bool storeMoveDataBinary( )
         return false;
     }
 
+    fin.clear( );
+
     while ( fin.peek( ) != EOF )
     {
         fin.get( temp.name, 20, ' ' );
@@ -179,6 +181,8 @@ bool saveFile( trainer &player, int num )
         return false;
     }
 
+    fout.clear( );
+
     fout.seekp( ios::beg, 0 );
     fout.write( (char *)&player, sizeof( trainer ) );
 
@@ -207,8 +211,12 @@ bool loadFile( trainer &player, int num )
     if ( fin.peek( ) == EOF )
         return false;
 
+    fin.clear( );
+
     fin.seekg( ios::beg, 0 );
     fin.read( (char *)&player, sizeof( trainer ) );
+
+
 
     return true;
 }

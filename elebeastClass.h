@@ -898,14 +898,20 @@ inline void beast::gainExp( beast &opponent, int yield )
     int oppLevel = opponent.getLevel( );
     int expYield;
     int totalYield;
+    int a, b, c;
 
     //calculate exp yield from the opponent using its base stats
     expYield = ( 10 * ( opponent.getBaseStatTotal( ) - 200 ) ) /
         int( sqrt( opponent.getBaseStatTotal( ) ) / 3 );
 
+    a = ( ( expYield * oppLevel ) / 6 );
+    b = ( 2 * oppLevel + 10 );
+    c = int( pow( ( oppLevel + getLevel( ) + 10 ), 2 ) );
+
+
+
     //calculate the total gained exp using the exp yield and the difference in level
-    totalYield = ( ( ( expYield * oppLevel ) / 6 ) *( ( 2 * oppLevel + 10 ) / 
-        int(pow( ( oppLevel + getLevel( ) + 10 ), 2 ) ) ) ) * yield;
+    totalYield = int( ( a * double( b / c ) ) * yield );
 
     //add the experience to the beast's total experience
     experience += totalYield;
@@ -1008,6 +1014,7 @@ inline int beast::getLevel( )
 
 inline int beast::getExp( )
 {
+    //give experience
     return experience;
 }
 
@@ -1015,6 +1022,7 @@ inline int beast::getExp( )
 
 inline int beast::getMaxHP( )
 {
+    //max health is calculated using the base health stat and the beast's level
     return int(floor( .01 * ( 2 * base.health ) * getLevel( ) ) + getLevel( ) + 10);
 }
 
